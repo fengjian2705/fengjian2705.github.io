@@ -105,5 +105,4 @@ deploy:
   type: git
   repo: 
     github: git@github.com:fengjian2705/fengjian.github.io.git
-    gitee: https://gitee.com/fengjian2705/blog.git
   branch: master
