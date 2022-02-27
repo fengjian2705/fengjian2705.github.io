@@ -965,7 +965,7 @@ static_prefix:
   internal_js: /js
   internal_css: /css
   internal_img: /img
-
+  github_img: https://cdn.jsdelivr.net/gh/fengjian2705/cdn/img/
   anchor: https://cdn.jsdelivr.net/npm/anchor-js@4/
 
   github_markdown: https://cdn.jsdelivr.net/npm/github-markdown-css@4/
