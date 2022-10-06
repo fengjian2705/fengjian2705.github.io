@@ -3,7 +3,7 @@ title: Nexus 私服搭建
 tags: 
     - maven
 index_img: https://cdn.jsdelivr.net/gh/fengjian2705/cdn/img/nexus_init.jpg
-excerpt: 搭建自己的 maven 仓库
+# excerpt: 搭建自己的 maven 仓库
 ---
 ## 背景
 

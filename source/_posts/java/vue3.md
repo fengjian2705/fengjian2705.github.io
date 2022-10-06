@@ -4,7 +4,7 @@ tags:
     - vue3
     - elementPlus
 index_img: https://cdn.jsdelivr.net/gh/fengjian2705/cdn/img/vue3/vue3_001.jpeg
-excerpt: vue3全掌握
+# excerpt: vue3全掌握
 ---
 
 ## 项目搭建
