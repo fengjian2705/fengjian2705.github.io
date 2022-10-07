@@ -733,7 +733,7 @@ valine:
 # Derived from Valine, with self-hosted service and new features
 # See: https://waline.js.org/
 waline:
-  serverURL: 'https://blog-comment-px7ht30rm-fengjian2705.vercel.app/'
+  serverURL: 'https://comment.fengjian.tech/'
   path: window.location.pathname
   placeholder:
   meta: ['nick', 'mail', 'link']
