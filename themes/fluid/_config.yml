@@ -388,7 +388,7 @@ open_graph:
 footer:
   # 页脚第一行文字的 HTML，建议保留 Fluid 的链接，用于向更多人推广本主题
   # HTML of the first line of the footer, it is recommended to keep the Fluid link to promote this theme to more people
-  content: '风间出品'
+  content: '风间·出品'
   # content: '
   #   <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a>
   #   <i class="iconfont icon-love"></i>
@@ -398,7 +398,7 @@ footer:
   # 展示网站的 PV、UV 统计数
   # Display website PV and UV statistics
   statistics:
-    enable: false
+    enable: true
 
     # 统计数据来源，使用 leancloud 需要设置 `web_analytics: leancloud` 中的参数；使用 busuanzi 不需要额外设置，但是有时不稳定，另外本地运行时 busuanzi 显示统计数据很大属于正常现象，部署后会正常
     # Data source. If use leancloud, you need to set the parameter in `web_analytics: leancloud`
@@ -415,7 +415,7 @@ footer:
   beian:
     enable: false
     # ICP证号
-    icp_text: 京ICP证123456号
+    icp_text: 皖ICP备20000895号
     # 公安备案号，不填则只显示ICP
     police_text: 京公网安备12345678号
     # 公安备案的编号，用于URL跳转查询
@@ -551,7 +551,7 @@ post:
     # 浏览量计数
     # Number of visits
     views:
-      enable: false
+      enable: true
       # 统计数据来源
       # Data Source
       # Options: busuanzi | leancloud
@@ -646,11 +646,11 @@ post:
   # 评论插件
   # Comment plugin
   comments:
-    enable: false
+    enable: true
     # 指定的插件，需要同时设置对应插件的必要参数
     # The specified plugin needs to set the necessary parameters at the same time
     # Options: utterances | disqus | gitalk | valine | waline | changyan | livere | remark42 | twikoo | cusdis
-    type: disqus
+    type: waline
 
 
 #---------------------------
@@ -733,7 +733,7 @@ valine:
 # Derived from Valine, with self-hosted service and new features
 # See: https://waline.js.org/
 waline:
-  serverURL: ''
+  serverURL: 'https://blog-comment-px7ht30rm-fengjian2705.vercel.app/'
   path: window.location.pathname
   placeholder:
   meta: ['nick', 'mail', 'link']
