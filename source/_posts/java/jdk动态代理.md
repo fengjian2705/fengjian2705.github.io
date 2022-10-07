@@ -5,7 +5,7 @@ tags:
     - Proxy
     - InvocationHandler
 index_img: https://cdn.jsdelivr.net/gh/fengjian2705/cdn/img/proxy/proxy01.jpg
-# excerpt: 最好用的 java 日志框架
+# excerpt: JDK 动态代理
 ---
 
 > 基于接口实现，代理类和被代理类实现共同的接口
