@@ -753,8 +753,8 @@ waline:
 # Based on third-party service, insufficient support for regions outside China
 # http://changyan.kuaizhan.com
 changyan:
-  appid: ''
-  appkey: ''
+  appid: 'cywjv2D9l'
+  appkey: '2bf2f1231299e92b26393ba6fb2ad9d8'
 
 # 来必力 Livere
 # 基于第三方的服务
