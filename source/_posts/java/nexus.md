@@ -4,6 +4,9 @@ tags:
     - maven
 index_img: https://cdn.jsdelivr.net/gh/fengjian2705/cdn/img/nexus_init.jpg
 # excerpt: 搭建自己的 maven 仓库
+categories:
+    - 后端
+    - java
 ---
 ## 背景
 
@@ -58,7 +61,7 @@ nexus 默认端口号 `8081`
 <!-- 稳定版本-->
 <version>2.0-RELEASE</version>
 ```
-  
+
 ![nexus内置仓库](https://cdn.jsdelivr.net/gh/fengjian2705/cdn/img/nexus_006.jpg)
 
 ## 创建仓库

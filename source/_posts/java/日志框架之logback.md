@@ -5,6 +5,9 @@ tags:
     - 日志框架
 index_img: https://cdn.jsdelivr.net/gh/fengjian2705/cdn/img/logback/logback001.jpeg
 # excerpt: 最好用的 java 日志框架
+categories:
+  - 后端
+  - java
 ---
 
 ## 纷杂の日志框架

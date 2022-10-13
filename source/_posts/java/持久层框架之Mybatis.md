@@ -4,6 +4,9 @@ tags:
     - mybatis
 index_img: https://cdn.jsdelivr.net/gh/fengjian2705/cdn/img/mybatis/mybtis01.jpg
 # excerpt: 持久层框架
+categories:
+    - 后端
+    - java
 ---
 
 ## 1. 简介

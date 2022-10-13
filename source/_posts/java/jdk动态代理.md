@@ -6,6 +6,9 @@ tags:
     - InvocationHandler
 index_img: https://cdn.jsdelivr.net/gh/fengjian2705/cdn/img/proxy/proxy01.jpg
 # excerpt: JDK 动态代理
+categories:
+  - 后端
+  - java
 ---
 
 > 基于接口实现，代理类和被代理类实现共同的接口
