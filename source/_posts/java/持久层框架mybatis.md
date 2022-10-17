@@ -1,5 +1,5 @@
 ---
-title: ORM 框架之 Mybatis
+title: 持久层框架:mybatis
 tags: 
     - mybatis
 index_img: https://cdn.jsdelivr.net/gh/fengjian2705/cdn/img/mybatis/mybtis01.jpg
@@ -18,7 +18,9 @@ XML或注解来配置和映射原⽣类型、接⼝和 Java 的 POJO （Plain Ol
 
 **Tips:** [官网地址](https://mybatis.org/mybatis-3/)
 
-## 2. 急速入门
+## 2. 快速使用
+
+> 使用步骤：① 添加依赖 - ② 创建表 - ③ 创建实体 - ④ 创建 mapper 文件 - ⑤ 创建核心配置文件 sqlMapConfig.xml - ⑥ 编写测试类
 
 ### 2.1 引入依赖
 
@@ -29,8 +31,8 @@ XML或注解来配置和映射原⽣类型、接⼝和 Java 的 POJO （Plain Ol
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>pro.fengjian</groupId>
-    <artifactId>MybatisQuickStart</artifactId>
+    <groupId>tech.fengjian</groupId>
+    <artifactId>mybatis-quickstart</artifactId>
     <version>1.0-SNAPSHOT</version>
 
     <dependencies>
@@ -86,10 +88,6 @@ XML或注解来配置和映射原⽣类型、接⼝和 Java 的 POJO （Plain Ol
 ### 2.2 定义实体类
 
 ```java
-/**
- * @作者 风间
- * @创建时间 2022/4/17 20:55
- */
 
 public class User {
 
@@ -152,9 +150,131 @@ CREATE TABLE `user` (
 </configuration>
 ```
 
-**<font color="red">提示：</font>**
+#### 2.4.2 mapper.xml
 
-还可以将数据源的配置单独放到外部配置文件中，比如 jdbc.properties
+```xml
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="UserMapper">
+    <select id="findAll" resultType="tech.fengjian.pojo.User">
+        select *
+        from User
+    </select>
+</mapper>
+```
+
+### 2.5 编写dao
+
+```java
+import org.apache.ibatis.io.Resources;
+import org.apache.ibatis.session.SqlSession;
+import org.apache.ibatis.session.SqlSessionFactory;
+import org.apache.ibatis.session.SqlSessionFactoryBuilder;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.List;
+
+public class UserDao {
+
+    List<User> findAll() throws IOException {
+        InputStream inputStream = Resources.getResourceAsStream("SqlMapConfig.xml");
+        SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
+        SqlSession sqlSession = sqlSessionFactory.openSession();
+        List<User> userList = sqlSession.selectList("UserMapper.findAll");
+        sqlSession.close();
+        return userList;
+    }
+}
+
+```
+
+**<font color="red">Tips：</font>** UserDao 的方式有一个冗余的部分`UserMapper.findAll`，每增加一个方法，都需要指定 Mapper 和 方法；mybatis利用代理模式做了优化，约定如下：
+
+1）编写接口，接口全路径即 namespace 
+2）接口方法即 sql 的 id
+3）接口方法返回值即 sql 的 resultType
+4）接口方法的参数即 sql 的 parameterType
+
+所以我们可以修改 UserDao 代码为 UserMapper：
+
+```java
+import java.util.List;
+
+
+public interface UserMapper {
+
+    List<User> findAll();
+}
+```
+
+
+
+### 2.6 测试
+
+#### 2.6.1 UserDao 方式（传统写法）
+
+```java
+import java.io.IOException;
+import java.util.List;
+
+public class Test {
+
+    public static void main(String[] args) throws IOException {
+        UserDao userDao = new UserDao();
+        List<User> userList = userDao.findAll();
+        for (User user : userList) {
+            System.out.println(user);
+        }
+
+    }
+}
+
+```
+
+#### 2.6.2 UserMapper 接口方式（推荐）
+
+```java
+import org.apache.ibatis.io.Resources;
+import org.apache.ibatis.session.SqlSession;
+import org.apache.ibatis.session.SqlSessionFactory;
+import org.apache.ibatis.session.SqlSessionFactoryBuilder;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.List;
+
+public class Test {
+
+    public static void main(String[] args) throws IOException {
+        InputStream inputStream = Resources.getResourceAsStream("SqlMapConfig.xml");
+        SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
+        SqlSession sqlSession = sqlSessionFactory.openSession();
+        UserMapper mapper = sqlSession.getMapper(UserMapper.class);
+        List<User> userList = mapper.findAll();
+        for (User user : userList) {
+            System.out.println(user);
+        }
+
+    }
+}
+
+```
+
+### 2.7 mybatis 核心配置文件详解
+
+> mybatis 核心配置文件中的标签是有顺序的！！！
+
+
+![mybatis配置一览](https://cdn.jsdelivr.net/gh/fengjian2705/cdn/img/mybatis/mybatis03.jpg)
+
+#### 2.7.1  properties 标签
+
+习惯将数据源单独抽出到一个配置文件，使用`properties`标签就可以加载额外的 properties 文件
+
+jdbc.properties:
 
 ```properties
 jdbc.mysql.driver = com.mysql.cj.jdbc.Driver
@@ -192,152 +312,163 @@ jdbc.mysql.password = 123456
 </configuration>
 ```
 
-#### 2.4.2 mapper.xml
+#### 2.7.2 typeAlias 标签
+
+类型别名可为 Java 类型设置一个缩写名字。 它仅用于 XML 配置，意在降低冗余的全限定类名书写。例如：
 
 ```xml
-<?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE mapper
-        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="UserMapper">
-    <select id="findAll" resultType="User">
-        select * from User
-    </select>
-</mapper>
+<typeAliases>
+  <typeAlias alias="User" type="tech.fengjian.pojo.User"/>
+</typeAliases>
 ```
 
-### 2.3 编写dao
+也可以指定一个包名，MyBatis 会在包名下面搜索需要的 Java Bean，比如：
 
-```java
-import org.apache.ibatis.io.Resources;
-import org.apache.ibatis.session.SqlSession;
-import org.apache.ibatis.session.SqlSessionFactory;
-import org.apache.ibatis.session.SqlSessionFactoryBuilder;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.List;
-
-/**
- * @作者 风间
- * @创建时间 2022/4/17 21:18
- */
-public class UserDao {
-
-    List<User> findAll() throws IOException {
-        InputStream inputStream = Resources.getResourceAsStream("SqlMapConfig.xml");
-        SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
-        SqlSession sqlSession = sqlSessionFactory.openSession();
-        List<User> userList = sqlSession.selectList("UserMapper.findAll");
-        sqlSession.close();
-        return userList;
-    }
-}
-
+```xml
+<typeAliases>
+  <package name="tech.fengjian.pojo"/>
+</typeAliases>
 ```
 
-**<font color="red">提示：</font>**
-上述 UserDao 的方式有一个冗余的部分`UserMapper.findAll`，每增加一个方法，都需要指定 Mapper 和 方法；
-mybatis利用代理模式做了优化，约定如下：
-1）编写接口，接口全路径即 namespace 
-2）接口方法即 sql 的 id
-3）接口方法返回值即 sql 的 resultType
-4）接口方法的参数即 sql 的 parameterType
+配置后，mapper.xml 中的类型则可以简写：
 
-所以我们可以修改 UserDao 代码为 UserMapper：
-
-```java
-import java.util.List;
-
-/**
- * @作者 风间
- * @创建时间 2022/4/17 21:43
- */
-
-public interface UserMapper {
-
-    List<User> findAll();
-}
+```xml
+ <select id="findAll" resultType="User">
+        select *
+        from User
+  </select>
 ```
 
+<font color="red">Tips:</font> 别名的使用不区分大小写！
 
+```xml
+ <select id="findAll" resultType="User">
+        select *
+        from User
+  </select>
+```
+跟
+```xml
+ <select id="findAll" resultType="uSEr">
+        select *
+        from User
+  </select>
+```
+是一样的！
 
-### 2.4 测试
+#### 2.7.3 environments 标签
 
-#### UserDao 方式（传统写法）
+MyBatis 可以配置成适应多种环境，例如，开发、测试和生产环境需要有不同的配置
 
-```java
-import java.io.IOException;
-import java.util.List;
-
-/**
- * @作者 风间
- * @创建时间 2022/4/17 21:19
- */
-public class Test {
-
-    public static void main(String[] args) throws IOException {
-        UserDao userDao = new UserDao();
-        List<User> userList = userDao.findAll();
-        for (User user : userList) {
-            System.out.println(user);
-        }
-
-    }
-}
+```xml
+<environments default="development">
+    <environment id="development">
+        <transactionManager type="JDBC"/>
+        <dataSource type="POOLED">
+            <property name="driver" value="${jdbc.mysql.driver}"/>
+            <property name="url" value="${jdbc.mysql.url}"/>
+            <property name="username" value="${jdbc.mysql.user}"/>
+            <property name="password" value="${jdbc.mysql.password}"/>
+        </dataSource>
+    </environment>
+</environments>
 
 ```
 
-#### UserMapper 方式（推荐）
+1. 注意一些关键点:
 
-```java
-import org.apache.ibatis.io.Resources;
-import org.apache.ibatis.session.SqlSession;
-import org.apache.ibatis.session.SqlSessionFactory;
-import org.apache.ibatis.session.SqlSessionFactoryBuilder;
+    * 默认使用的环境 ID（比如：default="development"）。
+    
+    * 每个 environment 元素定义的环境 ID（比如：id="development"）。
+    
+    * 事务管理器的配置（比如：type="JDBC"）。
+    
+    * 数据源的配置（比如：type="POOLED"）。
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.List;
+2. 事务管理器（transactionManager）
+    
+   * JDBC – 这个配置直接使用了 JDBC 的提交和回滚功能，它依赖从数据源获得的连接来管理事务作用域。
+   
+   * MANAGED – 这个配置几乎没做什么。
 
-/**
- * @作者 风间
- * @创建时间 2022/4/17 21:19
- */
-public class Test {
+3. 有三种内建的数据源类型（也就是 type="[UNPOOLED|POOLED|JNDI]"）：
+   
+   * UNPOOLED– 这个数据源的实现会每次请求时打开和关闭连接。
+    
+   * POOLED– 这种数据源的实现利用“池”的概念将 JDBC 连接对象组织起来，避免了创建新的连接实例时所必需的初始化和认证时间。
+   
+   * JNDI – 这个数据源实现是为了能在如 EJB 或应用服务器这类容器中使用，容器可以集中或在外部配置数据源，然后放置一个 JNDI 上下文的数据源引用。
 
-    public static void main(String[] args) throws IOException {
-        InputStream inputStream = Resources.getResourceAsStream("SqlMapConfig.xml");
-        SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
-        SqlSession sqlSession = sqlSessionFactory.openSession();
-        UserMapper mapper = sqlSession.getMapper(UserMapper.class);
-        List<User> userList = mapper.findAll();
-        for (User user : userList) {
-            System.out.println(user);
-        }
+#### 2.7.4 mappers 标签
 
-    }
-}
+SQL 映射器：告诉 MyBatis 到哪里去找到 sql 语句。 在自动查找资源方面，Java 并没有提供一个很好的解决方案，所以最好的办法是直接告诉 MyBatis 到哪里去找映射文件
 
+1. 使用相对于类路径（classpath）的资源引用
+
+   ```xml
+   <mappers>
+       <mapper resource="org/mybatis/builder/AuthorMapper.xml"/>
+       <mapper resource="org/mybatis/builder/BlogMapper.xml"/>
+       <mapper resource="org/mybatis/builder/PostMapper.xml"/>
+   </mappers>
+   ```
+   
+2. 使用完全限定资源定位符（URL）
+
+   ```xml
+   <mappers>
+    <mapper url="file:///var/mappers/AuthorMapper.xml"/>
+    <mapper url="file:///var/mappers/BlogMapper.xml"/>
+    <mapper url="file:///var/mappers/PostMapper.xml"/>
+   </mappers>
+   ```
+   
+ 3. 使用映射器接口实现类的完全限定类名
+ 
+    ```xml
+    <mappers>
+      <mapper class="org.mybatis.builder.AuthorMapper"/>
+      <mapper class="org.mybatis.builder.BlogMapper"/>
+      <mapper class="org.mybatis.builder.PostMapper"/>
+    </mappers>
+    ```
+    
+ 4. 将包内的映射器接口全部注册为映射器
+   
+    ```xml
+    <mappers>
+      <package name="org.mybatis.builder"/>
+    </mappers>
+    ```
+    
+    <font color="red">Tips:</font> 方式 3 和方式 4 要求 mapper.xml 文件目录同 mapper 接口包路径一致，编译后都在同一个 calsses 路径下
+   
+## 3. 复杂映射查询
+
+### 3.1 一对一
+
+
+需求： 查询订单及订单所属用户信息（一个订单只能属于一个用户）
+
+订单表：
+```sql
+create table orders(
+    id int(11) primary key auto_increment not null comment '主键ID',
+    ordertime varchar(32) not null comment '下单时间',
+    total double(10,2) not null comment '订单金额',
+    uid int(11) not null comment '用户ID');
+    
 ```
+用户表：
 
-## 3. 复杂查询
-
-### 3.1 mybatis 之一对一查询
-
-查询订单即订单所属用户：
 
 #### 3.1.1 实体类
 
 1. User
       
 ```java
-package pro.fengjian;
+package tech.fengjian;
 
-/**
- * @作者 风间
- * @创建时间 2022/4/17 20:55
- */
 
 public class User {
 
@@ -372,13 +503,13 @@ OrderMapper.xml
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="pro.fengjian.OrderMapper">
+<mapper namespace="tech.fengjian.OrderMapper">
 
-    <resultMap id="orderMap" type="pro.fengjian.Order">
+    <resultMap id="orderMap" type="tech.fengjian.Order">
         <result column="id" property="id"/>
         <result column="order_time" property="order_time"/>
         <result column="total" property="total"/>
-        <association property="user" javaType="pro.fengjian.User">
+        <association property="user" javaType="tech.fengjian.User">
             <result column="uid" property="id"/>
             <result column="username" property="username"/>
         </association>
@@ -393,11 +524,8 @@ OrderMapper.xml
 #### 3.1.2 Mapper 接口
 
 ```java
-/**
- * @作者 风间
- * @创建时间 2022/4/17 22:41
- */
-package pro.fengjian;
+
+package tech.fengjian;
 
 import java.util.List;
 
@@ -408,7 +536,7 @@ public interface OrderMapper {
 
 ```
 
-### 3.2 mybatis 之一对多查询
+### 3.2 一对多
 
 查询用户及用户的订单：
 
@@ -417,14 +545,9 @@ public interface OrderMapper {
 1. User
    
 ```java
-package pro.fengjian;
+package tech.fengjian;
 
 import java.util.List;
-
-/**
- * @作者 风间
- * @创建时间 2022/4/17 20:55
- */
 
 public class User {
 
@@ -463,11 +586,8 @@ public class User {
 2. Order
    
 ```java
-/**
- * @作者 风间
- * @创建时间 2022/4/17 22:07
- */
-package pro.fengjian;
+
+package tech.fengjian;
 
 import java.util.Date;
 
@@ -531,12 +651,12 @@ UserMapper.xml
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="pro.fengjian.UserMapper">
+<mapper namespace="tech.fengjian.UserMapper">
 
-    <resultMap id="userMap" type="pro.fengjian.User">
+    <resultMap id="userMap" type="tech.fengjian.User">
         <result property="id" column="id"/>
         <result property="username" column="username"/>
-        <collection property="order_list" ofType="pro.fengjian.Order">
+        <collection property="order_list" ofType="tech.fengjian.Order">
             <result property="id" column="oid"/>
             <result property="order_time" column="order_time"/>
             <result property="total" column="total"/>
@@ -550,7 +670,7 @@ UserMapper.xml
 ```
 
 
-### 3.3 mybatis 之多对多查询
+### 3.3 多对多
 
 查询用户及拥有的角色：
 
@@ -559,10 +679,10 @@ UserMapper.xml
 UserMapper.xml
 
 ```xml
-<resultMap id="userRoleMap" type="pro.fengjian.User">
+<resultMap id="userRoleMap" type="tech.fengjian.User">
     <result property="id" column="id"/>
     <result property="username" column="username"/>
-    <collection property="role_list" ofType="pro.fengjian.Role">
+    <collection property="role_list" ofType="tech.fengjian.Role">
         <result property="id" column="rid"/>
         <result property="name" column="name"/>
     </collection>
@@ -599,7 +719,7 @@ mybatis 插件 涉及四大组件：Executor、StatementHandler、ParameterHandl
  * @作者 风间
  * @创建时间 2022/4/18 08:54
  */
-package pro.fengjian;
+package tech.fengjian;
 
 import org.apache.ibatis.executor.Executor;
 import org.apache.ibatis.mapping.MappedStatement;
@@ -643,7 +763,7 @@ public class MyPlugin implements Interceptor {
 ```xml
 <!--插件注册-->
 <plugins>
-    <plugin interceptor="pro.fengjian.MyPlugin">
+    <plugin interceptor="tech.fengjian.MyPlugin">
         <property name="key1" value="value1"/>
         <property name="key2" value="value2"/>
     </plugin>
@@ -675,7 +795,7 @@ public class MyPlugin implements Interceptor {
 1. 实体类
    
 ```java
-package pro.fengjian;
+package tech.fengjian;
 
 import javax.persistence.Transient;
 import java.util.List;
@@ -747,7 +867,7 @@ public class User {
 2. Mapper 接口
 
 ```java
-package pro.fengjian;
+package tech.fengjian;
 
 import tk.mybatis.mapper.common.Mapper;
 
@@ -770,8 +890,8 @@ import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
-import pro.fengjian.User;
-import pro.fengjian.UserMapper;
+import tech.fengjian.User;
+import tech.fengjian.UserMapper;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -834,8 +954,8 @@ import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
-import pro.fengjian.User;
-import pro.fengjian.UserMapper;
+import tech.fengjian.User;
+import tech.fengjian.UserMapper;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -905,7 +1025,7 @@ public interface UserMapper extends BaseMapper<User> {
 #### 6.1.4 扫描 mapper
 
 ```java
-@MapperScan("pro.fengjian.springbootmybatisplus.mapper")
+@MapperScan("tech.fengjian.springbootmybatisplus.mapper")
 @SpringBootApplication
 public class SpringbootMybatisPlusApplication {
 
