@@ -43,8 +43,18 @@ categories:
     ```
 6. 在nginx目录，输入如下命令进行配置，目的是为了创建makefile文件
     ```shell 
-       ./configure \n --prefix=/usr/local/nginx \n --pid-path=/var 
-   ```
+       ./configure --prefix=/usr/local/nginx \
+        --pid-path=/var/run/nginx/nginx.pid \
+        --lock-path=/var/lock/nginx.lock \
+        --error-log-path=/var/log/nginx/error.log \
+        --http-log-path=/var/log/nginx/access.log \
+        --with-http_gzip_static_module \
+        --http-client-body-temp-path=/var/temp/nginx/client \
+        --http-proxy-temp-path=/var/temp/nginx/proxy \
+        --http-fastcgi-temp-path=/var/temp/nginx/fastcgi \
+        --http-uwsgi-temp-path=/var/temp/nginx/uwsgi \
+        --http-scgi-temp-path=/var/temp/nginx/scgi
+    ```
     * 注： `\n` 代表在命令行中换行，用于提高可读性
     * 配置命令：  
       |命令|解释|
@@ -65,6 +75,7 @@ categories:
 8. 安装: make install
 9. 进入sbin目录启动 nginx:
     ```shell 
+     cd /usr/local/nginx
      ./nginx
     ```
    停止：./nginx -s stop
