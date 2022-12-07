@@ -281,4 +281,125 @@ categories:
 
 ## 六、使用 Gzip 压缩提升请求效率
 
+```shell
+# 开启 gzip 压缩功能，目的：提高传输效率，节约带宽
+  gzip  on;
+# 限制最小压缩，小于 1 字节文件不会被压缩
+  gzip_min_length 1;
+# 定义压缩的级别 1-9（压缩比，文件越大，压缩越多，但是 cpu 使用就越多）
+  gzip_comp_level 3;
+# 定义压缩文件的类型
+  gzip_types  text/plain application/javascript application/css text/css application/xml text/javascript application/x-httpd-php image/jpeg image/gif image/png;
+```
 
+## 七、location 路径匹配规则
+
+1. / 默认匹配规则
+
+    访问根路径 / ，nginx 会去 root 对应的 html 文件夹下寻找 index 对应的 index.html 或 index.htm 文件
+    ```shell
+    server {
+        listen       89;
+        server_name  localhost;
+        location / {
+            root   html;
+            index  index.html index.htm;
+        }
+    }
+    ```
+2. = 精确匹配
+    
+    ```shell
+    server {
+        listen       91;
+        server_name  localhost;
+        location =/ {
+            root   html;
+            index  index.html index.htm;
+        }
+        location =/images/001.jpg {
+            root   /home;
+        }
+    }
+    ```
+3. ~* 正则匹配，* 表示不区分大小写
+    
+    ```shell
+    server {
+        listen       91;
+        server_name  localhost;
+        location ~* \.(GIF|png|bmp|jpg|jpeg) {
+            root   /home;
+        }
+    }
+    ```
+4. ~ 正则匹配，区分大小写
+
+    ```shell
+    server {
+        listen       91;
+        server_name  localhost;
+        location ~ \.(GIF|png|bmp|jpg|jpeg) {
+            root   /home;
+        }
+    }
+    ```
+5. ^~ 以某个字符路径开头请求
+    ```shell
+    server {
+        listen       91;
+        server_name  localhost;
+        location ^~ \images {
+            root   /home;
+        }
+    }
+    ```
+   
+## 八、DNS 域名解析
+
+1. linux / mac 中 hosts 文件路径：/etc/hosts
+2. window 中 hosts 文件路径 C:\Windows\System32\drivers\etc\hosts
+
+可以借助 SwitchHosts 工具进行域名映射
+
+```shell
+127.0.0.1 www.fengjian.com
+```
+
+## 九、nginx 中解决跨域问题
+
+在 server 中添加配置：
+```shell
+#允许跨域请求的域，*代表所有
+add_header 'Access-Control-Allow-Origin' *;
+#允许带上cookie请求
+add_header 'Access-Control-Allow-Credentials' 'true';
+#允许请求的方法，比如 GET/POST/PUT/DELETE
+add_header 'Access-Control-Allow-Methods' *;
+#允许请求的header
+add_header 'Access-Control-Allow-Headers' *;
+```
+
+## 十、nginx 中配置静态资源防盗链
+
+html 代码引用我们 nginx 服务器中的一张图片：
+
+```html
+<img src="http://www.fengjian.com:89/static/001.jpg">
+```
+
+加上防盗链配置：
+
+```shell
+#对源站点验证
+valid_referers *.fengjian.com;
+#非法引入会进入下方判断
+if ($invalid_referer) {
+  return 404; # 状态码可自定义，403 500 ...
+}
+```
+浏览器有缓存，强制刷新后（Ctrl+F5）图片禁止访问！
+
+## 十一、nginx 模块化设计
+
+1. core
