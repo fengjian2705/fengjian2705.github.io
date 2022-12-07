@@ -118,6 +118,133 @@ categories:
       http://机器IP
    ```
    
+## 三、核心配置文件 nginx.conf
 
+1. 设置worker进程的用户，指的linux中的用户，会涉及到nginx操作目录或文件的一些权限，默认为 nobody
+   ```shell
+      user root;
+   ```
+2. worker进程工作数设置，一般来说CPU有几个，就设置几个，或者设置为N-1也行
+   ```shell
+      worker_processes 1;
+   ```
+3. nginx 日志级别 debug | info | notice | warn | error | crit | alert | emerg ，错误级别从左到右越来越大
+
+4. 设置nginx进程 pid
+   ```shell
+      pid logs/nginx.pid;
+   ```
+5. 设置工作模式
+   ```shell
+      events {
+        # 默认使用epoll
+        use epoll;
+        # 每个worker允许连接的客户端最大连接数
+        worker_connections 10240;
+      }
+   ```
+6. http 是指令块，针对http网络传输的一些指令配置
+   ```shell
+      http {
+      }
+   ```
+7. include 引入外部配置，提高可读性，避免单个配置文件过大
+   ```shell
+      include mime.types;
+   ```
+8. 设定日志格式， main 为定义的格式名称，如此 access_log 就可以直接使用这个变量了
+   
+   |参数名|参数意义|
+   |---|---|
+   |$remote_addr|客户端ip|
+   |$remote_user|远程客户端用户名，一般为：’-’|
+   |$time_local|时间和时区|
+   |$request|请求的url以及method|
+   |$status|响应状态码|
+   |$body_bytes_send|响应客户端内容字节数|
+   |$http_referer|记录用户从哪个链接跳转过来的|
+   |$http_user_agent|用户所使用的代理，一般来时都是浏览器|
+   |$http_x_forwarded_for|通过代理服务器来记录客户端的ip|
+
+9. sendfile 使用高效文件传输，提升传输性能。启用后才能使用 tcp_nopush ，是指当数据表累积一定大小后才发送，提高了效率。
+   ```shell
+   sendfile on;
+   tcp_nopush on;
+   ```
+10. keepalive_timeout 设置客户端与服务端请求的超时时间，保证客户端多次请求的时候不会重复建立新的连接，节约资源损耗。
+   ```shell
+   #keepalive_timeout 0;
+   keepalive_timeout 65
+   ```
+
+## 四、nginx 日志切割
+
+1. 手动切割
+   现有的日志都会存在 access.log 文件中，但是随着时间的推移，这个文件的内容会越来越多，体积会越来越大，不便于运维人员查看，所以我们可以通过把文件切割为多份不同的小文件作为日志，切割规则可以以 天 为单位，如果每天有几百G或者几个T的日志的话，则可以按需以`每半天`或者`每小时`对日志切割
+   
+   步骤如下：
+   *  创建一个shell可执行文件： cut_my_log.sh ，内容为：
+      ```shell
+         #!/bin/bash
+         LOG_PATH="/var/log/nginx/"
+         RECORD_TIME=$(date -d "yesterday" +%Y-%m-%d+%H:%M)
+         PID=/var/run/nginx/nginx.pid
+         mv ${LOG_PATH}/access.log ${LOG_PATH}/access.${RECORD_TIME}.log
+         mv ${LOG_PATH}/error.log ${LOG_PATH}/error.${RECORD_TIME}.log
+         #向Nginx主进程发送信号，用于重新打开日志文件
+         kill -USR1 `cat $PID`
+      ```
+   * 为`cut_my_log.sh`添加可执行的权限：
+     ```shell
+        chmod +x cut_my_log.sh
+     ```
+   * 测试日志切割后的结果:
+     ```shell
+        ./cut_my_log.sh
+     ```
+     
+2. 定时切割
+   
+   * 安装定时任务：
+     ```shell
+      yum install crontabs
+     ```
+   * crontab -e 编辑并且添加一行新的任务：
+     ```shell
+      */1 * * * * /usr/local/nginx/sbin/cut_my_log.sh
+     ```
+   * 重启定时任务：
+     ```shell
+      service crond restart
+     ```
+   * 附：常用定时任务命令
+     ```shell
+      service crond start //启动服务
+      service crond stop //关闭服务
+      service crond restart //重启服务
+      service crond reload //重新载入配置
+      crontab -e // 编辑任务
+      crontab -l // 查看任务列表
+     ```
+   * 定时任务表达式：
+     Cron表达式是，分为5或6个域，每个域代表一个含义，如下所示：
+      ||分|时|日|月|星期几|年（可选）|
+      |---|---|---|---|---|---|---|
+      |取值范围|0-59|0-23|1-31|1-12|1-7|2022/2023...|
+     常用表达式：
+      * 每分钟执行：
+         ```shell
+            */1 * * * *
+         ```
+      * 每日凌晨（每天晚上23:59）执行：
+         ```shell
+            59 23 * * *
+         ```
+      * 每日凌晨1点执行：
+         ```shell
+            0 1 * * *
+         ```
+     参考文献：
+     每天定时为数据库备份：https://www.cnblogs.com/leechenxiang/p/7110382.html
 
 
