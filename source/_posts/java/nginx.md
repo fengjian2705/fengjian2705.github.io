@@ -1,11 +1,11 @@
 ---
-title: Nginx 安装
+title: Nginx
 tags:
   - nginx
 index_img: https://cdn.jsdelivr.net/gh/fengjian2705/cdn/img/nexus_init.jpg
 # excerpt: 搭建自己的 maven 仓库
 categories:
-  - 运维
+  - 服务器
   - java
 ---
 
@@ -402,4 +402,6 @@ if ($invalid_referer) {
 
 ## 十一、nginx 模块化设计
 
-1. core
+![nginx模块](http://rmj67qhqd.hn-bkt.clouddn.com/nginx-001.png?e=1670434287&token=a7y4ZUk17R-ougKc1FjNM_5liJE20s5eGHKbRwER:C15BRglrKRUGvNIL4-gF5GHyBJc=)
+
+
