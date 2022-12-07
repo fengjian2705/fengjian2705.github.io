@@ -154,17 +154,17 @@ categories:
    ```
 8. 设定日志格式， main 为定义的格式名称，如此 access_log 就可以直接使用这个变量了
    
-   |参数名|参数意义|
-   |---|---|
-   |$remote_addr|客户端ip|
-   |$remote_user|远程客户端用户名，一般为：’-’|
-   |$time_local|时间和时区|
-   |$request|请求的url以及method|
-   |$status|响应状态码|
-   |$body_bytes_send|响应客户端内容字节数|
-   |$http_referer|记录用户从哪个链接跳转过来的|
-   |$http_user_agent|用户所使用的代理，一般来时都是浏览器|
-   |$http_x_forwarded_for|通过代理服务器来记录客户端的ip|
+   | 参数名                   |参数意义|
+   |-------------------------|------|
+   | $remote_addr          |客户端ip|
+   | $remote_user          |远程客户端用户名，一般为：’-’|
+   | $time_local           |时间和时区|
+   | $request              |请求的url以及method|
+   | $status               |响应状态码|
+   | $body_bytes_send      |响应客户端内容字节数|
+   | $http_referer         |记录用户从哪个链接跳转过来的|
+   | $http_user_agent      |用户所使用的代理，一般来时都是浏览器|
+   | $http_x_forwarded_for |通过代理服务器来记录客户端的ip|
 
 9. sendfile 使用高效文件传输，提升传输性能。启用后才能使用 tcp_nopush ，是指当数据表累积一定大小后才发送，提高了效率。
    ```shell
@@ -228,8 +228,9 @@ categories:
      ```
    * 定时任务表达式：
      Cron表达式是，分为5或6个域，每个域代表一个含义，如下所示：
-      ||分|时|日|月|星期几|年（可选）|
-      |---|---|---|---|---|---|---|
+   
+      |   |分  |时  |日 |月  |星期几|年（可选）|
+      |------|-----|---|---|---|-----|--------|
       |取值范围|0-59|0-23|1-31|1-12|1-7|2022/2023...|
    
      常用表达式：
@@ -247,5 +248,37 @@ categories:
          ```
      参考文献：
      每天定时为数据库备份：https://www.cnblogs.com/leechenxiang/p/7110382.html
+
+## 五、虚拟主机-使用nginx为静态资源提供服务
+
+1. 将静态资源放置到服务器上（例如：图片拷贝到 /home/images 文件夹下）
+
+2. 配置 nginx location
+    * root方式
+    ```shell
+       server {
+        listen       89;
+        server_name  localhost;
+   
+        location /images {
+            root   /home;
+        }
+       }
+    ```
+    测试：`http://ip:89/images/001.jpg`
+    * alias别名方式
+    ```shell
+       server {
+        listen       89;
+        server_name  localhost;
+   
+        location /static {
+            alias   /home/images;
+        }
+       }
+    ```
+   测试：`http://ip:89/static/001.jpg`
+
+## 六、使用 Gzip 压缩提升请求效率
 
 
