@@ -515,6 +515,22 @@ hash 算法带来的问题：
 
 ### 负载均衡 url hash 与 least_conn
 
+```shell
+   upstream tomcats {
+      hash $request_uri;
+      # least_conn
 
+      server 192.168.88.136:8080;
+      server 192.168.88.137:8080;
+      server 192.168.88.138:8080;
+}
+server {
+    listen       80;
+    server_name  www.tomcats.com;
+       location / {
+           proxy_pass http://tomcats;
+       }
+   }
+```
 
 
