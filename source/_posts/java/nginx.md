@@ -420,14 +420,14 @@ if ($invalid_referer) {
    ```shell
    # 配置上游服务器
    upstream tomcats {
-   server 192.168.147.132:8080;
-   server 192.168.147.133:8080;
-   server 192.168.147.134:8080;
+      server 192.168.88.136:8080;
+      server 192.168.88.137:8080;
+      server 192.168.88.138:8080;
    }
    
    server {
-   listen       80;
-   server_name  www.tomcats.com;
+    listen       80;
+    server_name  www.tomcats.com;
        location / {
            proxy_pass http://tomcats;
        }
@@ -441,20 +441,79 @@ if ($invalid_referer) {
 ```shell
    # 配置上游服务器
    upstream tomcats {
-   server 192.168.147.132:8080 weight=1;
-   server 192.168.147.133:8080 weight=2;
-   server 192.168.147.134:8080 weight=5;
+      server 192.168.88.136:8080 weight=1;
+      server 192.168.88.137:8080 weight=2;
+      server 192.168.88.138:8080 weight=5;
    }
    
    server {
-   listen       80;
-   server_name  www.tomcats.com;
+    listen       80;
+    server_name  www.tomcats.com;
        location / {
            proxy_pass http://tomcats;
        }
    }
    ```
 
+### upstream 指令参数
+
+| 指令          | 默认值 | 描述                                            |
+|--------------|-----|-----------------------------------------------|
+ | max_conns    | 0   | 限制服务器最大连接数，0 不做任何限制                           |
+ | slow_start   | 0   | 慢启动服务器加入集群，默认 0s                              |
+ | down         | -   | 服务器状态，down 代表不可用                              |
+ | backup       | -   | 表明当前服务器是备用机器，不会被访问到，当主机挂了，备用机器启用              |
+ | max_fails    | 1   | 表示失败几次，则标记server已宕机，剔出上游服务                    |
+ | fail_timeout | 10  | 表示失败的重试时间 |
+
+```shell
+   upstream tomcats {
+      server 192.168.88.136:8080 weight=6;
+      server 192.168.88.137:8080 weight=2;
+      server 192.168.88.138:8080 weight=2;
+}
+```
+
+`slow_start=60s max_fails=2 fail_timeout=15s`: 代表在15秒内请求某一server失败达到2次后，则认为该server已经挂了或者宕机了，随后再过15秒，这15秒内不会有新的请求到达刚刚挂掉的节点上，而是会运作的server，15秒后会再有新请求尝试连接挂掉的server，如果还是失败，重复上一过程，直到恢复。
+
+#### Keepalived 提高吞吐量
+
+```shell
+   upstream tomcats {
+      server 192.168.88.136:8080 weight=6;
+      server 192.168.88.137:8080 weight=2;
+      server 192.168.88.138:8080 weight=2;
+      
+      keepalive 32;# 长连接处理数量
+}
+```
+### 负载均衡之 ip_hash
+
+算法：hash(ip) % node_counts = index
+
+ip: 用户ip
+node_counts: 服务器数量
+index: 本次分配到的服务器（从 0 开始）
+
+```shell
+   upstream tomcats {
+      ip_hash;
+      
+      server 192.168.88.136:8080 weight=6;
+      server 192.168.88.137:8080 weight=2;
+      server 192.168.88.138:8080 weight=2;
+}
+```
+
+`ip_hash`可以保证用户访问可以请求到上游服务中的固定的服务器，前提是用户ip没有发生更改。
+使用ip_hash的注意点：
+不能把后台服务器直接移除，只能标记 down .
+
+### 一致性 hash 算法
+
+hash 算法带来的问题：
+
+### 负载均衡 url hash 与 least_conn
 
 
 
