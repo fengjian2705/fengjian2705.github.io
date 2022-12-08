@@ -2,7 +2,7 @@
 title: Nginx
 tags:
   - nginx
-index_img: https://cdn.jsdelivr.net/gh/fengjian2705/cdn/img/nexus_init.jpg
+index_img: http://nginx.org/nginx.png
 # excerpt: 搭建自己的 maven 仓库
 categories:
   - 服务器
@@ -402,6 +402,60 @@ if ($invalid_referer) {
 
 ## 十一、nginx 模块化设计
 
-![nginx模块](http://rmj67qhqd.hn-bkt.clouddn.com/nginx-001.png?e=1670434287&token=a7y4ZUk17R-ougKc1FjNM_5liJE20s5eGHKbRwER:C15BRglrKRUGvNIL4-gF5GHyBJc=)
+![nginx模块](https://s3.uuu.ovh/imgs/2022/12/08/93887f027792a715.png)
+
+## 十二、nginx 构建 tomcat 集群
+
+![nginx-tomcat集群](https://s3.uuu.ovh/imgs/2022/12/08/25121837b1194142.png)
+
+### 搭建集群
+
+1. 环境搭建：1 台 nginx 服务器，3 台 tomcat 服务器；
+2. 使用 SwitchHosts 修改本地 hosts 文件映射到 nginx 服务器；
+   ```shell
+   # nginx 服务器
+   192.168.147.129 www.tomcats.com
+   ```
+3. 修改 nginx 配置文件:
+   ```shell
+   # 配置上游服务器
+   upstream tomcats {
+   server 192.168.147.132:8080;
+   server 192.168.147.133:8080;
+   server 192.168.147.134:8080;
+   }
+   
+   server {
+   listen       80;
+   server_name  www.tomcats.com;
+       location / {
+           proxy_pass http://tomcats;
+       }
+   }
+   ```
+   
+### 负载均衡
+
+1. 轮询（默认策略）：请求依次发送到不同的 tomcat 机器
+2. 加权轮询：根据服务器配置的高低设置不同权重,weight 默认为 1，值越大权重越高
+```shell
+   # 配置上游服务器
+   upstream tomcats {
+   server 192.168.147.132:8080 weight=1;
+   server 192.168.147.133:8080 weight=2;
+   server 192.168.147.134:8080 weight=5;
+   }
+   
+   server {
+   listen       80;
+   server_name  www.tomcats.com;
+       location / {
+           proxy_pass http://tomcats;
+       }
+   }
+   ```
+
+
+
 
 
