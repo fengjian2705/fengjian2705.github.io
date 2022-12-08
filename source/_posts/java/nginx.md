@@ -533,4 +533,62 @@ server {
    }
 ```
 
+## 十三、缓存
+
+### nginx 控制浏览器缓存 expires
+
+1. 浏览器缓存：
+   加速用户访问，提升单个用户（浏览器访问者）体验，缓存在本地
+2. Nginx缓存
+   缓存在nginx端，提升所有访问到nginx这一端的用户
+   提升访问上游（upstream）服务器的速度
+   用户访问仍然会产生请求流量
+
+```shell
+location /files {
+  alias /home/imooc;
+  # 10s 后过期
+  # expires 10s;
+  # 22h30m后过期
+  # expires @22h30m;
+  # 1h 前过期
+  # expires -1h;
+  # 过期一个纪元
+  # expires epoch;
+  # 永不过期（默认）
+  # expires off;
+expires max;
+}
+
+```
+### nginx 的反向代理缓存
+
+```shell
+   upstream tomcats {
+      server 192.168.88.136:8080;
+      server 192.168.88.137:8080;
+      server 192.168.88.138:8080;
+   }
+
+# proxy_cache_path 设置缓存的保存目录
+# keys_zone 设置共享库存以及占用的空间
+# max_size 设置缓存大小
+# inactive 超过此时间，则缓存自动清理
+# use_temp_path 关闭临时目录
+proxy_cache_path /usr/local/nginx/upstream_cache keys_zone=mycache:5m max_size=1g inactive=30s use_temp_path=off;
+
+server {
+    listen       80;
+    server_name  www.tomcats.com;
+    # 开启并且使用缓存
+    proxy_cache mycache;
+    # 针对 200 和 304 设置缓存过期时间
+    proxy_cache_valid 200 304 8h;
+    location / {
+           proxy_pass http://tomcats;
+       }
+   }
+```
+
+
 
