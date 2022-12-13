@@ -2,11 +2,12 @@
 title: Nginx
 tags:
   - nginx
+  - 服务器
 index_img: http://nginx.org/nginx.png
 # excerpt: 搭建自己的 maven 仓库
 categories:
-  - 服务器
-  - java
+  - 运维
+  - Nginx
 ---
 
 ## 一、传统方式安装

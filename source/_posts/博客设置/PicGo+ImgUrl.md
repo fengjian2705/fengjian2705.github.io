@@ -1,13 +1,13 @@
 ---
 title: PicGo+ImgUrl
 tags:
-- 博客
-- 图床
+    - PicGo
+    - ImgUrl
+    - 图床
 index_img: https://s3.uuu.ovh/imgs/2022/12/09/2ca0c42ade0e945c.png
 # excerpt: JDK 动态代理
 categories:
-- 博客
-- 图床
+    - 博客
 ---
 
 > PicGo是一款跨平台图片上传客户端，支持Windows、Linux、MacOS操作系统，支持将图片上传到多个目标，比如ImgURL、SM.MS等图床。
