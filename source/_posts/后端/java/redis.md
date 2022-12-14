@@ -9,10 +9,111 @@ categories:
   - 后端
   - redis
 ---
+## 一、安装与配置 redis
 
-## redis 持久化机制
+### 1. 下载安装包
+[下载地址](https://redis.io/download/)
 
-### RDB
+### 2. 上传到 linux 服务器并解压缩
+
+```shell
+   tar -zxvf redis-5.0.5.tar.gz 
+```
+
+### 3. 安装依赖
+
+```shell
+   yum install gcc-c++
+```
+
+### 4. 编译
+
+```shell
+   make
+```
+
+编译成功：Hint: It's a good idea to run 'make test' ;)
+
+### 5. 安装
+
+```shell
+   make install
+```
+
+### 6. 配置
+
+   * 进入 utils 目录，拷贝 redis 启动脚本
+      ```shell
+        cp redis_init_script /etc/init.d/ 
+      ```
+   * 修改 redis 核心配置文件 `redis.conf`
+
+      - 拷贝配置文件
+      ```shell
+        mkdir /usr/local/redis
+        
+        cp redis.conf /usr/local/redis/
+     
+        cd /usr/local/redis
+     
+        vim redis.conf
+      ```
+     
+     - 修改相关配置
+       |参数        |默认值        |描述       |推荐设置                  |
+       |-----------|-------------|----------|-------------------------|
+       |daemonize  |no           |是否后台启动 |yes                     |
+       |dir        |./           |工作目录    |/usr/local/redis/working|
+       |bind       |127.0.0.1    |绑定的ip    |0.0.0.0                 |
+       |requirepass|foobared     |访问密码    |自定义即可                |
+       |port       |6379         |端口号      |6379                   |
+     
+     - 修改启动脚本 `redis_init_script`
+       |参数        |默认值                              |描述                 |推荐设置                    |
+       |-----------|-----------------------------------|--------------------|---------------------------|
+       |REDISPORT  |6379                               |端口号               |若要修改去 redis.conf中修改即可|
+       |CONF       |CONF="/etc/redis/${REDISPORT}.conf"|启动指定的配置文件      |/usr/local/redis/redis.conf|
+      
+      - 赋权限
+        ```shell
+          chmod 777 redis_init_script
+        ```
+      - 启动
+        ```shell
+          ./redis_init_script start
+        ```
+      - 停止
+        ```shell
+          ./redis_init_script stop
+        ```
+      - 设置 redis 开机自启动
+        ```shell
+          vim redis_init_script
+          
+          # 新增脚本 
+          # !/bin/bash
+          # chkconfig: 22345 10 90
+          # description: Start and Stop redis
+          
+          # 注册开机自启动
+          chkconfig redis_init_script on 
+        
+          # 重启测试
+          reboot
+        ```
+   
+       
+     
+      
+      
+
+
+
+
+
+## 二、redis 持久化机制
+
+### 1. RDB
 
 > Redis DataBase 
 
@@ -61,7 +162,7 @@ dis后，则会恢复。
      no：关闭，节约性能
 
 
-### AOF
+### 2.AOF
 
 > Append Only File
 
@@ -99,13 +200,13 @@ dis后，则会恢复。
     appendfsync everysec
     # 重写的时候是否要同步，no可以保证数据安全
     no-appendfsync-on-rewrite no
-    # 重写机制：避免文件越来越大，自动优化压缩指令，会fork一个新的进程去完成重写动作，新进程里的内存数据会被重写，此时
-    # 当前AOF文件的大小是上次AOF大小的100% 并且文件体积达到64m，满足两者则触发重写
+    # 重写机制：避免文件越来越大，自动优化压缩指令，会 fork 一个新的进程去完成重写动作，新进程里的内存数据会被重写，此时
+    # 当前 AOF 文件的大小是上次 AOF 大小的 100% 并且文件体积达到 64m，满足两者则触发重写
     auto-aof-rewrite-percentage 100
     auto-aof-rewrite-min-size 64mb
    ```
 
-## 到底采用RDB还是AOF呢？
+### 3.到底采用RDB还是AOF呢？
 
 1. 如果你能接受一段时间的缓存丢失，那么可以使用RDB
 2. 如果你对实时性的数据比较care，那么就用AOF
