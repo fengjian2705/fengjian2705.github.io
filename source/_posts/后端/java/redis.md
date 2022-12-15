@@ -376,9 +376,40 @@ repl_backlog_histlen:0
 * 集群也可以在单服务器构建，称之为伪集群，但是生产环境肯定是真的，所以建议用 6 台。
 * 克隆后务必关闭Redis。
 
+### 4. 构建 Redis 集群
 
+  * redis.conf 配置
+    ```shell
+    # 开启集群模式
+    cluster-enabled yes
+    # 每一个节点需要有一个配置文件，需要 6 份。每个节点处于集群的角色都需要告知其他所有节点，彼此知道，这个文件用于存储集
+    cluster-config-file nodes-201.conf
+    # 超时时间，超时则认为 master 宕机，随后主备切换
+    cluster-node-timeout 5000
+    # 开启 AOF
+    appendonly yes
+    ```
+  
+  * 启动 6 个 redis 实例
+    - 启动 6 台 
+    - 如果启动过程出错，把 rdb 等文件删除清空
 
+  * 创建集群
+    ```shell
+    #####
+    # 注意1：如果你使用的是 redis3.x 版本，需要使用 redis-trib.rb 来构建集群，最新版使用 C 语言来构建了，这个要注意
+    # 注意2：以下为新版的 redis 构建方式
+    #####
+    # 创建集群，主节点和从节点比例为1，1-3 为主，4-6 为从，1 和 4，2 和 5，3 和 6 分别对应为主从关系，这也是最经典用的最多的集群模式
+    redis-cli --cluster create ip1:port1 ip2:port2 ip3:port3 ip4:port4 ip5:port5 ip6:port6 --cluster-replicas 1
+    ```
+    slots：槽，用于装数据，主节点有，从节点没有
 
+  * 检查集群信息
+    ```shell
+       redis-cli --cluster check 192.168.25.64:6380
+    ```
+  
 
 
 
