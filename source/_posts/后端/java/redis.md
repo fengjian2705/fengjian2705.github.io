@@ -409,6 +409,28 @@ repl_backlog_histlen:0
     ```shell
        redis-cli --cluster check 192.168.25.64:6380
     ```
+  * SpringBoot 集成 redis 集群
+    ```yaml
+       spring:
+        redis:
+          password: 123456
+          cluster: 
+            nodes: ip1:port1 ip2:port2 ip3:port3 ip4:port4 ip5:port5 ip6:port6
+    ```
+  
+## 六、缓存穿透与雪崩
+
+### 1. 缓存穿透
+
+* 定义：查询的 key 在 redis 中不存在，在数据库中也不存在，此时被非法用户攻击，大量请求被打到数据库上，造成宕机，从而影响整个系统，这种现象称之为缓存穿透
+
+* 解决方案一：将空值也放入缓存，比如空字符串、空数组、空对象或空 list
+
+* 解决方案二：布隆过滤器，可以快速的判断一个元素是否在一个集合中
+
+### 2. 雪崩
+
+    * 定义：
   
 
 
