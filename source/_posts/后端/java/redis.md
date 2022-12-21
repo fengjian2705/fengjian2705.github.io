@@ -430,8 +430,69 @@ repl_backlog_histlen:0
 
 ### 2. 雪崩
 
-    * 定义：
+* 定义：大量的 key 同一时间过期，大量请求直接打到数据库，造成宕机
+
+* 预防：
+  - 永不过期
+  - 过期时间错开
+  - 多缓存结合：redis + memcache ...
+  - 采购第三方 redis：阿里云、腾讯云...
   
+## 七、批量查询优化
+
+常规做法：
+```java
+    @GetMapping("/getALot")
+    public JSONResult getALot(String... keys) {
+
+        List<String> list = new ArrayList<>();
+
+        for (String key : keys) {
+            String value = this.get(key);
+            list.add(value);
+        }
+        return JSONResult.ok(list);
+    }
+    
+    @Autowired
+	private StringRedisTemplate redisTemplate;
+	
+    public String get(String key) {
+		return (String)redisTemplate.opsForValue().get(key);
+	}
+```
+### 1. multiGet
+
+```java
+    public List<String> mget(List<String> keys) {
+		return redisTemplate.opsForValue().multiGet(keys);
+	}
+```
+
+### 2. pipeline
+
+```java
+    public List<Object> batchGet(List<String> keys) {
+
+		List<Object> result = redisTemplate.executePipelined(new RedisCallback<String>() {
+
+			@Override
+			public String doInRedis(RedisConnection redisConnection) throws DataAccessException {
+
+				StringRedisConnection stringRedisConnection = (StringRedisConnection) redisConnection;
+				for (String key : keys) {
+					stringRedisConnection.get(key);
+				}
+				return null;
+			}
+		});
+
+		return result;
+
+	}
+```
+
+
 
 
 
