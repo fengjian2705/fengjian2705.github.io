@@ -224,10 +224,88 @@ categories:
 3. 转义字符
     
     * 无法看见的字符
+      \n换行 \t制表 \r回车
+      
     * 与语言本身语法有冲突的字符
+      \' 单引号冲突
+   
+   ```shell
+       print('hello \n world')
+       hello
+       world
+   ```
+   如何输出`\n`而不换行？将`\n`进行转义
+   
+   实际意义：
+   ```shell
+        print('c:\northwind\northwest')
+        c:
+        orthwind
+        orthwest
+   ```
+   ```shell
+        print('c:\\northwind\\northwest')
+        c:\\northwind\\northwest
+   ```
 
+4. 原始字符串
+   
+   ```shell
+       print(r'hello \n world')
+       hello \n world
+   ```
+   字符串前面加子母`r`
     
-    
+5. 字符串运算
+   
+   * 拼接
+      ```shell
+          // 加法
+         'hello'+'world'
+         'helloworld'
+         
+          // 乘法
+          'hello'*3
+          'hellohellohello'
+      ```
+   * 截取 []
+      ```shell
+          // 正数代表序号
+          'hello'[0]
+          'h'
+          // 负数代表从字符串末尾数n次得到的字符
+          'hello'[-1]
+          'o'
+          // 从第一个字符截取到第个五字符
+          'hello world'[0:5]
+          'hello'
+          // 从第一个字符截取到倒数第二个字符
+          'hello world'[0:-1]
+          'hello worl'
+          // 从第六个字符截取到最后一个字符
+          'hello world'[6:]
+          'world'
+          // 从第一个字符截取到倒数第五个字符
+          'hello world'[:-4]
+          'hello world'
+          // 从末尾往前数四个字符截取出来
+          'hello world'[-4:]
+          'orld'
+      ```
 
 
-### 
+### 2.4 列表
+
+1. 定义
+   
+   ```shell
+     type([1,2,3,4,5,6])
+     <class 'list'>
+   ```
+   
+2. 特性
+
+   * 内部元素类型不固定，字符串、数字、bool、列表...
+     [1,'hello',True,[1,2]]
+
+3. 基本操作
