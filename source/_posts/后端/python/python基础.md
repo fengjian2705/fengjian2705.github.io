@@ -95,8 +95,8 @@ categories:
 搜索 IDLE 命令程序，打开对应版本的 IDLE
 
 ```shell
-    >>> print('Hello,World')
-    >>> Hello,World
+    print('Hello,World')
+    Hello,World
 ```
 `提示：`
 * python通常使用缩进来控制代码格式
@@ -108,29 +108,126 @@ categories:
 
 1. 分类 
 
-    整数：int
-    浮点数：float
+    * 整数：int
+    * 浮点数：float
 
-    其它语言：单精度（float），双精度（double）
-    其它语言：short，int，long
+      其它语言：单精度（float），双精度（double）
+      其它语言：short，int，long
+   
+    * bool 布尔类型：表示真假 True False，注意首字母大写
+      对于数字非0即为True
+      对于字符串非空即为True
+      列表、字典...
+      `None` false
+    * complex: 复数 36j
 
 2. 代码示例
 
     ```shell
-        >>> type(1)
-        >>> <class 'int'>
-        >>> type(-1)
-        >>> <class 'int'>
+        // 整数
+        type(1)
+        <class 'int'>
+        type(-1)
+        <class 'int'>
       
-        >>> type(1.1)
-        >>> <class 'float'>
-        >>> type(1.1111111)
-        >>> <class 'float'>
-   
+        // 浮点数
+        type(1.1)
+        <class 'float'>
+        type(1.1111111)
+        <class 'float'>
+        
+        // 加法
         type(1+1.2)
         <class 'float'>
         type(1+1.0)
         <class 'float'>
         type(1+1)
         <class 'int'>
+        
+        // 乘法
+        type(1*1.0)
+        <class 'float'>
+        type(1*1)
+        <class 'int'>
+        
+        // 除法,得到浮点数
+        type(2/2)
+        <class 'float'>
+        // 整除,得到整数
+        type(2//2)
+        <class 'int'>
+      
+        type(True)
+        <class 'bool'>
+        type(False)
+        <class 'bool'>
+        int(True)
+        1
+        int(False)
+        0
+        bool(0)
+        False
+        bool(1)
+        True
     ```
+### 2.2 10、2、8、16进制
+
+1. 10在各进中代表的数字
+    
+    * 2进制：0b10 10进制  2
+    * 8进制：0o10 10进制  8
+    * 16进制：0x10 10进制 16
+    * 10进制：10
+   
+2. 进制间数字转换
+
+    * 其他进制 -> 2进制：bin
+      bin(10)  -> 0b1010
+      bin(0o7) -> 0b111
+      bin(0xE) -> 0b1110
+    
+    * 其他进制 -> 10进制：int
+      int(0b111) -> 7
+      int(0o77)  -> 63
+    
+    * 其他进制 -> 16进制：hex
+      hex(888)     -> 0x378
+      hex(0o7777)  -> 0xfff
+   
+    * 其它进制 -> 8进制:oct
+      oct(0b111)  -> 0o7
+      oct(0x777)  -> 0o3567
+
+### 2.3  字符串 str
+
+1. 单引号，双引号，三引号
+
+   ```shell
+       type('1')
+       <class 'str'>
+       "let's go" = 'let\'s go'
+   ```
+   
+2. 多行字符串（三引号）
+   
+   python 推荐每行宽度最大 79，超出换行,使用```包围字符串，字符串可以任意换行
+   ```shell
+      """hello
+      """
+      'hello\n'
+       print("""hello
+             """)
+       'hello'
+   ```
+   使用 print 可以去除 `\n`
+
+3. 转义字符
+    
+    * 无法看见的字符
+    * 与语言本身语法有冲突的字符
+
+    
+    
+
+
+### 
