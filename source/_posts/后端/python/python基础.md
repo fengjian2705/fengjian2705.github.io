@@ -364,6 +364,173 @@ categories:
 
    ```
    
-### 2.6 序列总结
-      
+### 2.6 序列总结 `str list tuple`
+
+1. 序号
+   ```shell
+      'hello world'[0]
+      [1,2,3][0]
+      (1,2,3)[0]
+   ```
    
+2. 切片
+   ```shell
+      'hello world'[0:3]
+      [1,2,3][0:]
+      (1,2,3,4)[-1:]
+   ```
+3. 加法、乘法
+
+4. 判断元素是否存在 `in` `not in`
+   ```shell
+      3 in [1,2,3]
+      
+   ```
+5. 长度
+   ```shell
+      len('hello')
+   ```
+   
+6. 最大值最小值 `max min` 
+   ```shell
+      max((1,2,3))
+      max('hello')
+   ```
+   字母与 `ascll码`
+   ```shell
+      ord('w')
+      119
+   ```
+   
+### 2.7 集合set
+
+1. 特点：`无序` `不重复`
+2. 定义：形如 {1,2,3,4,5,6} 使用 `{}`包裹元素
+3. 长度：len({1,2,3})
+4. 是否存在：`in` `not in`
+5. 差集
+   ```shell
+      {1,2,3,4}-{1,3}
+      {2,4}
+   ```
+   交集
+   ```shell
+      {1,2,3}&{2,3}
+      {2, 3}
+   ```
+   合集
+   ```shell
+      {1,2,3,4}|{3,4,9}
+      {1, 2, 3, 4, 9}
+   ```
+6. 空集合
+   
+   ```shell
+      // 字典
+      type({})
+      <class 'dict'>
+      // 空集合
+      type(set())
+      <class 'set'>
+   ```
+   
+### 2.8 字典dict
+
+1. 定义：key value 构成
+   ```shell
+      type({'name':'jack','age':18})
+      <class 'dict'>
+   ```
+   其他语言：map
+
+2. 特点：
+
+   * key 不重复
+   * key 类型可以为 str number
+   * 字典中元素还可以是字典
+   * key 必须是不可变的类型 int str tuple
+
+3. 操作
+   
+   * 根据 key 获取 value
+     ```shell
+        {'name':'jack','age':18}['name']
+        'jack'
+     ```
+     
+4. 空字典： {}
+
+### 2.9 基本数据类型总结
+
+![python基本数据类型](https://s3.bmp.ovh/imgs/2023/01/14/11ca061bfad3d87c.png)
+
+## 3. 变量与运算符
+
+### 3.1 变量
+
+1. 什么是变量？
+
+   变量就是一个名字，代表定义的数据： A = [1,2,4]， B = 'hello world'，C = {'name':'jack'}
+
+2. 变量命名规则
+
+   * 首字符不能数字
+   * 只可以使用字母、数字、下划线
+   * 系统关键字（保留关键字）不能用于变量名：and if import ...
+   * 区分大小写
+
+3. 值类型与引用类型
+   
+   值类型：int str tuple（不可改变）
+   引用类型：list set dict（可变）
+
+   ```shell
+      a=1
+      b=a
+      a=3
+      print(b)
+      1
+   
+      a = [1,2,3]
+      b = a
+      a[0] = '1'
+      print(b)
+      ['1', 2, 3]
+
+    ```
+   
+    问题：字符串不可变，那下面 a 为何可以进行计算？
+    a = 'hello'
+    a = a + 'python'
+    print(a)
+    hellopython
+
+    计算后的a已经不是原来的字符串了！通过 id 函数查看！
+    b = 'hello'
+    id(b)
+    2330237640816
+    b = b + 'python'
+    id(b)
+    2330237667696
+     
+4. 列表的可变与元组的不可变
+
+   a = [1,2,3]
+   id(a)
+   2330237710656
+   a[0] = '1'
+   id(a)
+   2330237710656
+
+   a = (1,2,3)
+   id(a)
+   2330237466624
+   a[0] = '1'
+   Traceback (most recent call last):
+   File "<pyshell#25>", line 1, in <module>
+   a[0] = '1'
+   TypeError: 'tuple' object does not support item assignment
+
+### 3.2 运算符号
+
+
