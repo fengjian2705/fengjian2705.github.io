@@ -592,3 +592,60 @@ categories:
      False
      a is b
      False
+
+   * 类型判断 
+     a = 'k' 
+     isinstance(a,str)
+     True
+     
+     isinstance(a,(int,str,float))
+
+   * 对象的三个特征：id value type
+     比较方式：
+     vlaue : ==
+     id: is
+     type: isinstance
+ 
+   * 位运算符：把一个数字当做二进制数进行运算
+     * `&` 按位与
+     ```shell
+        a = 2
+        b = 3
+        a & b = 2
+     ```
+     * `|` 按位或 
+        ```shell
+        a = 2
+        b = 3
+        a | b = 3
+     ```
+     * `^` 按位异或
+     * `<<` 左移动
+     * `>>`右移动
+
+## 4. 分支、循环、条件与枚举
+
+### 4.1 表达式
+
+1.  概念
+    表达式（Expression）是运算符（operator）和操作数（operand）所构成的序列，形如 1 + 1 、a = [1,2,3] 、a > b
+ 
+2.  表达式的优先级
+    ```shell
+        a = 1
+        b = 2
+        c = 3
+        
+        a + b * c 
+        7
+        
+        a or b and c
+        1
+    ```
+    ![python运算符优先级](https://s3.bmp.ovh/imgs/2023/01/16/5bdb8b465a3aee61.png)
+ 
+    `提示：` 推荐使用括号来表达你期望的优先级！
+
+3.  在文本文件中编写 python：vscode
+    
+    * 
