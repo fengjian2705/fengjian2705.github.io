@@ -533,4 +533,62 @@ categories:
 
 ### 3.2 运算符号
 
+   ![](https://s3.bmp.ovh/imgs/2023/01/15/ae5b4ad3fd992412.png)
 
+   * 成员运算符
+     a = 1
+     a in [1,2,3,4,5]
+     True
+
+     b = 6
+     b in [1,2,3,4,5]
+     False
+
+     b = 'h'
+     b in 'hello'
+     True
+
+     b not in (1,2,3,4,5)
+     True
+
+     b not in {1,2,3,4,5}
+   
+   * 比较运算符
+     1 and 2
+     2
+     2 and 1
+     1
+     1 and 0
+     0
+     1 or 2
+     1
+     1 or 0
+     1
+     0 or 1
+     1
+     b = 'a'
+     b in {'c':1}
+
+   * 身份运算符
+     is 比较的是两个变量身份是否相等，内存地址
+     == 是比较两个变量取值是否相等
+     a = 1.0
+     b = 1
+     a ==b
+     True
+     a is b
+     False
+
+     a = [1,2,3]
+     b = [3,2,1]
+     a == b
+     True
+     a is b
+     False
+
+     a = (1,2,3)
+     b = (2,1,3)
+     a ==b
+     False
+     a is b
+     False
