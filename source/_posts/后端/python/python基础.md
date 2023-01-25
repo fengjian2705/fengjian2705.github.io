@@ -776,6 +776,30 @@ categories:
 
 ### 5.4 `__init__.py` 的用法
 
-1. 
+1. from import 换行
+    * \n
+    ```shell
+        from c7 import a,b,\n
+        c
+    ```
+    * ()
+    ```shell
+        from c7 import (a,b,
+         c)
+    ```
+2. 作用一：当一个包被导入时，`__init__.py`文件被首先执行，可以使用内置变量`__all__`限制哪些模块被导入
+3. 作用二：批量导入
+   * 批量导入内置类库
+   t包下的`__init__.py`文件
+   ```shell
+      import sys
+      import datetime
+      import io
+   ```
+   `c9.py`
+   ```shell
+      import t
+      print(t.sys.path)
+   ```
      
     
