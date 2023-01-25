@@ -1,12 +1,12 @@
 ---
 title: Python 基础语法
-tags: 
-    - python
+tags:
+- python
 index_img: https://cdn.jsdelivr.net/gh/fengjian2705/cdn/img/python/python01.jpg
 # excerpt: 人生苦短，我用 python
 categories:
-    - 后端
-    - python
+- 后端
+- python
 ---
 
 ## 1. Python多版本问题
@@ -36,11 +36,11 @@ categories:
    ![](https://s3.bmp.ovh/imgs/2023/01/13/aceed629d18b1c56.png)
 
 ### 1.3 检验安装是否成功
-    
-   `python -V` 命令行显示：Python 3.11.1
 
-   `pip -V` 命令行显示：pip 22.3.1
-    
+`python -V` 命令行显示：Python 3.11.1
+
+`pip -V` 命令行显示：pip 22.3.1
+
 ### 1.4 使用pipenv安装虚拟环境
 
 1. 切换到桌面
@@ -49,35 +49,35 @@ categories:
         cd Desktop
     ```
 2. 创建文件夹 fisher，并进入文件夹
-    
+
     ```shell
         mkdir fisher
         cd fisher
     ```
-   
+
 3. 全局安装pipenv，任意目录
 
     ```shell
         pip install pipenv
     ```
 4. 和项目绑定，给每一个项目创建pipenv
-    
+
     ```shell
         pipenv install
     ```
 5. 启动pipenv进入虚拟环境
-    
+
     ```shell
         pipenv shell
     ```
 6. 查看虚拟环境安装的包
-    
+
     ```shell
         pip list
     ```
-   
+
 7. pipenv常用命令 [官方文档](https://github.com/pypa/pipenv)
-    
+
     * exit：退出虚拟环境
     * pipenv shell：进入虚拟环境
     * pipenv install flask：安装包
@@ -85,7 +85,7 @@ categories:
     * pipenv graph：项目依赖关系图
 
 ### 1.5 使用pipenv安装flask包
-   
+
 ```shell
     pipenv install flask
 ```
@@ -106,14 +106,14 @@ categories:
 
 ### 2.1 Number 数字
 
-1. 分类 
+1. 分类
 
     * 整数：int
     * 浮点数：float
 
       其它语言：单精度（float），双精度（double）
       其它语言：short，int，long
-   
+
     * bool 布尔类型：表示真假 True False，注意首字母大写
       对于数字非0即为True
       对于字符串非空即为True
@@ -173,27 +173,27 @@ categories:
 ### 2.2 10、2、8、16进制
 
 1. 10在各进中代表的数字
-    
+
     * 2进制：0b10 10进制  2
     * 8进制：0o10 10进制  8
     * 16进制：0x10 10进制 16
     * 10进制：10
-   
+
 2. 进制间数字转换
 
     * 其他进制 -> 2进制：bin
       bin(10)  -> 0b1010
       bin(0o7) -> 0b111
       bin(0xE) -> 0b1110
-    
+
     * 其他进制 -> 10进制：int
       int(0b111) -> 7
       int(0o77)  -> 63
-    
+
     * 其他进制 -> 16进制：hex
       hex(888)     -> 0x378
       hex(0o7777)  -> 0xfff
-   
+
     * 其它进制 -> 8进制:oct
       oct(0b111)  -> 0o7
       oct(0x777)  -> 0o3567
@@ -207,9 +207,9 @@ categories:
        <class 'str'>
        "let's go" = 'let\'s go'
    ```
-   
+
 2. 多行字符串（三引号）
-   
+
    python 推荐每行宽度最大 79，超出换行,使用```包围字符串，字符串可以任意换行
    ```shell
       """hello
@@ -222,20 +222,20 @@ categories:
    使用 print 可以去除 `\n`
 
 3. 转义字符
-    
+
     * 无法看见的字符
       \n换行 \t制表 \r回车
-      
+
     * 与语言本身语法有冲突的字符
       \' 单引号冲突
-   
+
    ```shell
        print('hello \n world')
        hello
        world
    ```
    如何输出`\n`而不换行？将`\n`进行转义
-   
+
    实际意义：
    ```shell
         print('c:\northwind\northwest')
@@ -249,98 +249,98 @@ categories:
    ```
 
 4. 原始字符串
-   
+
    ```shell
        print(r'hello \n world')
        hello \n world
    ```
    字符串前面加子母`r`
-    
+
 5. 字符串运算
-   
-   * 拼接
-      ```shell
-          // 加法
-         'hello'+'world'
-         'helloworld'
-         
-          // 乘法
-          'hello'*3
-          'hellohellohello'
-      ```
-   * 截取 []
-      ```shell
-          // 正数代表序号
-          'hello'[0]
-          'h'
-          // 负数代表从字符串末尾数n次得到的字符
-          'hello'[-1]
-          'o'
-          // 从第一个字符截取到第个五字符
-          'hello world'[0:5]
-          'hello'
-          // 从第一个字符截取到倒数第二个字符
-          'hello world'[0:-1]
-          'hello worl'
-          // 从第六个字符截取到最后一个字符
-          'hello world'[6:]
-          'world'
-          // 从第一个字符截取到倒数第五个字符
-          'hello world'[:-4]
-          'hello world'
-          // 从末尾往前数四个字符截取出来
-          'hello world'[-4:]
-          'orld'
-      ```
+
+    * 拼接
+       ```shell
+           // 加法
+          'hello'+'world'
+          'helloworld'
+          
+           // 乘法
+           'hello'*3
+           'hellohellohello'
+       ```
+    * 截取 []
+       ```shell
+           // 正数代表序号
+           'hello'[0]
+           'h'
+           // 负数代表从字符串末尾数n次得到的字符
+           'hello'[-1]
+           'o'
+           // 从第一个字符截取到第个五字符
+           'hello world'[0:5]
+           'hello'
+           // 从第一个字符截取到倒数第二个字符
+           'hello world'[0:-1]
+           'hello worl'
+           // 从第六个字符截取到最后一个字符
+           'hello world'[6:]
+           'world'
+           // 从第一个字符截取到倒数第五个字符
+           'hello world'[:-4]
+           'hello world'
+           // 从末尾往前数四个字符截取出来
+           'hello world'[-4:]
+           'orld'
+       ```
 
 
 ### 2.4 列表
 
 1. 定义
-   
+
    ```shell
      type([1,2,3,4,5,6])
      <class 'list'>
    ```
-   
+
 2. 特性
 
-   * 内部元素类型不固定，字符串、数字、bool、列表...
-     [1,'hello',True,[1,2]]
+    * 内部元素类型不固定，字符串、数字、bool、列表...
+      [1,'hello',True,[1,2]]
 
 3. 基本操作
-   
-   * 截取（参考字符串截取）
+
+    * 截取（参考字符串截取）
    ```shell
       ['新月打击','苍白之瀑','月之降临','月神冲刺'][0]
       '新月打击'
    ```
-   
-   * 列表相加
+
+    * 列表相加
    ```shell
       ['新月打击','苍白之瀑','月之降临','月神冲刺']+['月神冲刺']
       ['新月打击', '苍白之瀑', '月之降临', '月神冲刺', '月神冲刺']
    ```
-   
-   * 列表乘法
+
+    * 列表乘法
    ```shell
       ['新月打击', '苍白之瀑', '月之降临', '月神冲刺', '月神冲刺']*2
       ['新月打击', '苍白之瀑', '月之降临', '月神冲刺', '月神冲刺', '新月打击', '苍白之瀑', '月之降临', '月神冲刺', '月神冲刺']
    ```
-   
+
    列表减不支持法！
 
 ### 2.5 元组
 
 1. 引子（以世界杯分组为例，8个组 每组4个队）
-   
+
    使用嵌套列表
    ```shell
       [['巴西','克罗地亚','墨西哥','喀麦隆'],[],[],[],[],[],[],[],[]]
    ```
 
 2. 元组定义
-   
+
    形如`(1,2,3)`、`(1,2,True)`
    ```shell
       type((1,2,3))
@@ -348,9 +348,9 @@ categories:
    ```
 
 3. 元组操作
-   
-   * 截取（参考字符串截取）
-   
+
+    * 截取（参考字符串截取）
+
    特殊情况，一个元素的元组：原因是括号被当做了运算符，后面再加一个,即可
    ```shell
       type((1))
@@ -363,7 +363,7 @@ categories:
       <class 'tuple'>
 
    ```
-   
+
 ### 2.6 序列总结 `str list tuple`
 
 1. 序号
@@ -372,7 +372,7 @@ categories:
       [1,2,3][0]
       (1,2,3)[0]
    ```
-   
+
 2. 切片
    ```shell
       'hello world'[0:3]
@@ -390,8 +390,8 @@ categories:
    ```shell
       len('hello')
    ```
-   
-6. 最大值最小值 `max min` 
+
+6. 最大值最小值 `max min`
    ```shell
       max((1,2,3))
       max('hello')
@@ -401,7 +401,7 @@ categories:
       ord('w')
       119
    ```
-   
+
 ### 2.7 集合set
 
 1. 特点：`无序` `不重复`
@@ -424,7 +424,7 @@ categories:
       {1, 2, 3, 4, 9}
    ```
 6. 空集合
-   
+
    ```shell
       // 字典
       type({})
@@ -433,7 +433,7 @@ categories:
       type(set())
       <class 'set'>
    ```
-   
+
 ### 2.8 字典dict
 
 1. 定义：key value 构成
@@ -445,19 +445,19 @@ categories:
 
 2. 特点：
 
-   * key 不重复
-   * key 类型可以为 str number
-   * 字典中元素还可以是字典
-   * key 必须是不可变的类型 int str tuple
+    * key 不重复
+    * key 类型可以为 str number
+    * 字典中元素还可以是字典
+    * key 必须是不可变的类型 int str tuple
 
 3. 操作
-   
-   * 根据 key 获取 value
-     ```shell
-        {'name':'jack','age':18}['name']
-        'jack'
-     ```
-     
+
+    * 根据 key 获取 value
+      ```shell
+         {'name':'jack','age':18}['name']
+         'jack'
+      ```
+
 4. 空字典： {}
 
 ### 2.9 基本数据类型总结
@@ -474,13 +474,13 @@ categories:
 
 2. 变量命名规则
 
-   * 首字符不能数字
-   * 只可以使用字母、数字、下划线
-   * 系统关键字（保留关键字）不能用于变量名：and if import ...
-   * 区分大小写
+    * 首字符不能数字
+    * 只可以使用字母、数字、下划线
+    * 系统关键字（保留关键字）不能用于变量名：and if import ...
+    * 区分大小写
 
 3. 值类型与引用类型
-   
+
    值类型：int str tuple（不可改变）
    引用类型：list set dict（可变）
 
@@ -498,21 +498,21 @@ categories:
       ['1', 2, 3]
 
     ```
-   
-    问题：字符串不可变，那下面 a 为何可以进行计算？
-    a = 'hello'
-    a = a + 'python'
-    print(a)
-    hellopython
 
-    计算后的a已经不是原来的字符串了！通过 id 函数查看！
-    b = 'hello'
-    id(b)
-    2330237640816
-    b = b + 'python'
-    id(b)
-    2330237667696
-     
+   问题：字符串不可变，那下面 a 为何可以进行计算？
+   a = 'hello'
+   a = a + 'python'
+   print(a)
+   hellopython
+
+   计算后的a已经不是原来的字符串了！通过 id 函数查看！
+   b = 'hello'
+   id(b)
+   2330237640816
+   b = b + 'python'
+   id(b)
+   2330237667696
+
 4. 列表的可变与元组的不可变
 
    a = [1,2,3]
@@ -533,95 +533,95 @@ categories:
 
 ### 3.2 运算符号
 
-   ![](https://s3.bmp.ovh/imgs/2023/01/15/ae5b4ad3fd992412.png)
+![](https://s3.bmp.ovh/imgs/2023/01/15/ae5b4ad3fd992412.png)
 
-   * 成员运算符
-     a = 1
-     a in [1,2,3,4,5]
-     True
+* 成员运算符
+  a = 1
+  a in [1,2,3,4,5]
+  True
 
-     b = 6
-     b in [1,2,3,4,5]
-     False
+  b = 6
+  b in [1,2,3,4,5]
+  False
 
-     b = 'h'
-     b in 'hello'
-     True
+  b = 'h'
+  b in 'hello'
+  True
 
-     b not in (1,2,3,4,5)
-     True
+  b not in (1,2,3,4,5)
+  True
 
-     b not in {1,2,3,4,5}
-   
-   * 比较运算符
-     1 and 2
-     2
-     2 and 1
-     1
-     1 and 0
-     0
-     1 or 2
-     1
-     1 or 0
-     1
-     0 or 1
-     1
-     b = 'a'
-     b in {'c':1}
+  b not in {1,2,3,4,5}
 
-   * 身份运算符
-     is 比较的是两个变量身份是否相等，内存地址
-     == 是比较两个变量取值是否相等
-     a = 1.0
-     b = 1
-     a ==b
-     True
-     a is b
-     False
+* 比较运算符
+  1 and 2
+  2
+  2 and 1
+  1
+  1 and 0
+  0
+  1 or 2
+  1
+  1 or 0
+  1
+  0 or 1
+  1
+  b = 'a'
+  b in {'c':1}
 
-     a = [1,2,3]
-     b = [3,2,1]
-     a == b
-     True
-     a is b
-     False
+* 身份运算符
+  is 比较的是两个变量身份是否相等，内存地址
+  == 是比较两个变量取值是否相等
+  a = 1.0
+  b = 1
+  a ==b
+  True
+  a is b
+  False
 
-     a = (1,2,3)
-     b = (2,1,3)
-     a ==b
-     False
-     a is b
-     False
+  a = [1,2,3]
+  b = [3,2,1]
+  a == b
+  True
+  a is b
+  False
 
-   * 类型判断 
-     a = 'k' 
-     isinstance(a,str)
-     True
-     
-     isinstance(a,(int,str,float))
+  a = (1,2,3)
+  b = (2,1,3)
+  a ==b
+  False
+  a is b
+  False
 
-   * 对象的三个特征：id value type
-     比较方式：
-     vlaue : ==
-     id: is
-     type: isinstance
- 
-   * 位运算符：把一个数字当做二进制数进行运算
-     * `&` 按位与
-     ```shell
-        a = 2
-        b = 3
-        a & b = 2
-     ```
-     * `|` 按位或 
-        ```shell
-        a = 2
-        b = 3
-        a | b = 3
-     ```
-     * `^` 按位异或
-     * `<<` 左移动
-     * `>>`右移动
+* 类型判断
+  a = 'k'
+  isinstance(a,str)
+  True
+
+  isinstance(a,(int,str,float))
+
+* 对象的三个特征：id value type
+  比较方式：
+  vlaue : ==
+  id: is
+  type: isinstance
+
+* 位运算符：把一个数字当做二进制数进行运算
+    * `&` 按位与
+  ```shell
+     a = 2
+     b = 3
+     a & b = 2
+  ```
+    * `|` 按位或
+       ```shell
+       a = 2
+       b = 3
+       a | b = 3
+  ```
+  * `^` 按位异或
+  * `<<` 左移动
+  * `>>`右移动
 
 ## 4. 分支、循环、条件与枚举
 
@@ -629,7 +629,7 @@ categories:
 
 1.  概念
     表达式（Expression）是运算符（operator）和操作数（operand）所构成的序列，形如 1 + 1 、a = [1,2,3] 、a > b
- 
+
 2.  表达式的优先级
     ```shell
         a = 1
@@ -643,9 +643,139 @@ categories:
         1
     ```
     ![python运算符优先级](https://s3.bmp.ovh/imgs/2023/01/16/5bdb8b465a3aee61.png)
- 
+
     `提示：` 推荐使用括号来表达你期望的优先级！
 
 3.  在文本文件中编写 python：vscode
+
+### 4.2 条件控制 if elif else
+
+* snippet 片段,tab 自动切换
+  ```shell
+      if condition:
+          pass
+      elif condition:
+          pass
+      else:
+          pass
+  ```
+
+### 4.3 循环 while
+
+* while
+  ```shell
+     while condition:
+         pass
+  ```
+
+* while + else
+  ```shell
+     while condition:
+       pass
+     else:
+       pass
+  ```
+
+### 4.4 循环 for
+
+* for
+  ```shell
+     for target_list in expression_list:
+       pass
+  ```
+* for + else
+  ```shell
+     for target_list in expression_list:
+       pass
+     else:
+       pass
+  ```
+  `提示：` else 表示 for 循环执行完毕后执行的语句，使用 break 终止则 else 后的语句不执行，continue 则会执行！
+* for 与 range
+  for 类似于其它语言的 for-each
+  range 则类似于 fori，range(start,end,step)
+  ```shell
+     a = [1,2,3,4,5,6,7,8]
+     for i in range(1,len(a),2):
+     print(a[i],end=' | ')
+  ```
+
+## 5. 包、模块、函数与变量作用域
+
+### 5.1 python 工程的组织结构
+
+1. 包：顶级结构，简单理解为一个文件夹（物理表现）
+
+    * 包在表现形式上是文件夹，文件夹 + `__init__.py` = 包
+    * `__init__.py`也是一个模块，它的名字就是这个模块所在的包的包名
+
+2. 模块：第二层，可以理解为文件夹下的文件（物理表现）
+
+3. 类：第三层
+
+4. 函数、变量：并不归属于组织结构，属于类的特性
+
+### 5.2 import 导入模块
+
+1. c7.py
+    ```shell
+       a = 2
+       
+    ```
+
+2. c8.py
+   ```shell
+      import c7
+   
+      print(c7.a)
+   ```
+
+3. import 只能导入模块
+   解决引用路径过长问题：import t.c7 as m
+
+### 5.3 from import 导入变量
+
+1. 语法
+    ```shell
+        from t.c7 import a
+        print(a)
+    ```
+2. 导入模块，等价于 import 导入模式
+    ```shell
+        from t import c7
+        print(c7.a)
+    ```
+3. 导入多个变量
+    ```shell
+        from t.c7 import *
+        print(a)
+        print(b)
+        print(c)
+
+    ```
+    `提示：`不推荐使用 * 导入，导入变量不明确直观
     
-    * 
+    利用模块内置变量 `__all__` 进行 * 导入控制，定义 * 可以导入的全部变量
+    
+    c7.py    
+    ```shell
+        __all__ = ['a','c']
+   
+        a = 2
+        c = 3
+        d = 4
+    ```
+    c8.py
+    ```shell
+        from t.c7 import *
+        
+        print(a)
+        print(c)
+        print(d)
+    ```
+
+### 5.4 `__init__.py` 的用法
+
+1. 
+     
+    
