@@ -801,5 +801,131 @@ categories:
       import t
       print(t.sys.path)
    ```
-     
+   `提示：`从当前包导入变量，form . import xx
+   
+### 5.5 包与模块的几个常见错误
+
+1. 包和模块是不会被重复导入的
+2. 避免循环导入 t1 -> t2 -> t3 -> t1
+
+### 5.6 模块内置变量
+
+1. 查看内置变量(当前模块所有变量)
+    ```shell
+       a = 1
+       b = 2
+       infos = dir()
+       print(infos)
+    ```
+   输出：['__annotations__', '__builtins__', '__cached__', '__doc__', '__file__', '__loader__', '__name__', '__package__', '__spec__', 'a', 'b']
+
+   常用内置变量：
+   * name：模块全路径
+   * package：包全路径
+   * doc：模块文档注释
+   * file：当前模块完整物理路径
+   ```shell
+       print('__name__:'+__name__)
+       print('__package__:'+__package__)
+       # print('__doc__'+__doc__)
+       print('__file__:'+__file__)
+   ```
+
+### 5.7 入口文件和普通模块内置变量的区别
+
+1. 入口文件
+    * 包名：NoneType
+    * 模块名：`__main__`
+    * file：当前模块相对路径，与模块所在目录有关
+2. 普通模块
+    * 包名：包全路径
+    * 模块名：模块全路径
+    * file：当前模块物理全路径
+
+### 5.8 `__name__`的经典应用
+
+1. dir 查看模块或类的变量
+   
+    ```shell
+       import sys
+       infos = dir(sys)
+       print(infos)
+    ```
+2. make a script both importable and executable：判断一个 python 脚本是一个可以入口文件还是普通模块
+
+    ```shell
+        # 入口文件
+        if __name__ == '__main__':
+           print(This is app)
+        
+        print(This is a module)
+    ```
+3. 将入口文件当做模块运行,进入上层目录执行（模块所在包）
+
+    ```shell
+       # 无需加.py后缀
+       python -m t.c15
+    ```
+   
+### 5.9 相对导入和绝对导入
+
+1. 顶级包
+
+    入口文件同级的包为顶级宝，入口文件本身不属于任何包
+
+2. 绝对导入：
+
+   从顶级包开始到要导入模块的这个路径，入口文件可以使用绝对导入，无法使用相对导入（入口文件`__name__`为`__main__`），
+   一定要使用相对导入，使用 python -m 进行运行
+
+3. 相对导入：使用 . .. 代表当前目录，上层目录，从当前模块开始数，导入目标模块（本质根据`__name__`进行导）
+
+
+## 6. 函数
+
+### 6.1 认识函数
+
+1. print(12),round(3.1415,2),help(print),help(round)
+
+2. 特点
+
+   * 功能性
+   * 封装性，隐藏细节
+   * 避免编写重复的代码
+
+### 6.2 函数的定义及运行特点
+
+1. 定义函数
     
+   ```shell
+        def funcname(parameter_list):
+            pass
+   ```
+   * 参数列表可以没有
+   * 返回结果使用 return value，没有 return 则返回 None
+   * 函数需要先定义后调用
+   * 定义一个函数：两个数字相加
+   ```shell
+        def add(x,y):
+            result = x+y
+            return result
+   
+        add(1,2)
+   ```
+   
+2. 如何让函数返回多个值
+    
+    元组：
+    ```shell
+        def damage(skill1,skill2):
+            
+            damage1 = skill1 * 3
+            damage2 = skill2 * 2
+            return damage1,damage2
+   
+        # 调用1，返回元组tuple
+        damages = damage(3,6)
+        # 调用2，序列解包
+        skill1_damage,skill2_damage = damage(4,8)
+    ```
+   
