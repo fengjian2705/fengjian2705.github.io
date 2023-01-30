@@ -927,5 +927,8 @@ categories:
         damages = damage(3,6)
         # 调用2，序列解包
         skill1_damage,skill2_damage = damage(4,8)
+
     ```
+   
+3. 序列解包与链式赋值
    
