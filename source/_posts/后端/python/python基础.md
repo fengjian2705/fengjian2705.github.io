@@ -2,7 +2,7 @@
 title: Python 基础语法
 tags:
 - python
-index_img: https://cdn.jsdelivr.net/gh/fengjian2705/cdn/img/python/python01.jpg
+index_img: https://s3.bmp.ovh/imgs/2023/02/01/499c2245fc8100dc.png
 # excerpt: 人生苦短，我用 python
 categories:
 - 后端
