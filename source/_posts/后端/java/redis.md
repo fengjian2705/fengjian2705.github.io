@@ -269,57 +269,60 @@ repl_backlog_histlen:0
 
 > 作用：针对 redis 主从复制机器宕机处理
 
-* 哨兵配置：
-  - 拷贝配置文件
-    ```shell
-       cd /home/install/redis
-       cp sentinel.conf /usr/local/redis/sentinel.conf
-    ```
-  - 进行相关配置
-    ```shell
-        # 关闭保护模式
-          protected-mode no
-        # 后台启动
-          daemonize yes
-        # 日志存放位置
-          logfile /usr/local/redis/sentinel/redis-sentinel.log
-        # 工作目录
-          dir /usr/local/redis/sentinel
-        # 监控的 master
-          sentinel monitor master-135 192.168.88.135 6379 2
-        # master 密码 
-          sentinel auth-pass master-132 123456
-        # 判断 master down 时间， 10 秒，默认 30 秒
-          sentinel down-after-milliseconds master-132 10000
-        # 并发同步数量，默认 1，某一个 slave 被选举为 master后，其他 slave 从新的 master 同步数据
-          sentinel parallel-syncs master-132 1
-        # 故障转移超时时间，默认 3 分钟
-          sentinel failover-timeout master-132 180000
-    ```
-  - 拷贝 sentinel.conf 到其他服务器
-    ```shell
-       scp sentinel.conf root@192.168.88.135:/usr/local/redis/
-    ```
-  - 启动
-    ```shell
-       redis-sentinel sentinel.conf
-    ```
-  - SpringBoot 整合哨兵
-    ```yaml
-       spring:
-          redis:
-            #单机单实例
-            #database: 1
-            #host: 192.168.88.135
-            #password: 123456
-            #port: 6379
-            #哨兵机制
-            database: 1
-            password: 123456
-            sentinel:
-              master: master-132
-              nodes: 192.168.88.135:26379,192.168.88.136:26379,192.168.88.137:26379
-    ```
+* 拷贝配置文件
+  ```shell
+     cd /home/install/redis
+     cp sentinel.conf /usr/local/redis/sentinel.conf
+  ```
+
+* 进行相关配置
+  ```shell
+      # 关闭保护模式
+        protected-mode no
+      # 后台启动
+        daemonize yes
+      # 日志存放位置
+        logfile /usr/local/redis/sentinel/redis-sentinel.log
+      # 工作目录
+        dir /usr/local/redis/sentinel
+      # 监控的 master
+        sentinel monitor master-135 192.168.88.135 6379 2
+      # master 密码 
+        sentinel auth-pass master-132 123456
+      # 判断 master down 时间， 10 秒，默认 30 秒
+        sentinel down-after-milliseconds master-132 10000
+      # 并发同步数量，默认 1，某一个 slave 被选举为 master后，其他 slave 从新的 master 同步数据
+        sentinel parallel-syncs master-132 1
+      # 故障转移超时时间，默认 3 分钟
+        sentinel failover-timeout master-132 180000
+  ```
+
+* 拷贝 sentinel.conf 到其他服务器
+  ```shell
+     scp sentinel.conf root@192.168.88.135:/usr/local/redis/
+  ```
+
+* 启动
+  ```shell
+     redis-sentinel sentinel.conf
+  ```
+
+* SpringBoot 整合哨兵
+  ```yaml
+     spring:
+        redis:
+          #单机单实例
+          #database: 1
+          #host: 192.168.88.135
+          #password: 123456
+          #port: 6379
+          #哨兵机制
+          database: 1
+          password: 123456
+          sentinel:
+            master: master-132
+            nodes: 192.168.88.135:26379,192.168.88.136:26379,192.168.88.137:26379
+  ```
 
 ## 五、redis 缓存过期机制 & 内存淘汰机制
 
