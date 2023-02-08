@@ -265,7 +265,7 @@ repl_backlog_histlen:0
    repl-diskless-sync-delay 5
 ```
 
-### 4. 哨兵机制 sentinel
+## 四、哨兵机制 sentinel
 
 > 作用：针对 redis 主从复制机器宕机处理
 
@@ -321,7 +321,7 @@ repl_backlog_histlen:0
               nodes: 192.168.88.135:26379,192.168.88.136:26379,192.168.88.137:26379
     ```
 
-## 四、redis 缓存过期机制 & 内存淘汰机制
+## 五、redis 缓存过期机制 & 内存淘汰机制
 
 ### 缓存过期机制：设置过 expire 的 key 过期后
 
@@ -353,7 +353,7 @@ repl_backlog_histlen:0
       # noeviction -> Don't evict anything, just return an error on write operations.（不淘汰，返回错误，不推荐）
    ```
    
-## 五、redis 集群
+## 六、redis 集群
 
 ### 1. 背景
 
@@ -416,7 +416,7 @@ repl_backlog_histlen:0
             nodes: ip1:port1 ip2:port2 ip3:port3 ip4:port4 ip5:port5 ip6:port6
     ```
 
-## 六、缓存穿透与雪崩
+## 七、缓存穿透与雪崩
 
 ### 1. 缓存穿透
 
@@ -436,7 +436,7 @@ repl_backlog_histlen:0
   - 多缓存结合：redis + memcache ...
   - 采购第三方 redis：阿里云、腾讯云...
   
-## 七、批量查询优化
+## 八、批量查询优化
 
 常规做法：
 ```java
