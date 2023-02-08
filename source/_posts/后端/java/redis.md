@@ -53,9 +53,9 @@ categories:
         mkdir /usr/local/redis
         
         cp redis.conf /usr/local/redis/
-     
+          
         cd /usr/local/redis
-     
+          
         vim redis.conf
       ```
      
@@ -73,7 +73,7 @@ categories:
        |-----------|-----------------------------------|--------------------|---------------------------|
        |REDISPORT  |6379                               |端口号               |若要修改去 redis.conf中修改即可|
        |CONF       |CONF="/etc/redis/${REDISPORT}.conf"|启动指定的配置文件      |/usr/local/redis/redis.conf|
-      
+     
       - 赋权限
         ```shell
           chmod 777 redis_init_script
@@ -107,10 +107,10 @@ categories:
           # 重启测试
           reboot
         ```
-   
-       
-     
       
+     
+     
+     
       
 
 
@@ -123,10 +123,9 @@ categories:
 
 > Redis DataBase 
 
-1. RDB 概念：每隔一段时间，把内存中的数据写入磁盘的临时文件，作为快照，恢复的时候把快照文件读进内存。如果宕机重启，那么内存里的数据肯定会没有的，那
-dis后，则会恢复。
+1. RDB 概念：每隔一段时间，把内存中的数据写入磁盘的临时文件，作为快照，恢复的时候把快照文件读进内存。如果宕机重启，那么内存里的数据肯定会没有的。
 
-2. 备份与恢复： 内存备份 --> 磁盘临时文件 临时文件 --> 恢复到内存
+2. 备份与恢复： 内存备份 --> 磁盘临时文件 --> 恢复到内存
 
 3. RDB优劣势
     * 优势
@@ -138,7 +137,7 @@ dis后，则会恢复。
       1. 发生故障时，有可能会丢失最后一次的备份数据
       2. 子进程所占用的内存比会和父进程一模一样，如会造成 CPU 负担
       3. 由于定时全量备份是重量级操作，所以对于实时备份，就无法处理了。
-      
+    
 4. RDB的配置
    * 保存位置，可以在redis.conf自定义： 
      dbfilename dump.rdb
@@ -151,11 +150,11 @@ dis后，则会恢复。
     save 10 3
    ```
    ```shell
-    * 如果1个缓存更新，则15分钟后备份
-    * 如果10个缓存更新，则5分钟后备份
-    * 如果10000个缓存更新，则1分钟后备份
-    * 演示：更新3个缓存，10秒后备份
-    * 演示：备份dump.rdb，删除重启
+    * 如果 1 个缓存更新，则 15 分钟后备份
+    * 如果 10 个缓存更新，则 5 分钟后备份
+    * 如果 10000 个缓存更新，则 1 分钟后备份
+    * 演示：更新 3 个缓存，10 秒后备份
+    * 演示：备份 dump.rdb，删除重启
    ```
    * stop-writes-on-bgsave-error
       yes：如果 save 过程出错，则停止写操作
@@ -416,7 +415,7 @@ repl_backlog_histlen:0
           cluster: 
             nodes: ip1:port1 ip2:port2 ip3:port3 ip4:port4 ip5:port5 ip6:port6
     ```
-  
+
 ## 六、缓存穿透与雪崩
 
 ### 1. 缓存穿透
@@ -490,7 +489,6 @@ repl_backlog_histlen:0
 
 	}
 ```
-
 
 
 
