@@ -285,15 +285,15 @@ repl_backlog_histlen:0
         logfile /usr/local/redis/sentinel/redis-sentinel.log
       # 工作目录
         dir /usr/local/redis/sentinel
-      # 监控的 master
+      # 监控的 master, 2 为 quorum：至少多少台哨兵发现 master 宕机
         sentinel monitor master-135 192.168.88.135 6379 2
       # master 密码 
         sentinel auth-pass master-132 123456
-      # 判断 master down 时间， 10 秒，默认 30 秒
+      # 判断 master down 时间（毫秒）， 10 秒，默认 30 秒
         sentinel down-after-milliseconds master-132 10000
       # 并发同步数量，默认 1，某一个 slave 被选举为 master后，其他 slave 从新的 master 同步数据
         sentinel parallel-syncs master-132 1
-      # 故障转移超时时间，默认 3 分钟
+      # 故障转移超时时间（毫秒），默认 3 分钟
         sentinel failover-timeout master-132 180000
   ```
 
@@ -393,7 +393,7 @@ repl_backlog_histlen:0
   
   * 启动 6 个 redis 实例
     - 启动 6 台 
-    - 如果启动过程出错，把 rdb 等文件删除清空
+    - 如果启动过程出错，把 rdb、aof 等文件删除清空
 
   * 创建集群
     ```shell
@@ -443,29 +443,29 @@ repl_backlog_histlen:0
 
 常规做法：
 ```java
-    @GetMapping("/getALot")
-    public JSONResult getALot(String... keys) {
+@GetMapping("/getALot")
+public JSONResult getALot(String... keys) {
 
-        List<String> list = new ArrayList<>();
+	List<String> list = new ArrayList<>();
 
-        for (String key : keys) {
-            String value = this.get(key);
-            list.add(value);
-        }
-        return JSONResult.ok(list);
+    for (String key : keys) {
+        String value = this.get(key);
+        list.add(value);
     }
+    return JSONResult.ok(list);
+}
     
-    @Autowired
-	private StringRedisTemplate redisTemplate;
-	
-    public String get(String key) {
-		return (String)redisTemplate.opsForValue().get(key);
-	}
+@Autowired
+private StringRedisTemplate redisTemplate;
+
+public String get(String key) {
+    return (String)redisTemplate.opsForValue().get(key);
+}
 ```
 ### 1. multiGet
 
 ```java
-    public List<String> mget(List<String> keys) {
+public List<String> mget(List<String> keys) {
 		return redisTemplate.opsForValue().multiGet(keys);
 	}
 ```
@@ -473,24 +473,24 @@ repl_backlog_histlen:0
 ### 2. pipeline
 
 ```java
-    public List<Object> batchGet(List<String> keys) {
+public List<Object> batchGet(List<String> keys) {
 
-		List<Object> result = redisTemplate.executePipelined(new RedisCallback<String>() {
+    List<Object> result = redisTemplate.executePipelined(new RedisCallback<String>() {
 
-			@Override
-			public String doInRedis(RedisConnection redisConnection) throws DataAccessException {
+        @Override
+        public String doInRedis(RedisConnection redisConnection) throws DataAccessException {
 
-				StringRedisConnection stringRedisConnection = (StringRedisConnection) redisConnection;
-				for (String key : keys) {
-					stringRedisConnection.get(key);
-				}
-				return null;
-			}
-		});
+            StringRedisConnection stringRedisConnection = (StringRedisConnection) redisConnection;
+            for (String key : keys) {
+                stringRedisConnection.get(key);
+            }
+            return null;
+        }
+    });
 
-		return result;
+    return result;
 
-	}
+}
 ```
 
 
