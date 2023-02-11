@@ -12,21 +12,21 @@ categories:
 
 ## 1. 如果不用会怎么样
 
-目前搜索的弊端（直接查库）：
+目前搜索的弊端（直接查数据库）：
 
-* 空格支持 ×
-* 拆词查询 ×
-* 搜索内容高亮 × 
-* 海量数据查询 ×
+* 空格支持 <font color="red">x</font>
+* 拆词查询 <font color="red">×</font>
+* 搜索内容高亮 <font color="red">× </font>
+* 海量数据查询 <font color="red">×</font>
 
 ## 2. 什么是分布式搜索引擎
 
 ### 2.1 概念
 
-1. 搜索引擎
-2. 分布式存储与搜索
+1. 首先是搜索引擎
+2. 其次支持分布式存储与搜索
 
-### 2.1 Lucene vs Solr  vs ElasticSearch
+### 2.2 Lucene vs Solr  vs ElasticSearch
 
 1. Lucene 是类库：
 
@@ -56,11 +56,21 @@ categories:
 ## 3. ES 核心术语
 
 1. 索引 index：		表
-2. <del>类型 type：         表逻辑类型</del>
-3. 文档 document：  行
+2. <del>类型 type：         表逻辑类型</del>
+3. 文档 document：行
 4. 字段 fields：        列
+4. 映射 mapping      表结构定义
+4. 近实时 NRT         Near real time
+4. 节点 node           每一台服务器都是一个节点
+4. shard replica       数据分片与备份
 
 `提示：` type 已在 ES 7.x 后废弃！
+
+
+
+
+
+
 
 
 
