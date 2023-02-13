@@ -202,11 +202,21 @@ categories:
 
 1. chrome 中谷歌市场中搜索 elasticsearch 进行安装即可
 
+   ![](https://s3.bmp.ovh/imgs/2023/02/13/55aface0b2e180da.png)
 
+2.  基本操作
 
+   * 新建索引：5 个分片，0 个副本
 
+     ![image-20230213220330884](https://s3.bmp.ovh/imgs/2023/02/13/eb62784a1325edd7.png)
 
+   * 新建索引：5 个分片，1 个副本
 
+     ![image-20230213220842070](https://s3.bmp.ovh/imgs/2023/02/13/87b4fb190d3dd239.png)
+
+   * 观察副本数与分片数，图中灰色框代表未分配副本分片
+
+     ![](https://s3.bmp.ovh/imgs/2023/02/13/7e1fa1d9c6794e98.png)
 
 
 
