@@ -187,7 +187,7 @@ categories:
    * 启动成功，浏览器中访问 192.168.12.23:9200 查看信息
    * 关闭的话，jps elasticsearch 查看进程 id 后 kill id
 
-   **提示**：如果在网页上显示localhost未发送任何数据
+   **提示**：如果在网页上显示localhost未发送任何数据，修改配置文件如下：
 
    ```yam
    xpack.security.enable: false
@@ -200,23 +200,430 @@ categories:
 
 ## 6. 安装 elasticsearch-head 插件
 
-1. chrome 中谷歌市场中搜索 elasticsearch 进行安装即可
+### 6.1 chrome 中谷歌市场中搜索 elasticsearch 进行安装即可
 
    ![](https://s3.bmp.ovh/imgs/2023/02/13/55aface0b2e180da.png)
 
-2.  基本操作
+### 6.2  head 与 postman 基本操作
 
-   * 新建索引：5 个分片，0 个副本
+   1. 版本信息查询
 
-     ![image-20230213220330884](https://s3.bmp.ovh/imgs/2023/02/13/eb62784a1325edd7.png)
+      ![image-20230215103432717](https://s3.bmp.ovh/imgs/2023/02/15/aeaf0be9dec3cb47.png)
 
-   * 新建索引：5 个分片，1 个副本
+      ```json
+      GET http://192.168.X.X:9200/
 
-     ![image-20230213220842070](https://s3.bmp.ovh/imgs/2023/02/13/87b4fb190d3dd239.png)
+   2. 集群健康查询
 
-   * 观察副本数与分片数，图中灰色框代表未分配副本分片
+      ![image-20230215101655801](https://s3.bmp.ovh/imgs/2023/02/15/d0972558c7fcc4b8.png)
 
-     ![](https://s3.bmp.ovh/imgs/2023/02/13/7e1fa1d9c6794e98.png)
+      ```json
+      GET http://192.168.X.X:9200/_cluster/health
+      ```
+
+   3. 新建索引：5 个分片，0 个副本
+
+      ![image-20230215131749500](https://s3.bmp.ovh/imgs/2023/02/15/8d31a4573d3d9e8b.png)
+
+      ![](https://s3.bmp.ovh/imgs/2023/02/15/d611cd6d6a89bd5f.png)
+
+      ```json
+      PUT http://192.168.x.x:9200/index_demo
+      
+      {
+          "settings":{
+              "number_of_shards":5,
+              "number_of_replicas":0
+          }
+      }
+      ```
+
+      
+
+4. 新建索引：5 个分片，1 个副本，未分配分片有 5 个
+
+   ![image-20230215135509191](https://s3.bmp.ovh/imgs/2023/02/15/d22f2d842d3e9f41.png)
+
+   ```json
+   PUT http://192.168.x.x:9200/index_123
+   
+   {
+       "settings":{
+           "number_of_shards":5,
+           "number_of_replicas":1
+       }
+   }
+   ```
+
+   
+
+5. 删除索引：
+
+   ![image-20230215141019148](https://s3.bmp.ovh/imgs/2023/02/15/3fe5fe90dce805d4.png)
+
+   ```json
+   DELETE http://192.168.x.x:9200/index_123
+   ```
+
+6. 查询索引
+
+   ```json
+   GET http://192.168.x.x:9200/index_temp
+   
+   {
+       "index_temp": {
+           "aliases": {},
+           "mappings": {},
+           "settings": {
+               "index": {
+                   "routing": {
+                       "allocation": {
+                           "include": {
+                               "_tier_preference": "data_content"
+                           }
+                       }
+                   },
+                   "number_of_shards": "3",
+                   "provided_name": "index_temp",
+                   "creation_date": "1676441762678",
+                   "number_of_replicas": "0",
+                   "uuid": "ryzEGgNIS3ycfWfV-lhaOQ",
+                   "version": {
+                       "created": "7160099"
+                   }
+               }
+           }
+       }
+   }
+   ```
+
+7. 查询全部索引概览
+
+   ```json
+   GET http://192.168.147.132:9200/_cat/indices?v
+   
+   health status index            uuid                   pri rep docs.count docs.deleted store.size pri.store.size
+   green  open   .geoip_databases aqUccqm1RzCvrVBSqK6xfg   1   0         41           36     42.3mb         42.3mb
+   green  open   index_demo       h7rxnFLDTkOcGreaIBIiEw   5   0          0            0      1.1kb          1.1kb
+   green  open   index_temp       ryzEGgNIS3ycfWfV-lhaOQ   3   0          0            0       678b           678b
+   
+   ```
+
+## 7. mappings 索引数据结构定义
+
+### 7.1 新建索引并设置 mapping 
+
+```json
+PUT http://192.168.147.132:9200/index_mapping
+
+{
+    "mappings": {
+        "properties": {
+            "realname": {
+                "type": "text",
+                "index": true
+            },
+            "username": {
+                "type": "keyword",
+                "index": false
+            }
+        }
+    }
+}
+```
+
+realname：字段名	type：类型	index：是否被索引
+
+|  type   |        描述        |
+| :-----: | :----------------: |
+|  text   |  字符串，可被分词  |
+| keyword | 字符串，不可被分词 |
+|  long   |       长整型       |
+| integer |        整型        |
+|  float  |       浮点型       |
+|  true   |       布尔型       |
+|  byte   |        字节        |
+| boolean |       短整型       |
+|  date   |      日期类型      |
+| object  |      对象类型      |
+| double  |       浮点数       |
+| [1,2,3] |      数组类型      |
+
+
+
+index：是否被索引（查询）
+
+keyword：无法被分词
+
+### 7.2 索引分词
+
+```json
+GET http://192.168.147.132:9200/index_mapping/_analyze
+
+{
+    "field": "username",
+    "text": "good good study,day day up!"
+}
+
+{
+    "tokens": [
+        {
+            "token": "good good study,day day up!",
+            "start_offset": 0,
+            "end_offset": 27,
+            "type": "word",
+            "position": 0
+        }
+    ]
+}
+```
+
+### 7.3 新增 mapping 中 properties
+
+```json
+POST http://192.168.147.132:9200/index_mapping/_mapping
+{
+    "properties": {
+        "id": {
+            "type": "long",
+            "index": true
+        },
+        "age": {
+            "type": "integer",
+            "index": false
+        }
+    }
+}
+```
+
+## 8. 文档的基本操作
+
+### 8.1 新建索引 my_doc，分片 1，副本 0
+
+```sql
+PUT http://192.168.x.x:9200/my_doc
+
+{
+    "settings":{
+        "number_of_shards":1,
+        "number_of_replicas":0
+    }
+}
+```
+
+### 8.2 新增文档信息
+
+```sql
+POST http://192.168.147.132:9200/my_doc/_doc/1
+
+{
+    "id":1001,
+    "name":"jack",
+    "age":18
+}
+
+// 新增成功
+{
+    "_index": "my_doc",
+    "_type": "_doc",
+    "_id": "FCRSVYYB_DJayXIYu1rV",
+    "_version": 1,
+    "result": "created",
+    "_shards": {
+        "total": 1,
+        "successful": 1,
+        "failed": 0
+    },
+    "_seq_no": 6,
+    "_primary_term": 1
+}
+
+// 1 是文档 id，可自定义，可系统生成，通过 es-head 查看文档
+
+"mappings": {
+    "_doc": {
+        "properties": {
+            "name": {
+                "type": "text",
+                "fields": {
+                    "keyword": {
+                        "ignore_above": 256,
+                        "type": "keyword"
+                    }
+                }
+            },
+            "id": {
+                "type": "long"
+            },
+            "age": {
+                "type": "long"
+            }
+        }
+    }
+}
+```
+
+### 8.3 删除文档
+
+```sql
+DELETE http://192.168.X.X:9200/my_doc/_doc/2
+```
+
+### 8.4 修改文档-局部修改
+
+```sql
+UPDATE http://192.168.X.X:9200/my_doc/_doc/1/_update
+
+{
+    "doc":{
+        "name":"春风得意马蹄疾啊" // 指定修改内容
+    }
+}
+```
+
+### 8.5 修改文档-全量修改
+
+```sql
+PUT http://192.168.X.X:9200/my_doc/_doc/1
+
+{
+    "id": 1005,
+    "name": "春风得意马蹄疾",
+    "age": 20
+}
+```
+
+### 8.6 查询文档根据文档 id
+
+```sql
+GET http://192.168.x.x:9200/my_doc/_doc/1
+
+{
+    "_index": "my_doc",
+    "_type": "_doc",
+    "_id": "1",
+    "_version": 5,
+    "_seq_no": 11,
+    "_primary_term": 1,
+    "found": true,
+    "_source": {
+        "id": 1005,
+        "name": "春风得意马蹄疾",
+        "age": 20
+    }
+}
+```
+
+### 8.7 查询全部
+
+```sql
+GET http://192.168.x.x:9200/my_doc/_doc/_search
+
+{
+    "took": 4,
+    "timed_out": false,
+    "_shards": {
+        "total": 1,
+        "successful": 1,
+        "skipped": 0,
+        "failed": 0
+    },
+    "hits": {
+        "total": {
+            "value": 4,
+            "relation": "eq"
+        },
+        "max_score": 1.0,
+        "hits": [
+            {
+                "_index": "my_doc",
+                "_type": "_doc",
+                "_id": "3",
+                "_score": 1.0,
+                "_source": {
+                    "id": 1003,
+                    "name": "风间",
+                    "age": 19
+                }
+            },
+            {
+                "_index": "my_doc",
+                "_type": "_doc",
+                "_id": "FCRSVYYB_DJayXIYu1rV",
+                "_score": 1.0,
+                "_source": {
+                    "id": 1004,
+                    "name": "一日看尽长安花",
+                    "age": 20
+                }
+            },
+            {
+                "_index": "my_doc",
+                "_type": "_doc",
+                "_id": "FSRWVYYB_DJayXIY8Voz",
+                "_score": 1.0,
+                "_source": {
+                    "id": 1005,
+                    "name": "春风得意马蹄疾啊",
+                    "age": 20
+                }
+            },
+            {
+                "_index": "my_doc",
+                "_type": "_doc",
+                "_id": "1",
+                "_score": 1.0,
+                "_source": {
+                    "id": 1005,
+                    "name": "春风得意马蹄疾",
+                    "age": 20
+                }
+            }
+        ]
+    }
+}
+```
+
+### 8.8 根据 id 查询，设置 source 查询字段，多个字段逗号隔开
+
+```sql
+GET http://192.168.x.x:9200/my_doc/_doc/1?_source=name
+
+{
+    "_index": "my_doc",
+    "_type": "_doc",
+    "_id": "1",
+    "_version": 5,
+    "_seq_no": 11,
+    "_primary_term": 1,
+    "found": true,
+    "_source": {
+        "name": "春风得意马蹄疾"
+    }
+}
+```
+
+### 8.9 查询全部，设置 source 查询字段，多个逗号隔开
+
+```sql
+GET http://192.168.x.x:9200/my_doc/_doc/_search?source=name
+```
+
+### 8.10 HEAD 方式查询文档，根据状态码判断数据是否存在（节省传输效率）
+
+``` sql
+HEAD http://192.168.147.132:9200/my_doc/_doc/11
+
+存在：200
+不存在：404
+```
+
+
+
+### 8.11 文档乐观锁控制
+
+
+
 
 
 
