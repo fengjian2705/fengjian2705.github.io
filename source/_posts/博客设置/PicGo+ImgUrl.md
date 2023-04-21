@@ -1,5 +1,5 @@
 ---
-title: PicGo+ImgUrl
+title: PicGo+ImgUrl 图床
 tags:
     - PicGo
     - ImgUrl
