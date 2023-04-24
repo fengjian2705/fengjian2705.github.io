@@ -8,81 +8,91 @@ categories:
     - 后端
     - maven
 ---
-## 背景
+## 1. Maven 私服
 
-> 企业内部为了方便统一管理依赖而搭建的 web 服务器
+### 1.1 什么是私服？
 
-![maven 仓库的架构图](https://cdn.jsdelivr.net/gh/fengjian2705/cdn/img/nexus_002.jpg)
+私服是一种特殊的远程仓库,它是架设在局域网内的仓库服务,私服代理广域网上的远程仓库,供局域网内的Maven用户使用。当Maven需要下载我构件的时候,它从私服请求,如果私服上不存在该构件,则从外部的远程仓库下载,缓提存在私服上之后,再为Maven的下载请求提供服务。此外,一些无法从外部仓库下载到的构件也能从本地上传到私服上供大家使用,如下图所示。
 
 
-常用构建技术：Apache Archiva JFrog Artifactory <font color="red">Sonatype Nexus</font>
 
-## 搭建步骤
+![screenshot-20230424-162050](https://s3.bmp.ovh/imgs/2023/04/24/9a3f21f187ac0a19.png)
 
-### 下载软件包
+### 1.2 常用的构建私服的技术
 
-[官网地址](https://www.sonatype.com/)
+1. Apache Archiva  
+2. JFrog Artifactory
+3. <font color="red">Sonatype Nexus</font>：也就是本文要介绍使用的搭建 maven 私服的软件[官网](https://www.sonatype.com/)
 
-![不同版本的安装包](https://cdn.jsdelivr.net/gh/fengjian2705/cdn/img/nexus_003.jpg)
+## 2. 快速起步
 
-### 解压并运行
+### 2.1 下载安装包
+
+![不同平台的安装包](https://cdn.jsdelivr.net/gh/fengjian2705/cdn/img/nexus_003.jpg)
+
+### 2.2 解压运行
 
 ![解压后的文件夹](https://cdn.jsdelivr.net/gh/fengjian2705/cdn/img/nexus_004.jpg)
 
-切换到 nexus-3.19.1-01 的 bin 目录下：
+1. 切换到 nexus-3.19.1-01 的 bin 目录下
 
-mac/linux:
+* mac/linux平台执行命令:
+
 ```bash
 ./nexus run
 ```
-windows:
+* windows平台执行命令:
+
 ```bash
 nexus /run
 ```
-nexus 默认端口号 `8081`  
-新建仓库需登录后方可操作，默认账号 `admin`，密码存放路径 `/sonatype-work/nexus3/admin.password`  
-登录成功后可以修改密码
+2. nexus 默认端口号 `8081`  
+   新建仓库需登录后方可操作，默认账号 `admin`，密码存放路径 `/sonatype-work/nexus3/admin.password`  
+   登录成功后可以修改密码
 
 ![nexus首页](https://cdn.jsdelivr.net/gh/fengjian2705/cdn/img/nexus_005.jpg)
 
-## Nexus 内置仓库
+## 3. Nexus 内置三种仓库
 
-- proxy: 用来代理远程仓库，是我们远程人仓库和本地仓库中间的私有仓库
-- group: 对我们的仓库进行分组管理
-- hosted：用于发布我们本地开发的项目，将项目发布到 hosted 仓库后再进行相关的部署工作
+- `proxy`: 用来代理远程仓库，是我们远程仓库和本地仓库中间的私有仓库
+- `group`: 对我们的仓库进行分组管理
+- `hosted`：用于发布我们本地开发的项目，将项目发布到 hosted 仓库后再进行相关的部署工作
   - release：用于发布稳定版本软件
   - snapshot: 用于发布快照版本软件  
 
-发布版本的 release 和 snapshot 对应 pom 文件中的 version 信息
+![nexus内置仓库](https://cdn.jsdelivr.net/gh/fengjian2705/cdn/img/nexus_006.jpg)
+
+* pom 文件中发布版本的 release 和 snapshot 对应 pom 文件中的 version 信息
+
 ```xml
-<!-- 快照版本 -->
+<!-- 快照版本 SNAPSHOT 结尾 -->
 <version>1.0-SNAPSHOT</version>
 
-<!-- 稳定版本-->
+<!-- 稳定版本，非 SNAPSHOT 结尾-->
 <version>2.0-RELEASE</version>
 ```
 
-![nexus内置仓库](https://cdn.jsdelivr.net/gh/fengjian2705/cdn/img/nexus_006.jpg)
 
-## 创建仓库
 
-> 我们主要使用 maven2 的三种类型仓库
+## 4. 创建仓库
+
+
 
 ![maven2仓库](https://cdn.jsdelivr.net/gh/fengjian2705/cdn/img/nexus_007.jpg)
 
-1. 创建一个针对中央仓库的私有仓库：my_nexus
+1. 创建一个代理中央仓库的私有仓库(proxy类型)：my_nexus
 
 ![my_nexus代理中央仓库](https://cdn.jsdelivr.net/gh/fengjian2705/cdn/img/nexus_008.jpg)
 
-2. 创建一个发布仓库：release 版本
+2. 创建一个发布版本仓库：release  版本(hosted类型)：release 版本
 
 ![release版本](https://cdn.jsdelivr.net/gh/fengjian2705/cdn/img/nexus_012.jpg)
 
-3. 创建一个快照版本仓库：snapshot 版本
+3. 创建一个快照版本仓库：snapshot 版本(hosted类型)
 
 ![snapshot版本](https://cdn.jsdelivr.net/gh/fengjian2705/cdn/img/nexus_010.jpg)
 
-## 仓库的使用
+## 5. 在项目中的使用私有仓库
 
 > maven 项目中依赖的查找顺序 本地仓库 -> 私有仓库 -> 中央仓库
 
@@ -124,7 +134,7 @@ pom.xml 文件：
   </snapshotRepository>
 </distributionManagement>
 ```
-项目发布不同版本，查看依赖上传的仓库
+项目发布不同版本到私有仓库，查看依赖上传的仓库
 
 ![发布项目](https://cdn.jsdelivr.net/gh/fengjian2705/cdn/img/nexus_013.jpg)
 

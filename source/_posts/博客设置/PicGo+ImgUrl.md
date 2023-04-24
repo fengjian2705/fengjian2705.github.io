@@ -1,5 +1,5 @@
 ---
-title: PicGo+ImgUrl 图床
+title: PicGo + ImgUrl 图床
 tags:
     - PicGo
     - ImgUrl
@@ -21,8 +21,11 @@ categories:
 
 ## 获取ImgURL API
 1. 首先您需要在ImgURL注册一个账号：https://www.imgurl.org/vip/user 亦或者其它ImgURL Pro站点均可。
+
 2. 注册完毕并登录后在ImgURL用户后台找到API地址/UID/Token三个参数并记录，稍后需要使用
-![PicGo参数](https://img.rss.ink/imgs/2022/04/07/b93817857013e273.png)
+  ![PicGo参数](https://img.rss.ink/imgs/2022/04/07/b93817857013e273.png)
+
+  **tips**: ImgURL地址变更为`https://www.imgurl.ink`
 
 ## 设置PicGo
 
@@ -41,5 +44,4 @@ categories:
 2. your token：改成你在ImgURL获取到的Token
 
 然后点击确定进行保存，同时你也可以将其设置为默认图床。
-
 
