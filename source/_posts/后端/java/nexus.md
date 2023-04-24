@@ -28,11 +28,11 @@ categories:
 
 ### 2.1 下载安装包
 
-![不同平台的安装包](https://cdn.jsdelivr.net/gh/fengjian2705/cdn/img/nexus_003.jpg)
+![screenshot-20230424-170350](https://s3.bmp.ovh/imgs/2023/04/24/369d6e28beed20f7.png)
 
 ### 2.2 解压运行
 
-![解压后的文件夹](https://cdn.jsdelivr.net/gh/fengjian2705/cdn/img/nexus_004.jpg)
+![screenshot-20230424-170423](https://s3.bmp.ovh/imgs/2023/04/24/87f61e3e18c7bbb4.png)
 
 1. 切换到 nexus-3.19.1-01 的 bin 目录下
 
@@ -50,7 +50,7 @@ nexus /run
    新建仓库需登录后方可操作，默认账号 `admin`，密码存放路径 `/sonatype-work/nexus3/admin.password`  
    登录成功后可以修改密码
 
-![nexus首页](https://cdn.jsdelivr.net/gh/fengjian2705/cdn/img/nexus_005.jpg)
+![screenshot-20230424-170509](https://s3.bmp.ovh/imgs/2023/04/24/76adc1ac899eae3c.png)
 
 ## 3. Nexus 内置三种仓库
 
@@ -60,7 +60,7 @@ nexus /run
   - release：用于发布稳定版本软件
   - snapshot: 用于发布快照版本软件  
 
-![nexus内置仓库](https://cdn.jsdelivr.net/gh/fengjian2705/cdn/img/nexus_006.jpg)
+![screenshot-20230424-170639](https://s3.bmp.ovh/imgs/2023/04/24/8ad042040fe2b24a.png)
 
 * pom 文件中发布版本的 release 和 snapshot 对应 pom 文件中的 version 信息
 
@@ -78,7 +78,7 @@ nexus /run
 
 
 
-![maven2仓库](https://cdn.jsdelivr.net/gh/fengjian2705/cdn/img/nexus_007.jpg)
+![screenshot-20230424-170723](https://s3.bmp.ovh/imgs/2023/04/24/24ec67552f7f2482.png)
 
 1. 创建一个代理中央仓库的私有仓库(proxy类型)：my_nexus
 
