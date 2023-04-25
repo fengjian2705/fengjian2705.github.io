@@ -9,87 +9,73 @@ categories:
     - maven
 ---
 
-## 1. 基础概念
+## 1. 什么是 Maven?
 
+Maven 是一个基于 Java的 项目管理工具，它可以帮助我们管理项目的依赖、构建、打包、发布等操作。与传统方式相比，使用 Maven 能够更加方便快捷地管理项目，尤其是当项目规模变得越来越大时，Maven的优势就更加明显了。
 
+## 2. 安装与配置
 
-maven 是一个项目构建工具。
+###  2.1 在 windows 上安装 maven
 
+1. 下载 maven [传送门](https://maven.apache.org/download.cgi)
+2. 解压
+3. 配置环境变量
 
+* MAVEN_HOME:  maven 的安装目录 `D:\apache-maven-3.2.5`
+* Path: `%MAVEN_HOME%\bin`
 
-## 2. 快速入门
+* 检测是否安装成功 `mvn --version`
 
-### 2.1 配置 maven 环境变量
+### 2.2 maven 仓库分类
 
-> 在 windows 系统下配置
+1. 本地仓库
 
-* 下载 maven [传送门](https://maven.apache.org/download.cgi)
-* 配置环境变量
-  * MAVEN_HOME:  maven 的安装目录
-  * Path: `;%MAVEN_HOME%\bin`
-* 重启电脑
-* 检测是否安装成功
-  * mvn --version
+   * 本地仓库：就是 maven 在本地存储的地方
+   * maven 的本地仓库，在安装 maven 后并不会创建，它是在第一次执行 maven 命令的时候才被创建
+   * maven 本地仓库的默认位置：无论是 windows 还是 linux，在用户的目录下都有一个.m2/repository/ 的仓库目录，这就是 maven 仓库的默认位置
 
+   ```xml
+   <settings>
+   	<localRepository>目录</localRepository>
+   </settings>
+   ```
 
+2. 远程仓库
 
-### 2.2 maven 仓库介绍
+   * 中央仓库
 
-* 仓库分类
+   * 私有仓库，个人或公司搭建
 
-  * 本地仓库
-  * 远程仓库
-    * 中央仓库
-    * 私服
-    * 其它公共仓库
+   * 其它公共仓库,如阿里云
 
-* 本地仓库详解
+* 最核心的中央仓库开始，maven 在安装的时候，自带的就是中央仓库的配置，可以通过修改 settings.xml 文件来修改默认的中央仓库地址
 
-  * 本地仓库：就是 maven 在本地存储的地方
+* 中央仓库包含了绝大多数流行的开源 java 构件，以及源码、作者信息、SCM信息、许可证信息等。一般来说，简单的 java 项目依赖的构件都可以在这里下载到
 
-  * maven 的本地仓库，在安装 maven 后并不会创建，它是在第一次执行 maven 命令的时候才被创建
+  ```xml
+  <repositores>
+  	<repository>
+      	<id>central</id>
+          <name>Central Repository</name>
+          <url>http://repo.maven.apache.org/maven2</url>
+          <layout>default</layout>
+          <snapshots>
+          	<enabled>false</enabled>
+          </snapshots>
+      </repository>
+  </repositores>
+  ```
 
-  * maven 本地仓库的默认位置：无论是 windows 还是 linux，在用户的目录下都有一个.m2/repository/ 的仓库目录，这就是 maven 仓库的默认位置
-
-    ```xml
-    <settings>
-    	<localRepository>目录</localRepository>
-    </settings>
-    ```
-
-* 远程仓库-中央仓库详解
-
-  * 最核心的中央仓库开始，maven 在安装的时候，自带的就是中央仓库的配置，可以通过修改 settings.xml 文件来修改默认的中央仓库地址
-
-  * 中央仓库包含了绝大多数流行的开源 java 构件，以及源码、作者信息、SCM信息、许可证信息等。一般来说，简单的 java 项目依赖的构件都可以在这里下载到
-
-    ```xml
-    <repositores>
-    	<repository>
-        	<id>central</id>
-            <name>Central Repository</name>
-            <url>http://repo.maven.apache.org/maven2</url>
-            <layout>default</layout>
-            <snapshots>
-            	<enabled>false</enabled>
-            </snapshots>
-        </repository>
-    </repositores>
-    ```
-
-    
 
 ### 2.3 使用 IDEA 创建一个 maven 项目
 
-  
+1. 不使用骨架（Archetype） 创建（`tips：` IDEA 版本不同，功能项位置可能会变化（演示版本为：2022.1.4））
 
-1. 不使用 Archetype 创建（`提示：` IDEA 版本不同，功能项位置可能会变化（演示版本为：2022.1.4））
-
-   ![image-20230202122801888](https://s3.bmp.ovh/imgs/2023/02/02/cc216f8f2baf0aa8.png)
+   ![](https://s3.bmp.ovh/imgs/2023/02/02/cc216f8f2baf0aa8.png)
 
 
 
-2. 使用 Archetype 创建，使用 `maven-archetype-quickstart`
+2. 使用骨架（Archetype）创建，选择骨架 `maven-archetype-quickstart`
 
    ![image-20230202123100232](https://s3.bmp.ovh/imgs/2023/02/02/28b39021de8f3575.png)
 
@@ -97,17 +83,27 @@ maven 是一个项目构建工具。
 
 3. maven 项目坐标
 
-   > 在 maven 仓库中可定位到该项目（jar包/依赖）的唯一标记
+   **groupId**： 
 
-   **GroupId**： 组织 ID，具有唯一性，常用网站域名反写，如 org.apache 、tech.fengjian
+   组 ID，定义当前 maven 项目隶属的实际项目。通常一个实际的项目和 Maven 项目不一定是一对一的关系，比如 springframework 项目就包含了诸多模块：spring-context、spring-core 等，那 spring-context、spring-core 就是 Maven 项目，而它们都被划分为一个项目组 springframework。
 
-   **ArtifactId**：项目 ID，项目名称
+   另外为了保持组织 ID 具有唯一性，常用网站域名反写，如 org.springframework，那 spring-context、spring-core 的 groupId 就是 org.springframework
 
-   **Version**：版本号，默认为 1.0-SNAPSHOT
+   **artifactId**：
+
+   定义实际项目中的一个 Maven 项目（模块)，如 spring-core、spring-context
+
+   **version**：
+
+   版本号，默认为 1.0-SNAPSHOT
+
+   **packaging**：
+
+   ​	打包方式，默认 jar，还可以是 war、pom
 
    
 
-4. maven 项目标准目录结构
+4. maven 项目标准目录结构（约定优于配置）
 
    * src
 

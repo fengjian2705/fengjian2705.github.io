@@ -1,7 +1,7 @@
 ---
-title: BigDecimal舍入模式
+title: BigDecimal 舍入模式
 tags:
-  - BigDecimal舍入模式
+  - BigDecimal
 index_img: https://s3.bmp.ovh/imgs/2023/02/02/a1786250a2cda9fa.png
 # excerpt: JDK 动态代理
 categories:
