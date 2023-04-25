@@ -11,7 +11,7 @@ categories:
   - java
 ---
 
-> 基于接口实现，代理类和被代理类实现共同的接口
+张三是一家建筑公司的老板，前些年承包项目挣了些钱，钱一多就没地儿花，于是就进入股市，不出意外的是出了意外，于是工头们纷纷前来要账~
 
 ## 先来看一个静态代理的例子
 
@@ -20,10 +20,6 @@ categories:
 **饭店**
 
 ```java
-/**
- * @作者 风间
- * @创建时间 2022/4/9 10:13
- */
 package jdk.proxy;
 
 public interface Restaurant {
@@ -36,10 +32,6 @@ public interface Restaurant {
 **厨师**
 
 ```java
-/**
- * @作者 风间
- * @创建时间 2022/4/9 10:10
- */
 package jdk.proxy;
 
 public class Cook implements Restaurant{
@@ -55,10 +47,6 @@ public class Cook implements Restaurant{
 **厨师代理**
 
 ```java
-/**
- * @作者 风间
- * @创建时间 2022/4/9 10:21
- */
 package jdk.proxy;
 
 public class CookProxy implements Restaurant{
@@ -83,10 +71,6 @@ public class CookProxy implements Restaurant{
 **测试**
 
 ```java
-/**
- * @作者 风间
- * @创建时间 2022/4/9 10:26
- */
 package jdk.proxy;
 
 public class TestCookProxy {
@@ -109,15 +93,13 @@ public class TestCookProxy {
 
 ## JDK 动态代理
 
+> jdk 动态代理是基于接口实现的，也就是代理类和被代理类要实现共同的接口
+
 利用 `Proxy` 创建代理类对象（被代理的类一定要实现某个接口），代理类通过实现 `InvocationHandler` 接口的增强器，通过执行 `invoke` 方法来增强被代理的方法
 
 **厨师**
 
 ```java
-/**
- * @作者 风间
- * @创建时间 2022/4/9 10:10
- */
 package jdk.proxy;
 
 public class Cook implements Restaurant{
@@ -133,10 +115,6 @@ public class Cook implements Restaurant{
 **厨师代理类处理器**
 
 ```java
-/**
- * @作者 风间
- * @创建时间 2022/4/9 16:22
- */
 package jdk.proxy;
 
 import java.lang.reflect.InvocationHandler;
@@ -163,10 +141,6 @@ public class CookInvocationHandler implements InvocationHandler {
 **测试代理类**
 
 ```java
-/**
- * @作者 风间
- * @创建时间 2022/4/9 16:27
- */
 package jdk.proxy;
 
 import java.lang.reflect.Proxy;
@@ -184,7 +158,7 @@ public class TestCookProxyInvocation {
 
 ```
 
-**newProxyInstance 方法：**
+**newProxyInstance 方法：**
 
 参数1：被代理类的类类加载器
 参数2：被代理类实现的接口列表
