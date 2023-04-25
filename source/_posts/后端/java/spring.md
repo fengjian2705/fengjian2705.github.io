@@ -1,3 +1,14 @@
+---
+title: spring
+tags:
+  - spring
+index_img: https://s3.bmp.ovh/imgs/2022/12/13/09030a142dab744d.jpg
+# excerpt: spring
+categories:
+  - 后端
+  - spring
+---
+
 # spring
 
 1. 当一个类中既有构造方法，又有 set 方法时，依赖注入会失败，因为 spring 优先使用构造方法实现 DI

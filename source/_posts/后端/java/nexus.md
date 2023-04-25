@@ -202,3 +202,7 @@ categories:
 </servers>
 ```
 
+---
+
+<center>[本文完]</center>
+
