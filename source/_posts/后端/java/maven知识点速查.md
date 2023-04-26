@@ -2,7 +2,7 @@
 title: maven 使用手册
 tags: 
     - maven
-index_img: https://s3.bmp.ovh/imgs/2023/04/26/3af77db320ed54ea.jpg
+index_img: https://s3.bmp.ovh/imgs/2023/04/27/3648b97f5b46b3c8.png
 excerpt: Maven 主要服务于基于 Java 平台的项目构建、依赖管理和项目信息管理
 categories:
     - 后端
@@ -222,7 +222,7 @@ Maven 在进行依赖调解时，首先会检查项目中所有依赖项的直�
 
 ### 4.2 仓库分类
 
-![image-20230427005958104](https://raw.githubusercontent.com/fengjian2705/cdn/master/img/image-20230427005958104.png)
+![](https://s3.bmp.ovh/imgs/2023/04/27/0e298b19a77242ce.png)
 
 1. 本地仓库
 

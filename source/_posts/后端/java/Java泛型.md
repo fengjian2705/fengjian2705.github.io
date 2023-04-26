@@ -1,8 +1,8 @@
 ---
-title: java 泛型
+title: Java 泛型
 tags: 
     - 泛型
-index_img: https://cdn.jsdelivr.net/gh/fengjian2705/cdn/img/code.jpg
+index_img: https://s3.bmp.ovh/imgs/2023/04/27/5db2a22dcf8946ea.png
 # excerpt: 中文乱码了，明明已经使用utf8格式了，为什么还是乱码？
 categories:
     - 后端

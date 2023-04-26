@@ -4,7 +4,7 @@ tags:
     - 动态代理
     - Proxy
     - InvocationHandler
-index_img: https://cdn.jsdelivr.net/gh/fengjian2705/cdn/img/proxy/proxy01.jpg
+index_img: https://s3.bmp.ovh/imgs/2023/04/27/501f73229c2002e5.png
 # excerpt: JDK 动态代理
 categories:
   - 后端

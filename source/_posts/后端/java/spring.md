@@ -2,7 +2,7 @@
 title: spring
 tags:
   - spring
-index_img: https://s3.bmp.ovh/imgs/2022/12/13/09030a142dab744d.jpg
+index_img: https://s3.bmp.ovh/imgs/2023/04/27/52da9818399ac791.png
 # excerpt: spring
 categories:
   - 后端
