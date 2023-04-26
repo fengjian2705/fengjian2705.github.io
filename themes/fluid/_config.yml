@@ -413,15 +413,15 @@ footer:
   # 国内大陆服务器的备案信息
   # For Chinese mainland website policy, other areas keep disable
   beian:
-    enable: false
+    enable: true
     # ICP证号
     icp_text: 皖ICP备20000895号
     # 公安备案号，不填则只显示ICP
-    police_text: 京公网安备12345678号
+#    police_text: 京公网安备12345678号
     # 公安备案的编号，用于URL跳转查询
-    police_code: 12345678
+#    police_code: 12345678
     # 公安备案的图片. 为空时不显示备案图片
-    police_icon: /img/police_beian.png
+#    police_icon: /img/police_beian.png
 
 
 #---------------------------
@@ -431,7 +431,8 @@ footer:
 index:
   # 首页 Banner 头图，可以是相对路径或绝对路径，以下相同
   # Path of Banner image, can be a relative path or an absolute path, the same on other pages
-  banner_img: /img/default.png
+#  banner_img: /img/default.png
+  banner_img: /img/cpu.jpg
 
   # 头图高度，屏幕百分比
   # Height ratio of banner image
@@ -451,6 +452,7 @@ index:
     # 为空则按 hexo config.subtitle 显示
     # If empty, text based on `subtitle` in hexo config
     text: "日间工夫，觉纷扰则静坐，觉懒看书则且看书，是亦因病而药"
+#    text: "科技是第一生产力"
 
     # 通过 API 接口作为首页副标题的内容，必须返回的是 JSON 格式，如果请求失败则按 text 字段显示，该功能必须先开启 typing 打字机功能
     # Subtitle of the homepage through the API, must be returned a JSON. If the request fails, it will be displayed in `text` value. This feature must first enable the typing animation
@@ -503,7 +505,7 @@ index:
 # Post Page
 #---------------------------
 post:
-  banner_img: /img/default.png
+  banner_img: /img/文本.jpg
   banner_img_height: 70
   banner_mask_alpha: 0.3
 
@@ -797,7 +799,7 @@ cusdis:
 # Archive Page
 #---------------------------
 archive:
-  banner_img: /img/default.png
+  banner_img: /img/归档.jpg
   banner_img_height: 60
   banner_mask_alpha: 0.3
   subtitle:
@@ -809,7 +811,7 @@ archive:
 #---------------------------
 category:
   enable: true
-  banner_img: /img/default.png
+  banner_img: /img/分类.jpg
   banner_img_height: 60
   banner_mask_alpha: 0.3
   subtitle:
@@ -839,7 +841,7 @@ category:
 #---------------------------
 tag:
   enable: true
-  banner_img: /img/default.png
+  banner_img: /img/标签.jpg
   banner_img_height: 80
   banner_mask_alpha: 0.3
   subtitle:
@@ -857,19 +859,19 @@ tag:
 #---------------------------
 about:
   enable: true
-  banner_img: /img/default.png
+  banner_img: /img/关于.jpg
   banner_img_height: 60
   banner_mask_alpha: 0.3
   subtitle:
   avatar: /img/avatar.png
-  name: "风间"
-  intro: "春风得意马蹄疾，一日看尽长安花"
+  name: ""
+  intro: "寄蜉蝣于天地，渺沧海之一粟"
   # 更多图标可从 https://hexo.fluid-dev.com/docs/icon/ 查找，`class` 代表图标的 css class，添加 `qrcode` 后，图标不再是链接而是悬浮二维码
   # More icons can be found from https://hexo.fluid-dev.com/docs/en/icon/  `class` is the css class of the icon. If adding `qrcode`, The icon is no longer a link, but a hovering QR code
   icons:
     - { class: "iconfont icon-github-fill", link: "https://github.com", tip: "GitHub" }
 #    - { class: "iconfont icon-douban-fill", link: "https://douban.com", tip: "豆瓣" }
-    - { class: "iconfont icon-wechat-fill", qrcode: "/img/favicon.png" }
+    - { class: "iconfont icon-wechat-fill", qrcode: "/img/qrcode.jpg" }
 
 
 #---------------------------

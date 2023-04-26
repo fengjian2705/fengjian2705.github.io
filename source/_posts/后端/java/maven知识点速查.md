@@ -3,30 +3,226 @@ title: maven 知识点速查
 tags: 
     - maven
 index_img: https://s3.bmp.ovh/imgs/2023/02/02/a1786250a2cda9fa.png
-# excerpt: 搭建自己的 maven 仓库
+excerpt: Maven 主要服务于基于 Java 平台的项目构建、依赖管理和项目信息管理
 categories:
     - 后端
     - maven
 ---
 
-## 1. 什么是 Maven?
+> 阅读提示：本文内容假设你已经在实际项目中应用 Maven 进行项目开发，只为做进一步的理解与回顾！！！
 
-Maven 是一个基于 Java的 项目管理工具，它可以帮助我们管理项目的依赖、构建、打包、发布等操作。与传统方式相比，使用 Maven 能够更加方便快捷地管理项目，尤其是当项目规模变得越来越大时，Maven的优势就更加明显了。
+## 1. 什么是 Maven
+
+Maven 是一个基于 Java 的项目管理工具，它可以帮助我们管理项目的依赖、构建、打包、发布等操作。与传统方式相比，使用 Maven 能够更加方便快捷地管理项目，尤其是当项目规模变得越来越大时，Maven的优势就更加明显了。
 
 ## 2. 安装与配置
 
 ###  2.1 在 windows 上安装 maven
 
-1. 下载 maven [传送门](https://maven.apache.org/download.cgi)
-2. 解压
-3. 配置环境变量
+1. 安装 jdk
+2. 下载 maven [传送门](https://maven.apache.org/download.cgi)
+3. 解压
+4. 配置环境变量
 
 * MAVEN_HOME:  maven 的安装目录 `D:\apache-maven-3.2.5`
 * Path: `%MAVEN_HOME%\bin`
-
 * 检测是否安装成功 `mvn --version`
 
-### 2.2 maven 仓库分类
+## 3. 坐标和依赖
+
+### 3.1 maven 坐标
+
+Maven 定义了这样一组规则:世界上任何一个依赖都可以使用 Maven 坐标唯一标识，Maven 坐标的元素包括 groupId、artifactId、version、packaging、classifier。现在，只要我们提供正确的坐标元素，Maven 就能在仓库中找到对应的依赖。
+
+**groupId**： 
+
+组 ID，定义当前 maven 项目隶属的实际项目。通常一个实际的项目和 Maven 项目不一定是一对一的关系，比如 springframework 项目就包含了诸多模块：spring-context、spring-core 等，那 spring-context、spring-core 就是 Maven 项目，而它们都被划分为一个项目组 springframework。
+
+另外为了保持组织 ID 具有唯一性，常用网站域名反写，如 org.springframework，那 spring-context、spring-core 的 groupId 就是 org.springframework
+
+**artifactId**：定义实际项目中的一个 Maven 项目（模块)，如 spring-core、spring-context
+
+**version**：版本号，默认为 1.0-SNAPSHOT
+
+**packaging**：打包方式，默认 jar，还可以是 war、pom
+
+**classifier**: 该元素用来帮助定义构建输出的一些附属依赖，实际应用中很少涉及，不深入
+
+上述5个元素中，groupld、artifactId，version 是必须定义的，packaging 是可选的(默认为jar)，而classifier是不能直接定义的。
+
+### 3.2 依赖配置
+
+在 pom.xml 中声明项目需要引入的依赖：
+
+* 基本使用：包含基本坐标 groupId、artifactId，version 即可
+
+```xml
+<dependencies>
+    <dependency>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <version>4.12</version>
+    </dependency>
+</dependencies>
+```
+
+* 更详细的使用：
+
+```xml
+<dependency>
+    <groupId>junit</groupId>
+    <artifactId>junit</artifactId>
+    <version>4.12</version>
+    <type>xxx</type>
+    <scope>xxx</scope>
+    <optional>xxx</optional>
+    <exclusions>
+        <exclusion>
+            <groupId>xxx</groupId>
+            <artifactId>xxx</artifactId>
+        </exclusion>
+    </exclusions>
+</dependency>
+```
+
+**type**： 对应引入依赖的 packging，无需声明，默认为 jar
+
+**scope**：依赖作用范围，有 compile、test、provided、runtime、system、import，等下细说
+
+**optional**：标记依赖是否可选
+
+**exclusions**：用来排除传递性依赖
+
+### 3.3 依赖范围
+
+* Java 项目的 classpath 是指 Java 虚拟机（JVM）在加载类文件时所需要依赖的 class 文件路径的集合。可以将其理解为 Java 虚拟机查找 class 文件的路径列表。当 JVM 在加载 Java 程序时，它会先查找 classpath 中包含的路径，如果能够找到对应的 class 文件，就会将其加载进来，否则就会抛出 ClassNotFoundException 异常
+
+* 在 Java 项目中，classpath 通常被设置为当前项目编译后生成的 class 文件所在的路径
+
+* 首先需要知道,Maven 在编译项目主代码（src/main/java）的时候需要使用一套 classspath。其次,Maven 在编译和执行测试（src/main/test）的时候会使用另外一套 classpath。最后,实际运行Maven 项目的时候,又会使用一套 classpath,依赖范围就是用来控制依赖与这三种 classpath(编译 classpath、测试 classpath、运行 classpath)的关系
+* compile：编译依赖范围。默认依赖范围。使用此依赖范围的 Maven 依赖,对于编译、测试、运行三种 classpath 都有效，典型的例子是 spring-core,在编译、测试和运行的时候都需要使用该依赖
+* test：测试依赖范围。使用此依赖范围的Maven依赖,只对于测试 classpath 有效,在编译主代码或者运行项目的使用时将无法使用此类依赖。典型的例子,是 JUnit,它只有在编译测试代码及运行测试的时候才需要
+* provided：已提供依赖范围。使用此依赖范围的 Maven 依赖,对于编译和测试 classpath 有效,但在运行时无效。典型的例子是 servlet-api,编译和测试项目的时候需要该依赖,但在运行项目的时候,由于容器已经提供,就不需要 Maven 重复地引入一遍
+* runtime：运行时依赖范围。使用此依赖范围的 Maven 依赖,对于测试和运行 classpath 有效,但在编译主代码时无效。典型的例子是 JDBC 驱动实现项目主代码的编译只需要 JDK 提供的 JDBC 接口,只有在执行测试或者运行项目的时候才需要实现上述接口的具体 JDBC 驱动
+* system：系统依赖范围。使用不多
+* import：导人依赖范围。该依赖范围不会对三种 classpath 产生实际的影响，在项目继承中扮演角色，在讲解 maven 项目之间的继承时可以关注一下
+
+
+
+用一张表格来归纳一下依赖的作用域：
+
+| 依赖范围（scope） | 编译期有效 | 测试期有效 | 运行期有效 |               范例               |
+| :---------------: | :--------: | :--------: | :--------: | :------------------------------: |
+|      compile      |     Y      |     Y      |     Y      |           spring-core            |
+|       test        |     -      |     Y      |     -      |              junit               |
+|     provided      |     Y      |     Y      |     -      |           servlet-api            |
+|      runtime      |     -      |     Y      |     Y      |          jdbc 驱动实现           |
+|      system       |     Y      |     Y      |     -      | 本地的，maven 仓库之外的类库文件 |
+
+### 3.3 依赖的传递性
+
+![依赖的传递](https://raw.githubusercontent.com/fengjian2705/cdn/master/imgs/image-20230426135055521.png)
+
+依赖传递性同样遵循依赖范围的影响：
+
+|    -     | compile  | test | provided | runtime  |
+| :------: | :------: | :--: | :------: | :------: |
+| compile  | compile  |  -   |    -     | runtime  |
+|   test   |   test   |  -   |    -     |   test   |
+| provided | provided |  -   | provided | provided |
+| runtime  | runtime  |  -   |    -     | runtime  |
+
+**规律**：
+
+当第二直接依赖的范围是 compile 的时候,传递性依赖的范围与第一直接依赖的范围一致;当第二直接依赖的范围是 test 的时候,依赖不会得以传递;当第二直接依赖的范围是 provided 的时候,只传递第一直接依赖范围也为 provided 的依赖,且传递性依赖的范围同样为 provided;当第二直接依赖的范围是 runtime 的时候,传递性依赖的范围与第一直接依赖的范围一致,但 compile 例外,此时传递性依赖的范围为runtime。
+
+**举个栗子**：
+
+第一列是第一直接依赖的作用域（scope），第一行是第二直接依赖的作用域，举个栗子：
+
+现在有 A 直接依赖B（作用域test）：第一列取 test（3 行），B 直接依赖 C（作用域 compile）：第一行取 compile（2 列），得出 A 间接依赖 C（作用域 test）
+
+### 3.4 传递依赖：依赖调解
+
+依赖调解（Dependency Resolution）是指在 Maven 构建项目时，当多个依赖项存在冲突时，根据一定的规则解决冲突问题的过程。Maven 使用依赖调解机制来自动管理项目依赖，保证依赖项之间的协同工作。它会分析项目中的所有依赖项，并且通过比较各个依赖项之间的版本信息，确定应该使用哪一个版本作为最终的决策。
+
+Maven 在进行依赖调解时，首先会检查项目中所有依赖项的直接依赖关系，然后逐级向上查找依赖项的依赖关系，直到找到最顶层的依赖项。如果在这个过程中发现了冲突，那么 Maven会 根据一定的决策原则选择其中一个版本作为最终的决策。具体来说，Maven 采用如下的决策原则：
+
+1. 第一原则：路径最近者优先。举栗子：路径 1： A -> B -> C -> X(2.0)，路径2：A -> D -> X(1.0),根据最短路径优先，X(1.0)会被项目采用
+2. 第二原则：第一声明者优先。举栗子：路径 1： A -> B -> C -> X(1.0)，路径 2：A -> D -> E -> X(2.0)，路径相同，则第一声明的 X(1.0) 会被采用
+
+通过依赖调解机制，Maven 能够自动解决依赖项之间的冲突问题，提高了项目构建的效率，同时也降低了开发人员的工作难度。
+
+### 3.5 可选依赖：optional
+
+假设有这样一个依赖关系,项目 A 依赖于项目 B,项目 B 依赖于项目 X 和 Y,B 对于 X 和 Y 的依赖都是可选依赖：A->B、B->X(可选)、B->Y(可选)。根据传递性依赖的定义，如果所有这三个依赖的范围都是compile,那么X、Y就是是 A 的 compile 范围传递性依赖。然而,由于这里 X、Y 是可选依赖,依赖将不会得以传递。换句话说,X、Y 将不会对 A 有任何影响,如图所示。
+
+![](https://raw.githubusercontent.com/fengjian2705/cdn/master/imgs/image-20230426163627074.png)
+
+### 3.6 传递依赖：依赖排除
+
+传递性依赖会给项目隐式地引人很多依赖,这极大地简化了项目依赖的管理,但是有些时候这种特性也会带来问题。例如,当前项目有一个第三方依赖,而这个第三方依赖由于某些原因依赖了另外一个类库的 SNAPSHOT版本,那么这个 SNAPSHOT 就会成为当前项目的传递性依赖,而 SNAPSHOT 的不稳定性会直接影响到当前的项目。这时就需要排除掉该 SNAPSHOT,并且在当前项目中声明该类库的某个正式发布的版本。还有一些情况,你可能也想要替换某个传递性依赖。
+
+使用 exclusions 标签：
+
+```xml
+<dependencies>
+    <dependency>
+        <groupId>org.example</groupId>
+        <artifactId>D</artifactId>
+        <version>1.0-SNAPSHOT</version>
+        <exclusions>
+            <exclusion>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+            </exclusion>
+        </exclusions>
+    </dependency>
+</dependencies>
+```
+
+### 3.7 归类依赖：统一版本管理
+
+当引入了同一个项目的不同模块时，可以将 version 通过 properties 标签进行统一管理，方便后续的升级与代码简洁
+
+```xml
+<properties>
+    <spring.version>5.2.12.RELEASE</spring.version>
+</properties>
+
+<dependencies>
+    <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-context</artifactId>
+        <version>${spring.version}</version>
+    </dependency>
+    <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-webmvc</artifactId>
+        <version>${spring.version}</version>
+    </dependency>
+</dependencies>
+```
+
+### 3.8 一个好用的 maven 插件
+
+![](https://raw.githubusercontent.com/fengjian2705/cdn/master/imgs/image-20230426165531967.png)
+
+![](https://raw.githubusercontent.com/fengjian2705/cdn/master/imgs/image-20230426165907751.png)
+
+
+
+## 4. maven 仓库
+
+得益于坐标机制,任何Maven项目使用任何一个构件的方式都是完全相同的。在此基础上,Maven可以在某个位置统一存储所有Maven项目去享的构件,这个统一的位置就是仓库。
+
+### 4.1 仓库的布局
+
+一个 maven 项目在仓库中的路径与坐标的大致对应关系为 groupld/artifactId/version/artifactld-version.packaging，另外 classifier 和 extension若存在，则在后面拼接上 -classifier.extension
+
+### 4.2 仓库分类
+
+![image-20230426174513502](C:/Users/zhulu/AppData/Roaming/Typora/typora-user-images/image-20230426174513502.png)
 
 1. 本地仓库
 
@@ -42,15 +238,15 @@ Maven 是一个基于 Java的 项目管理工具，它可以帮助我们管理�
 
 2. 远程仓库
 
-   * 中央仓库
+   * 中央仓库（maven 官方提供的仓库）
 
-   * 私有仓库，个人或公司搭建
+   * 私有仓库（一种特殊的远程仓库），个人或公司搭建
 
-   * 其它公共仓库,如阿里云
+   * 其它公共仓库，如阿里云
 
 * 最核心的中央仓库开始，maven 在安装的时候，自带的就是中央仓库的配置，可以通过修改 settings.xml 文件来修改默认的中央仓库地址
 
-* 中央仓库包含了绝大多数流行的开源 java 构件，以及源码、作者信息、SCM信息、许可证信息等。一般来说，简单的 java 项目依赖的构件都可以在这里下载到
+* 中央仓库包含了绝大多数流行的开源 java 构件，以及源码、作者信息、SCM 信息、许可证信息等。一般来说，简单的 java 项目依赖的构件都可以在这里下载到
 
   ```xml
   <repositores>
@@ -82,24 +278,6 @@ Maven 是一个基于 Java的 项目管理工具，它可以帮助我们管理�
 
 
 3. maven 项目坐标
-
-   **groupId**： 
-
-   组 ID，定义当前 maven 项目隶属的实际项目。通常一个实际的项目和 Maven 项目不一定是一对一的关系，比如 springframework 项目就包含了诸多模块：spring-context、spring-core 等，那 spring-context、spring-core 就是 Maven 项目，而它们都被划分为一个项目组 springframework。
-
-   另外为了保持组织 ID 具有唯一性，常用网站域名反写，如 org.springframework，那 spring-context、spring-core 的 groupId 就是 org.springframework
-
-   **artifactId**：
-
-   定义实际项目中的一个 Maven 项目（模块)，如 spring-core、spring-context
-
-   **version**：
-
-   版本号，默认为 1.0-SNAPSHOT
-
-   **packaging**：
-
-   ​	打包方式，默认 jar，还可以是 war、pom
 
    
 
