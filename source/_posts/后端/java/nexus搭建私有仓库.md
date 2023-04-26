@@ -169,7 +169,7 @@ java -version
 
 ### 5.1 部署仓库的使用
 
-![](https://s3.bmp.ovh/imgs/2023/04/25/c1987f084eacf457.png)
+![image-20230426004749048](https://s3.bmp.ovh/imgs/2023/04/26/03df0937e15b6963.png)
 
 配置项目部署的远程仓库：release 版本 & snapshot 版本
 
