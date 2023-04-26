@@ -4,7 +4,7 @@ tags:
     - maven
     - 私有仓库
     - nexus
-index_img: https://cdn.jsdelivr.net/gh/fengjian2705/cdn/img/nexus_init.jpg
+index_img: https://s3.bmp.ovh/imgs/2023/04/26/cb88ff656fe21d05.jpg
 # excerpt: 搭建自己的 maven 私有仓库
 categories:
     - 后端

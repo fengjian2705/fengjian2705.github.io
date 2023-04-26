@@ -2,7 +2,7 @@
 title: maven 知识点速查
 tags: 
     - maven
-index_img: https://s3.bmp.ovh/imgs/2023/02/02/a1786250a2cda9fa.png
+index_img: https://s3.bmp.ovh/imgs/2023/04/26/3af77db320ed54ea.jpg
 excerpt: Maven 主要服务于基于 Java 平台的项目构建、依赖管理和项目信息管理
 categories:
     - 后端

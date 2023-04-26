@@ -102,7 +102,7 @@ fun_features:
     # Options: hover | always | touch
     visible: hover
     # Option：§ | # | ❡
-    icon: ""
+    icon: "§"
 
   # 加载进度条
   # Progress bar when loading
@@ -388,7 +388,7 @@ open_graph:
 footer:
   # 页脚第一行文字的 HTML，建议保留 Fluid 的链接，用于向更多人推广本主题
   # HTML of the first line of the footer, it is recommended to keep the Fluid link to promote this theme to more people
-  content: '风间出品'
+  content: '风间小栈出品'
   # content: '
   #   <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a>
   #   <i class="iconfont icon-love"></i>
@@ -413,7 +413,7 @@ footer:
   # 国内大陆服务器的备案信息
   # For Chinese mainland website policy, other areas keep disable
   beian:
-    enable: true
+    enable: false
     # ICP证号
     icp_text: 皖ICP备20000895号
     # 公安备案号，不填则只显示ICP
