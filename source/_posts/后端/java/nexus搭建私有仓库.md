@@ -46,9 +46,9 @@ java -version
 
 如果系统已安装Java环境，将会输出Java版本信息。否则，需要先安装Java。
 
-### 3.2 下载 Nexus
+### 3.2 下载 Nexus [传送门](https://www.sonatype.com/thanks/repo-oss?hsCtaTracking=bde424ac-b77c-4799-913d-9d0db86ef1f8|b308aaca-ab41-4544-ba23-c53c1b469e0d)
 
-[下载传送门]([Nexus Repository Manager - Software Component Management | Sonatype](https://www.sonatype.com/thanks/repo-oss?hsCtaTracking=bde424ac-b77c-4799-913d-9d0db86ef1f8|b308aaca-ab41-4544-ba23-c53c1b469e0d))
+
 
 ![](https://s3.bmp.ovh/imgs/2023/04/24/369d6e28beed20f7.png)
 
@@ -169,7 +169,7 @@ java -version
 
 ### 5.1 部署仓库的使用
 
-![](https://s3.bmp.ovh/imgs/2023/04/25/c1987f084eacf457.png)
+![image-20230426004749048](https://s3.bmp.ovh/imgs/2023/04/26/03df0937e15b6963.png)
 
 配置项目部署的远程仓库：release 版本 & snapshot 版本
 
