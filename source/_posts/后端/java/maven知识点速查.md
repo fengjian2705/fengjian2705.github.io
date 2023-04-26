@@ -1,5 +1,5 @@
 ---
-title: maven 知识点速查
+title: maven 使用手册
 tags: 
     - maven
 index_img: https://s3.bmp.ovh/imgs/2023/04/26/3af77db320ed54ea.jpg
@@ -222,7 +222,7 @@ Maven 在进行依赖调解时，首先会检查项目中所有依赖项的直�
 
 ### 4.2 仓库分类
 
-![image-20230426174513502](C:/Users/zhulu/AppData/Roaming/Typora/typora-user-images/image-20230426174513502.png)
+![image-20230427005958104](https://raw.githubusercontent.com/fengjian2705/cdn/master/img/image-20230427005958104.png)
 
 1. 本地仓库
 
