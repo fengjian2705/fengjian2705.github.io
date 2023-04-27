@@ -1,9 +1,9 @@
 ---
-title: Nexus 搭建 Maven 私有仓库
+title: 使用 Nexus 搭建 Maven 私有仓库
 tags: 
     - maven
     - 私有仓库
-    - nexus
+    - Nexus
 index_img: https://s3.bmp.ovh/imgs/2023/04/26/c995d127fc2b3eeb.png
 excerpt: 私有仓库是一种为开发者和团队提供内部库的机制，它可以使开发者更好地管理和共享内部代码，并将一些第三方库缓存下来以减少重复的下载
 categories:

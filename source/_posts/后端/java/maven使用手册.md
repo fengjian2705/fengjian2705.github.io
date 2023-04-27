@@ -48,7 +48,7 @@ Maven 定义了这样一组规则:世界上任何一个依赖都可以使用 Mav
 
 **classifier**: 该元素用来帮助定义构建输出的一些附属依赖，实际应用中很少涉及，不深入
 
-上述5个元素中，groupld、artifactId，version 是必须定义的，packaging 是可选的(默认为jar)，而classifier是不能直接定义的。
+上述 5 个元素中，groupld、artifactId，version 是必须定义的，packaging 是可选的(默认为jar)，而classifier是不能直接定义的。
 
 ### 3.2 依赖配置
 
@@ -206,19 +206,43 @@ Maven 在进行依赖调解时，首先会检查项目中所有依赖项的直�
 
 ### 3.8 一个好用的 maven 插件
 
-![](https://raw.githubusercontent.com/fengjian2705/cdn/master/imgs/image-20230426165531967.png)
-
-![](https://raw.githubusercontent.com/fengjian2705/cdn/master/imgs/image-20230426165907751.png)
+![](https://s3.bmp.ovh/imgs/2023/04/27/834d26b1a2d0e76f.png)
 
 
 
-## 4. maven 仓库
+![](https://s3.bmp.ovh/imgs/2023/04/27/acdb79d9186a545c.png)
+
+![](https://s3.bmp.ovh/imgs/2023/04/27/0bc04f7a069764fb.png)
+
+
+
+## 4. Maven 仓库
 
 得益于坐标机制,任何Maven项目使用任何一个构件的方式都是完全相同的。在此基础上,Maven可以在某个位置统一存储所有Maven项目去享的构件,这个统一的位置就是仓库。
 
-### 4.1 仓库的布局
+### 4.1 依赖的布局
 
-一个 maven 项目在仓库中的路径与坐标的大致对应关系为 groupld/artifactId/version/artifactld-version.packaging，另外 classifier 和 extension若存在，则在后面拼接上 -classifier.extension
+在 `pom.xml` 文件中的 `<repository>` 标签中，`layout` 元素用于指定 Maven 仓库的布局类型。Maven 仓库支持两种布局类型：默认布局和 Legacy 布局。
+
+- 默认布局：Maven 2.0.9 及之后版本默认使用的布局类型，使用基于路径的布局方式。
+
+  一个 maven 项目在仓库中的路径与坐标的大致对应关系为 groupld/artifactId/version/artifactld-version.packaging，另外 classifier 和 extension若存在，则在后面拼接上 -classifier.extension。
+
+- Legacy 布局：Maven 2.0.8 及之前版本使用的布局类型，使用基于文件名的布局方式。
+
+在 Maven 3.0 及之后的版本中，默认布局成为了唯一支持的布局类型，Legacy 布局已经被废弃。
+
+如果你的 Maven 仓库使用的是 Legacy 布局，你需要在 `<repository>` 标签中设置 `layout` 属性，如下所示：
+
+```xml
+<repositories>
+    <repository>
+        <id>my-repo</id>
+        <url>https://my-repo.com/maven</url>
+        <layout>legacy</layout> <!-- 设置仓库布局类型为 Legacy -->
+    </repository>
+</repositories>
+```
 
 ### 4.2 仓库分类
 
@@ -226,44 +250,236 @@ Maven 在进行依赖调解时，首先会检查项目中所有依赖项的直�
 
 1. 本地仓库
 
-   * 本地仓库：就是 maven 在本地存储的地方
+   一般来说,在 Maven 项目目录下,没有诸如 lib/ 这样用来存放你衣赖文件的目录。当 Maven 在执行编译或测试时,如果需要使用依赖文件,它总是基于坐标使用本地仓库的依赖文件
+
+   * 本地仓库：就是 maven 在本地存储的位置
    * maven 的本地仓库，在安装 maven 后并不会创建，它是在第一次执行 maven 命令的时候才被创建
-   * maven 本地仓库的默认位置：无论是 windows 还是 linux，在用户的目录下都有一个.m2/repository/ 的仓库目录，这就是 maven 仓库的默认位置
+   * maven 本地仓库的默认位置：无论是 windows 还是 linux，在用户的目录下都有一个 .m2/repository/ 的仓库目录，这就是 maven 仓库的默认位置
 
    ```xml
    <settings>
-   	<localRepository>目录</localRepository>
+   	<localRepository>C:\Users\fengjian\.m2\repository</localRepository>
    </settings>
    ```
 
+   * 有时候,因为某些原因(例如 C 盘空间不够),用户会想要自定义本地仓库目录地址。这时,可以编辑文件 ~/.m2/settings.xml,设置 localRepository 元素的值为想要的仓库地址。例如:
+
+   ```xml
+   <settings >
+   	<localRepository >D:\java\repository\</localRepository
+   </settings >
+   ```
+
+   * 需要注意的是,默认情况下, .m2/settings.xml 文件是不存在的,用户需要从 Maven 安装目录复制 %M2_HOME%/conf/settings.xml 文件再进行编辑。推荐大家不要直接修改全局目录的settings.xml 文件,推荐使用用户范围的 settings.xml,主要是为了避免无意识地影响到系统中的其他用户，还有就是升级时就不需要重新修改 settings.xml 文件
+   * **mvn clean install**：一个项目（构建、依赖）只有在本地仓库中后，才能由其他 Maven 项目使用，install 命令就是将一个项目安装到本地仓库，比如：本地有两个项目 A 和 B，两者都无法从远程仓库获取，同时 A 依赖 B，那么为了 A 可以有效的构建，B 必须安装到本地仓库中
+
 2. 远程仓库
+
+   安装好 Maven 后,如果不执行任何 Maven 命令,本地仓库目录是不存在的。当用户输人第一条 Maven 命令之后,Maven 才会创建本地仓库,然后相据配置和需要,从远程仓库下载构件至本地仓库。
+
+   本地仓库就好比书房,我需要读书的时候先从书房找,相应应地,Maven需要构件的时候先从本地仓库找。远程仓库就好比书店(包括实体书店、网上书店等),当我无法从自己的书房找到需要的书的时候,就会从书店购买后放到书房里。当Maven无法从本地仓库找到需要的构件的时候,就会从远程仓库下载构件至本地仓库。一般地,对于每个人来说,书房只有一个,但外面的书店有很多,类似地,对于Maven来说,每个用户只有一个本地仓库,但可以配置访问很多远程仓库。
 
    * 中央仓库（maven 官方提供的仓库）
 
-   * 私有仓库（一种特殊的远程仓库），个人或公司搭建
+     由于最原始的本地仓库是空的,中央仓库就是这样一个默认的远程仓库,Maven的安装文件自带了中央仓库的配置。解压 %M2_HOME%/lib/maven-mod-el-builder-3.0.jarorg文件 /apache/maven/model/pom-4.0.0. xml,可以看到如下的配置:
 
-   * 其它公共仓库，如阿里云
+     ```xml
+     <repositories>
+         <repository >
+         	<id>central</id>
+         	<name>Maven Repository Switchboard</name >
+         	<url>http://repol.maven.org/maven2</url>
+         	<layout>default</layout>
+         	<snapshots >
+         		<enabled > false </enabled >
+         	</snapshots >
+     	</repository>
+     </repositories>
+     
+     ```
 
-* 最核心的中央仓库开始，maven 在安装的时候，自带的就是中央仓库的配置，可以通过修改 settings.xml 文件来修改默认的中央仓库地址
-
-* 中央仓库包含了绝大多数流行的开源 java 构件，以及源码、作者信息、SCM 信息、许可证信息等。一般来说，简单的 java 项目依赖的构件都可以在这里下载到
-
-  ```xml
-  <repositores>
-  	<repository>
-      	<id>central</id>
-          <name>Central Repository</name>
-          <url>http://repo.maven.apache.org/maven2</url>
-          <layout>default</layout>
-          <snapshots>
-          	<enabled>false</enabled>
-          </snapshots>
-      </repository>
-  </repositores>
-  ```
+   * maven 在安装的时候，自带的就是中央仓库的配置，可以通过修改 settings.xml 文件来修改默认的中央仓库地址
 
 
-### 2.3 使用 IDEA 创建一个 maven 项目
+   * 中央仓库包含了绝大多数流行的开源 java 构件，以及源码、作者信息、SCM 信息、许可证信息等。一般来说，简单的 java 项目依赖的构件都可以在这里下载到
+
+     ```xml
+     <repositores>
+     	<repository>
+         	<id>central</id>
+             <name>Central Repository</name>
+             <url>http://repo.maven.apache.org/maven2</url>
+             <layout>default</layout>
+             <snapshots>
+             	<enabled>false</enabled>
+             </snapshots>
+         </repository>
+     </repositores>
+     ```
+
+
+* 私有仓库（一种特殊的远程仓库），个人或公司搭建
+
+  私服是一种特殊的远程仓库,它是架设在局域网内的仓库服务,私服代理广域网上的远程仓库,供局域网内的Maven用户使用。当Maven需要下载构件的时候,它从私服请求,如果私服上不存在该构件,则从外部的远程仓库下载,缓存在私服上之后,再为Maven的下载请求提供服务。此外,一些无法从外部仓库下载到白的构件也能从本地上传到私服上供大家使用
+
+* 其它公共仓库，如阿里云
+
+### 4.3 远程仓库的配置
+
+1. 在很多情况下,默认的中央仓库无法满足项目的需求,可能项目需要的构件存在于另外一个远程仓库中,如阿里云仓库。这时,可以在 POM 中配置该仓库：
+
+```xml
+<repositories>
+    <repository>
+        <id>aliyun</id>
+        <name>aliyun</name>
+        <url>https://maven.aliyun.com/repository/public</url>
+        <layout>default</layout>
+        <releases>
+            <enabled>true</enabled>
+            <updatePolicy>daily</updatePolicy>
+            <checksumPolicy>ignore</checksumPolicy>
+        </releases>
+        <snapshots>
+            <enabled>false</enabled>
+            <updatePolicy>daily</updatePolicy>
+            <checksumPolicy>ignore</checksumPolicy>
+        </snapshots>
+    </repository>
+</repositories>
+```
+
+* 在 repositories 元素下,可以使用 repository 子元素声明一个或者多个远程仓库。该例中声明了一个id为 aliyun。任何一个仓库声明的id必须是唯一的,尤其需要注意的是,Maven 自带的中央仓库使用的id为central,如果其他的仓库声明也使用该 id,就会覆盖中央仓库的配置。该配置中的ur值指向了仓库的地址,一般来说,该地址都基于http协议,Maven用户都可以在浏览器中打开仓库地址浏览构件。
+
+* 如果在 `pom.xml` 文件中的 `<repositories>` 标签中没有设置 `<snapshots>` 标签，那么 Maven 会使用默认值来处理快照依赖的查找和下载
+
+  默认情况下，Maven 会从远程仓库中查找和下载快照依赖的最新版本。如果远程仓库中没有最新的快照版本，Maven 会从本地仓库中查找，并下载最新的快照版本到本地仓库中。在实际开发中，建议将快照依赖的使用限制在开发和测试阶段，避免在生产环境中使用快照依赖。
+
+* 如果在 `<repository>` 标签中没有设置 `name` 属性，那么 Maven 会将仓库的名称默认设置为 `<id>` 标签的值，即仓库的 `id` 属性值。
+
+  需要注意的是，虽然 Maven 会将仓库的名称默认设置为 `<id>` 标签的值，但是在 `<repository>` 标签中，`name` 属性的作用是更加明确和具体的，可以为仓库指定一个更加具有描述性的名称，便于其他开发者理解和识别。因此，建议在 `<repository>` 标签中显式地设置 `name` 属性。
+
+* `<releases>` 属性用于指定仓库是否支持发布版本，如果不设置该属性，Maven 会将其默认设置为 `true`。
+
+2. 对于 `<releases>` 和 `<snapshots>` 来说,除了 enabled,它们还包含另外两个子元素 updatePolicy 和 checksumPolicy:
+
+`<updatePolicy>`：用来配置Maven从远程仓库检查更新的频率,默认的值是daily,表示 Maven 每天检查一次。其他可用的值包括 never 从不检查更新，always 每次构建都检查更新，interval:X 每隔X分钟检查一次更新(X为任意整数))
+
+`<checksumPolicy>`：用来配置 Maven 检查检验和文件的策略。当构件被部署到 Maven 仓库中时,会同时部署对应的校验和文件。在下载构件的时候,Maven会验证校验和文件,如果校验和验证失败,怎么办?当 checksumPolicy 的值为默认的 warn 时,Maven会在执行构建时输出警告信息,其他可用的值包括:fail Maven遇到校验和错误就让构建失败,ignore 使Maven完全忽略校验和错误。
+
+### 4.4 远程仓库的认证配置
+
+1. 大部分远程仓库无须认证就可以访问,但有时候出于安全方面的考虑,我们需要提供认证信息才能访问一些远程仓库。例如,组织内部有一个 Maven 仓库服务器,该服务器为每个项目都提供独立的 Maven 仓库,为了防止非法的仓库访问,管理员为每个仓库提供了一组用户名及密码。这时,为了能让 Maven 能访问仓库,就需要配置认证证信息
+
+2. 配置认证信息和配置仓库信息不同,仓库信息可以直接配置在 POM 文件中,但是认证信息必须配置在 settings.xml 文件中。这是因为 POM 往往是被提交到代码仓库中供所有成员访问的,而 settings.xml 一般只放在本机。因此,在 settings.xml 中配置认证信息更为安全。假设需要为一个 id 为 fengjian-maven-central 的仓库配置认证信息,编辑 settings.xml:
+
+```xml
+<servers>
+	<server>
+      <id>fengjian-maven-central</id>
+      <username>jack</username>
+      <password>123456</password>
+    </server>
+</servers>	
+```
+
+### 4.5 部署项目到远程仓库
+
+1. 这里的远程仓库是指自己搭建的私有仓库，搭建仓库可以去看另一篇博文`使用 Nexus 搭建 Maven 私有仓库`
+
+2. `pom.xml`中配置部署信息：分为 release 和 snapshot
+
+   ```xml
+     <distributionManagement>
+       <repository>
+           <id>fengjian-maven-releases</id>
+           <url>http://localhost:8081/repository/fengjian-maven-release/</url>
+       </repository>
+       <snapshotRepository>
+           <id>fengjian-maven-snapshots</id>
+           <url>http://localhost:8081/repository/fengjian-maven-snapshots/</url>
+       </snapshotRepository>
+   </distributionManagement>
+   ```
+
+3. `settings.xml`中配置认证信息
+
+   ```xml
+   <servers>
+   	<server>
+         <id>fengjian-maven-releases</id>
+         <username>jack</username>
+         <password>123456</password>
+   	</server>
+       <server>
+         <id>fengjian-maven-snapshots</id>
+         <username>rose</username>
+         <password>654321</password>
+   	</server>
+   </servers>
+   
+   ```
+
+4. 配置正确后,在命令行运行`mvn clean deploy`,Maven 就会将马目构建输出的构件部署到配置对应的远程仓库,如果项目当前的版本是快照版本,则部署到快照版本仓库地址,否则就部署到发布版本仓库地址。
+
+### 4.6 镜像 mirror
+
+1. 如果仓库 A 可以提供仓库 B 存储的所有内容,那么就可以认为 A 是 B 的一个镜像。换句话说,任何一个可以从仓库 B 获得的构件,都能够从它的镜像中获取。举个例子,https://maven.aliyun.com/repository/public/ 是中央仓库 https://repo.maven.apache.org/maven2 在中国的镜像,由于地理位置的因素,该镜像往往能够提供比中央央仓库更快的服务。因此,可以配置Maven使用该镜像来替代中央仓库，在 settings.xml 中配置：
+
+```xml
+<mirrors>
+    <mirror>
+      <id>aliyun</id>
+      <name>aliyun</name>
+      <url>https://maven.aliyun.com/repository/public/</url>
+      <mirrorOf>central</mirrorOf>
+    </mirror>
+</mirrors>
+```
+
+该例中,`<mirrorOf>`的值为 central,表示该配置为中央仓库的镜像,任何对于中央仓库的请求都会转至该镜像,用户也可以使用同样的方法配置其他仓库的镜像。另外三个元素id、name、url与一般仓库配置无异,表示该镜像仓库的吻一标识符、名称以及地址。类似地,如果该镜像需要认证,也可以基于该 id 配置仓库认证。
+
+2. 关于镜像的一个更为常见的用法是结合私服。由于私服可以代理任何外部的公共仓库(包括中央仓库),因此,对于组织内部的 Maven 用户来说,使用一个私服地址就等于使用了所有需要的外部仓库,这可以将配置集中到私服,从而简化 Maven 本身的配置。在这种情况下,任何需要的构件都可以从私服获得,私服就是所有仓库的镜像。这时,可以配置这样的一个镜像:
+
+```xml
+<mirrors>
+    <mirror>
+      <id>fengjian-maven-central</id>
+      <name>fengjian-maven-central</name>
+      <url>http://localhost:8081/repository/fengjian-maven-central/</url>
+      <mirrorOf>*</mirrorOf>
+    </mirror>
+</mirrors>
+```
+
+为了满足一些复杂的需求,Maven还支持更高级的镜像配置量:
+
+`<mirrorOf>*</mirrorOf>`: 匹配所有远程仓库。
+`<mirrorOf>external:*</mirrorOf>`: 匹配所有远程仓库,使用 localhost 的除外,使用 file:// 协议的除外。也就是说,匹配所有不在本机上的远和程仓库
+`<mirrorOf>repo1, repo2</mirrorOf>`: 匹配仓库repol和repo2,使用逗号分隔多个远程仓库。
+`<mirrorOf>*,!repol</mirrorOf>`: 匹配所有远程仓库,repol除外,使用感叹号将仓库从匹配中排除。
+
+3. 需要注意的是,由于镜像仓库完全屏蔽了被镜像仓库,当镜像仓库不稳定或者停止服务的时候,Maven 仍将无法访问被镜像仓库,因而将无法去下载依赖
+
+### 4.7 一些常用的 maven 搜索库
+
+1. 地址:http://repository.sonatype.org/ Nexus 是当前最流行的开源Maven仓库管理软件
+2. 地址:http://www.jarvana.com/jarvana/ Jarvana 提供了基于关键字、类名的搜索,构件下载、依赖声明片段等功能也一应俱全
+3. 地址:http://mvnrepository.com/ MVNrepository 的界面比较清新,它提供了基于关键字的搜索、依赖声明代码片段、构件下载、依赖与被依赖关系信息、构件所含包信息等功能
+
+## 5. Maven 生命周期
+
+Maven 的生命周期就是为了对所有的构建过程进行抽象和统一建。这个生命周期含了项目的清理、初始化、编译、测试、打包、集成测试、验证、部署和站点生成等几所有构建步骤。也就是说,几乎所有项目的构建,都能映射到这样一个生命周期上。
+
+
+
+## 6. Maven 插件
+
+## 7. 关于聚合和继承这件事
+
+## 8. 使用 IDEA 进行实战
+
+### 8.1 使用 IDEA 创建一个 maven 项目
 
 1. 不使用骨架（Archetype） 创建（`tips：` IDEA 版本不同，功能项位置可能会变化（演示版本为：2022.1.4））
 
