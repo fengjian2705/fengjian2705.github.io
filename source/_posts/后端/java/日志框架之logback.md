@@ -3,7 +3,7 @@ title: 日志框架之 Logback
 tags: 
     - logback
     - 日志框架
-index_img: https://cdn.jsdelivr.net/gh/fengjian2705/cdn/img/logback/logback001.jpeg
+index_img: http://cdn-hw-static.shanhutech.cn/bizhi/staticwp/202301/94acca2f853e20e8a403ee8592f29ab9--896443764.jpg
 # excerpt: 最好用的 java 日志框架
 categories:
   - 后端
@@ -68,7 +68,7 @@ public class HelloWorld1 {
 ```
 
 3. 假设配置文件 logback-test.xml 和 logback.xml 都不存在，那么 logback 默认地会调用BasicConfigurator ， 创 建一 个 最小 化配 置 。最 小化 配置 由 一个 关联 到 根 logger 的ConsoleAppender 组成。
-输出用模式为%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n 的 PatternLayoutEncoder 进行格式化。还有，根 logger 默认级别是 DEBUG。
+   输出用模式为%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n 的 PatternLayoutEncoder 进行格式化。还有，根 logger 默认级别是 DEBUG。
 
     控制台输出
 ```java
@@ -131,17 +131,17 @@ Appender 也具有继承性，Appender 的 Additivity（相加性） 属性默�
     ```xml
     <?xml version="1.0" encoding="UTF-8" ?>
     <!DOCTYPE configuration>
-
+  
     <configuration>
     <import class="ch.qos.logback.classic.encoder.PatternLayoutEncoder"/>
     <import class="ch.qos.logback.core.ConsoleAppender"/>
-
+  
     <appender name="STDOUT" class="ConsoleAppender">
         <encoder class="PatternLayoutEncoder">
         <pattern>%-4relative [%thread] %-5level %logger{35} - %msg %n</pattern>
         </encoder>
     </appender>
-
+  
     <root level="DEBUG">
         <appender-ref ref="STDOUT"/>
     </root>
@@ -265,13 +265,13 @@ Appender 也具有继承性，Appender 的 Additivity（相加性） 属性默�
     ```xml
     <?xml version="1.0" encoding="UTF-8" ?>
     <!DOCTYPE configuration>
-
+    
     <configuration>
     <import class="ch.qos.logback.classic.encoder.PatternLayoutEncoder"/>
     <import class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy"/>
     <import class="ch.qos.logback.core.rolling.RollingFileAppender"/>
     <import class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy"/>
-
+    
     <appender name="FILE" class="RollingFileAppender">
         <file>test.log</file>
         <rollingPolicy class="FixedWindowRollingPolicy">
@@ -286,7 +286,7 @@ Appender 也具有继承性，Appender 的 Additivity（相加性） 属性默�
         <pattern>%-4relative [%thread] %-5level %logger{35} - %msg%n</pattern>
         </encoder>
     </appender>
-
+    
     <root level="DEBUG">
         <appender-ref ref="FILE"/>
     </root>
@@ -318,13 +318,13 @@ Logback 过滤器基于三元逻辑，允许将它们组装或链接在一起以
   
     ```java
     package chapters.filters;
-
+  
     import ch.qos.logback.classic.spi.ILoggingEvent;
     import ch.qos.logback.core.filter.Filter;
     import ch.qos.logback.core.spi.FilterReply;
-
+  
     public class SampleFilter extends Filter<ILoggingEvent> {
-
+  
     @Override
     public FilterReply decide(ILoggingEvent event) {    
         if (event.getMessage().contains("sample")) {
@@ -341,9 +341,9 @@ Logback 过滤器基于三元逻辑，允许将它们组装或链接在一起以
     ```xml
     <configuration>
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-
+  
         <filter class="chapters.filters.SampleFilter" />
-
+  
         <encoder>
         <pattern>
             %-4relative [%thread] %-5level %logger - %msg%n
@@ -528,7 +528,7 @@ public class HelloWorld1 {
                 <pattern>%d - %m%n</pattern>
             </encoder>
         </appender>
-
+  
         <!--输出到文件-->
         <appender name="fileInfoLog" class="ch.qos.logback.core.rolling.RollingFileAppender">
             <!--级别过滤-->
@@ -547,7 +547,7 @@ public class HelloWorld1 {
                 <pattern>%d - %m%n</pattern>
             </encoder>
         </appender>
-
+  
         <!--输出到文件-->
         <appender name="fileErrorLog" class="ch.qos.logback.core.rolling.RollingFileAppender">
             <!--阈值过滤-->
@@ -564,7 +564,7 @@ public class HelloWorld1 {
                 <pattern>%d - %m%n</pattern>
             </encoder>
         </appender>
-
+  
         <!--root Logger-->
         <root level="info">
             <appender-ref ref="consoleLog"/>

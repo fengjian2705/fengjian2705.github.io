@@ -3,7 +3,7 @@ title: 分布式搜索引擎-ElasticSearch
 tags: 
     - 搜索引擎
     - ElasticSearch
-index_img: https://cdn.jsdelivr.net/gh/fengjian2705/cdn/img/proxy/proxy01.jpg
+index_img: http://cdn-hw-static.shanhutech.cn/bizhi/staticwp/202303/a863c594f3cee41990d1775ea190e508--2175799558.jpg
 # excerpt: JDK 动态代理
 categories:
   - 后端

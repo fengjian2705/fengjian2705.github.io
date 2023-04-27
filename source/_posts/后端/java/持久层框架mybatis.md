@@ -2,7 +2,7 @@
 title: 持久层框架:mybatis
 tags: 
     - mybatis
-index_img: https://cdn.jsdelivr.net/gh/fengjian2705/cdn/img/mybatis/mybtis01.jpg
+index_img: http://cdn-hw-static.shanhutech.cn/bizhi/staticwp/202303/97ece48fcb70842d305d559e383cc7a2--828608670.jpg
 # excerpt: 持久层框架
 categories:
     - 后端
@@ -386,7 +386,7 @@ MyBatis 可以配置成适应多种环境，例如，开发、测试和生产环
     * 数据源的配置（比如：type="POOLED"）。
 
 2. 事务管理器（transactionManager）
-    
+   
    * JDBC – 这个配置直接使用了 JDBC 的提交和回滚功能，它依赖从数据源获得的连接来管理事务作用域。
    
    * MANAGED – 这个配置几乎没做什么。
@@ -394,7 +394,7 @@ MyBatis 可以配置成适应多种环境，例如，开发、测试和生产环
 3. 有三种内建的数据源类型（也就是 type="[UNPOOLED|POOLED|JNDI]"）：
    
    * UNPOOLED– 这个数据源的实现会每次请求时打开和关闭连接。
-    
+   
    * POOLED– 这种数据源的实现利用“池”的概念将 JDBC 连接对象组织起来，避免了创建新的连接实例时所必需的初始化和认证时间。
    
    * JNDI – 这个数据源实现是为了能在如 EJB 或应用服务器这类容器中使用，容器可以集中或在外部配置数据源，然后放置一个 JNDI 上下文的数据源引用。
@@ -424,7 +424,7 @@ SQL 映射器：告诉 MyBatis 到哪里去找到 sql 语句。 在自动查找�
    ```
    
  3. 使用映射器接口实现类的完全限定类名
- 
+
     ```xml
     <mappers>
       <mapper class="org.mybatis.builder.AuthorMapper"/>
@@ -442,7 +442,7 @@ SQL 映射器：告诉 MyBatis 到哪里去找到 sql 语句。 在自动查找�
     ```
     
     <font color="red">Tips:</font> 方式 3 和方式 4 要求 mapper.xml 文件目录同 mapper 接口包路径一致，编译后都在同一个 calsses 路径下
-   
+
 ## 3. 复杂映射查询
 
 ### 3.1 一对一
@@ -465,7 +465,7 @@ create table orders(
 #### 3.1.1 实体类
 
 1. User
-      
+   
 ```java
 package tech.fengjian;
 
@@ -643,7 +643,7 @@ public class Order {
 }
 
 ```
-   
+
 UserMapper.xml
 
 ```xml
@@ -991,7 +991,7 @@ public class Test {
 ### 6.1 急速入门( SpringBoot项目 )
 
 #### 6.1.1 引入依赖
-   
+
 ```xml
 <dependency>
     <groupId>com.baomidou</groupId>
@@ -1094,7 +1094,7 @@ public class User {
 #### 基础配置
 
 1. configLocation 指定配置文件位置
-  
+
 ```properties
 mybatis-plus.config-location = classpath:mybatis-config.xml
 ```

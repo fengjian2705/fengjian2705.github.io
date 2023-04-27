@@ -3,7 +3,7 @@ title: 玩转 vue3
 tags: 
     - vue3
     - elementPlus
-index_img: https://cdn.jsdelivr.net/gh/fengjian2705/cdn/img/vue3/vue3_001.jpeg
+index_img: http://cdn-hw-static.shanhutech.cn/bizhi/staticwp/202303/9a109e7083b3399595d9374ca7ca7ff6--2456931338.jpg
 # excerpt: vue3全掌握
 categories:
     - 前端

@@ -3,7 +3,7 @@ title: redis
 tags:
   - redis
   - 缓存
-index_img: https://s3.bmp.ovh/imgs/2022/12/13/09030a142dab744d.jpg
+index_img: http://cdn-hw-static.shanhutech.cn/bizhi/staticwp/202303/6d0334b66e2084311d5387b199b6986f--782540629.jpg
 # excerpt: 搭建自己的 maven 仓库
 categories:
   - 后端
@@ -107,11 +107,11 @@ categories:
           # 重启测试
           reboot
         ```
-      
      
      
      
-      
+     
+     
 
 
 
