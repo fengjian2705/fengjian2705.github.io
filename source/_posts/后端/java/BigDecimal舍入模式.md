@@ -2,7 +2,7 @@
 title: BigDecimal 舍入模式
 tags:
   - BigDecimal
-index_img: https://s3.bmp.ovh/imgs/2023/02/02/a1786250a2cda9fa.png
+index_img: https://s3.bmp.ovh/imgs/2023/04/28/f2aa543b032954f0.jpg
 # excerpt: JDK 动态代理
 categories:
 - 后端

@@ -3,7 +3,7 @@ title: Nginx
 tags:
   - nginx
   - 服务器
-index_img: http://nginx.org/nginx.png
+index_img: https://s3.bmp.ovh/imgs/2023/04/28/7ed8995499d02bfe.jpg
 # excerpt: 搭建自己的 maven 仓库
 categories:
   - 运维
@@ -21,7 +21,7 @@ categories:
    (1) 安装 gcc 环境：
      ```shell
        yum install gcc-c++
-    ```
+     ```
    (2) 安装 PCRE 库，用于解析正则表达式:
     ```shell
        yum install -y pcre pcre-devel
@@ -203,7 +203,7 @@ categories:
      ```shell
         ./cut_my_log.sh
      ```
-     
+   
 2. 定时切割
    
    * 安装定时任务：
@@ -247,8 +247,8 @@ categories:
          ```shell
             0 1 * * * 
          ```
-     参考文献：
-     每天定时为数据库备份：https://www.cnblogs.com/leechenxiang/p/7110382.html
+         参考文献：
+         每天定时为数据库备份：https://www.cnblogs.com/leechenxiang/p/7110382.html
 
 ## 五、虚拟主机-使用nginx为静态资源提供服务
 
@@ -260,7 +260,7 @@ categories:
        server {
         listen       89;
         server_name  localhost;
-   
+      
         location /images {
             root   /home;
         }
@@ -272,7 +272,7 @@ categories:
        server {
         listen       89;
         server_name  localhost;
-   
+      
         location /static {
             alias   /home/images;
         }
@@ -309,7 +309,7 @@ categories:
     }
     ```
 2. = 精确匹配
-    
+   
     ```shell
     server {
         listen       91;
@@ -324,7 +324,7 @@ categories:
     }
     ```
 3. ~* 正则匹配，* 表示不区分大小写
-    
+   
     ```shell
     server {
         listen       91;
@@ -355,7 +355,7 @@ categories:
         }
     }
     ```
-   
+
 ## 八、DNS 域名解析
 
 1. linux / mac 中 hosts 文件路径：/etc/hosts
@@ -454,7 +454,7 @@ if ($invalid_referer) {
            proxy_pass http://tomcats;
        }
    }
-   ```
+```
 
 ### upstream 指令参数
 
