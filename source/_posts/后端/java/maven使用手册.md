@@ -121,7 +121,7 @@ Maven 定义了这样一组规则:世界上任何一个依赖都可以使用 Mav
 
 ### 3.3 依赖的传递性
 
-![依赖的传递](https://raw.githubusercontent.com/fengjian2705/cdn/master/imgs/image-20230426135055521.png)
+![](https://s3.bmp.ovh/imgs/2023/05/04/dda9ba1603bbf614.png)
 
 依赖传递性同样遵循依赖范围的影响：
 
@@ -157,7 +157,7 @@ Maven 在进行依赖调解时，首先会检查项目中所有依赖项的直�
 
 假设有这样一个依赖关系,项目 A 依赖于项目 B,项目 B 依赖于项目 X 和 Y,B 对于 X 和 Y 的依赖都是可选依赖：A->B、B->X(可选)、B->Y(可选)。根据传递性依赖的定义，如果所有这三个依赖的范围都是compile,那么X、Y就是是 A 的 compile 范围传递性依赖。然而,由于这里 X、Y 是可选依赖,依赖将不会得以传递。换句话说,X、Y 将不会对 A 有任何影响,如图所示。
 
-![](https://raw.githubusercontent.com/fengjian2705/cdn/master/imgs/image-20230426163627074.png)
+![](https://s3.bmp.ovh/imgs/2023/05/04/2ccb17cfa95cfa7a.png)
 
 ### 3.6 传递依赖：依赖排除
 
@@ -471,15 +471,25 @@ Maven 在进行依赖调解时，首先会检查项目中所有依赖项的直�
 
 Maven 的生命周期就是为了对所有的构建过程进行抽象和统一建。这个生命周期含了项目的清理、初始化、编译、测试、打包、集成测试、验证、部署和站点生成等几所有构建步骤。也就是说,几乎所有项目的构建,都能映射到这样一个生命周期上。
 
+### 5.2 默认的生命周期
+
+- `validate`- 验证项目是否正确，以及所有必要的信息是否可用
+- `compile`- 编译项目的源代码
+- `test`- 使用合适的单元测试框架测试编译的源代码。这些测试不应要求打包或部署代码
+- `package`- 获取编译后的代码并将其打包为其可分发的格式，例如 JAR。
+- `verify`- 对集成测试结果进行任何检查，以确保满足质量标准
+- `install`- 将包安装到本地存储库中，以用作本地其他项目中的依赖项
+- `deploy`- 在构建环境中完成，将最终包复制到远程存储库，以便与其他开发人员和项目共享。
+
 ### 5.1 三套相互独立的生命周期
 
-Maven 的生命周期跟你理解的生命周期有一点不同，它有三套
+Maven 的生命周期跟你理解的生命周期有一点不同，它有三套，具体可见[官方文档]([Maven – Introduction to the Build Lifecycle (apache.org)](https://maven.apache.org/guides/introduction/introduction-to-the-lifecycle.html))
 
 1. clean：清理项目
 2. default：构建项目
 3. site：建立站点
 
-这三个生命周期涵盖了下图（我们在 IDEA 项目中所看到的 Lifecicle）：
+这三个生命周期涵盖了下图（我们在 IDEA 项目中所看到的 Lifecycle）：
 
 ![](https://s3.bmp.ovh/imgs/2023/04/28/eba46fcc000d3d0b.png)
 
@@ -487,38 +497,48 @@ Maven 的生命周期跟你理解的生命周期有一点不同，它有三套
 
 #### 5.1.1 clean 生命周期
 
-* pre-clean：执行一些清理前需要完成的工作
-* clean：清理上一次构建生成的文件
-* post-clean：执行一些清理后需要完成的工作
+| 阶段         | 描述                             |
+| :----------- | :------------------------------- |
+| `pre-clean`  | 在实际项目清理之前执行所需的流程 |
+| `clean`      | 删除先前版本生成的所有文件       |
+| `post-clean` | 执行完成项目清理所需的流程       |
 
 #### 5.1.2 default 生命周期
 
-* validate
-* initialize
-* generate-sources
-* process-sources：处理项目主资源文件。一般来说,是对 src/main/resources 目录的内容进行变量替换等工作后,复制到项目输出的主 classpath 目录中。
-* generate-resources
-* compile
-* process-clasess
-* generate-test-sources
+| 阶段                      | 描述                                                         |
+| :------------------------ | :----------------------------------------------------------- |
+| `validate`                | 验证项目是否正确，以及所有必要的信息是否可用。               |
+| `initialize`              | 初始化构建状态，例如设置属性或创建目录。                     |
+| `generate-sources`        | 生成任何源代码以包含在编译中。                               |
+| `process-sources`         | 处理源代码，例如过滤任何值。                                 |
+| `generate-resources`      | 生成要包含在包中的资源。                                     |
+| `process-resources`       | 将资源复制并处理到目标目录中，准备打包。                     |
+| `compile`                 | 编译项目的源代码。                                           |
+| `process-classes`         | 对编译中生成的文件进行后处理，例如对 Java 类进行字节码增强。 |
+| `generate-test-sources`   | 生成任何测试源代码以包含在编译中。                           |
+| `process-test-sources`    | 处理测试源代码，例如筛选任何值。                             |
+| `generate-test-resources` | 创建用于测试的资源。                                         |
+| `process-test-resources`  | 将资源复制并处理到测试目标目录中。                           |
+| `test-compile`            | 将测试源代码编译到测试目标目录                               |
+| `process-test-classes`    | 对测试编译生成的文件进行后处理，例如对 Java 类进行字节码增强。 |
+| `test`                    | 使用合适的单元测试框架运行测试。这些测试不应要求打包或部署代码。 |
+| `prepare-package`         | 在实际打包之前执行准备包裹所需的任何操作。这通常会导致包的解包、已处理版本。 |
+| `package`                 | 获取已编译的代码并将其打包为其可分发格式，例如 JAR。         |
+| `pre-integration-test`    | 执行执行集成测试之前所需的操作。这可能涉及设置所需环境等事项。 |
+| `integration-test`        | 如有必要，处理包并将其部署到可以运行集成测试的环境中。       |
+| `post-integration-test`   | 执行集成测试后所需的操作。这可能包括清理环境。               |
+| `verify`                  | 运行任何检查以验证包是否有效并符合质量标准。                 |
+| `install`                 | 将包安装到本地存储库中，以便在本地其他项目中用作依赖项。     |
+| `deploy`                  | 在集成或发布环境中完成，将最终包复制到远程存储库，以便与其他开发人员和项目共享。 |
 
-* process-test-sources处理项目测试资源文件。一般来说,是对 src/test/resources 目录的内容进行变量替换等工作后,复制到项目输出的测试classpath目录中。
-* generate-test-resources
-* process-test-resources
-* test-compile编译项目的测试代码。一般来说,是编译src/test/java目录下的Java文
-  件至项目输出的测试classpath目录中。
-* process-test-classes
-* test使用单元测试框架运行测试,测试代码不会被打包或部署骨。
-* prepare-package
-* package接受编译好的代码,打包成可发布的格式,如JAR。
-* pre-integration-test
-* integration-test
-* post-integration-test
-* verify
-* install 将包安装到 Maven 本地仓库,供本地其他 Maven 项目使使用
-  deploy 将最终的包复制到远程仓库.供其他开发人员和 Maven 项目使用
+#### 5.1.3 站点生命周期
 
-#### 5.1.3
+| 阶段          | 描述                                     |
+| :------------ | :--------------------------------------- |
+| `pre-site`    | 在实际项目网站生成之前执行所需的流程     |
+| `site`        | 生成项目的站点文档                       |
+| `post-site`   | 执行完成站点生成和准备站点部署所需的流程 |
+| `site-deploy` | 将生成的站点文档部署到指定的 Web 服务器  |
 
 
 
@@ -526,7 +546,149 @@ Maven 的生命周期跟你理解的生命周期有一点不同，它有三套
 
 ## 6. Maven 插件
 
+"Maven" 实际上只是 Maven 插件集合的核心框架。换句话说，插件是执行大部分实际操作的地方，插件用于：创建jar文件，创建war文件，编译代码，单元测试代码，创建项目文档等等。您能想到的对项目执行的几乎所有操作都是作为Maven插件实现的。
+
+插件是 Maven 的核心功能，它允许在多个项目中重用通用构建逻辑。他们通过在项目描述的上下文中执行“操作”（即创建 WAR 文件或编译单元测试）来做到这一点 - 项目对象模型 （POM）。插件行为可以通过一组独特的参数进行自定义，这些参数由每个插件目标（或Mojo）的描述公开。
+
+插件是 Maven 的核心功能，它允许在多个项目中重用通用构建逻辑。他们通过在项目描述的上下文中执行“操作”（即创建 WAR 文件或编译单元测试）来做到这一点 - 项目对象模型 （POM）。插件行为可以通过一组独特的参数进行自定义，这些参数由每个插件目标（或Mojo）的描述公开。
+
+### 6.1 插件配置
+
+几乎所有Maven插件的目标都有一些可配置的参数,用户可以通过命令行和POM配置等方式来配置这些参数。
+
+1. 命令行插件配置
+
+   在日常的 Maven 使用中,我们会经常从命令行输入并执行Maven命令。很多插件目标的参数都支持从命令行配置,用户可以在Maven命令中使用-D参数,并伴随一个个参数键=参数值的形式,来配置插件目标的参数。例如,maven-surefire-plugin 提供了一个 maven.test.skip 参数,当其值为 true 的时候,就会跳过执行测试。于是,在运行命令的时候,加上如下 -D 参数就能跳过测试 mvn install -Dmaven.test.skip = true 参数-D是 Java 自带的,其功能是通过命令行设置一个Java系统属性,Maven 简单地重用了该参数,在准备插件的时候检查系统属性,便实现了插件参数的配置。
+
+2. POM 中插件全局配置
+
+   并不是所有的插件参数都适合从命令行配置,有些参数的值从项目创建到项目发布都不会改变,或者说很少改变,对于这种情况,在POM文件中一次性配置就显然比重复在命令行输入要方便。用户可以在声明插件的时候,对此插件进行一个全局的配置。也就是说,所有该基于该插件目标的任务,都会使用这些配置。例如,我们通常会需要配置 maven-compiler-plugin 告诉它编译 Java1.8 版本的源文件,生成与JVM1.8兼容的字节码文件：
+
+   ```xml
+   <plugin>
+       <groupId>org.apache.maven.plugins</groupId>
+       <artifactId>maven-compiler-plugin</artifactId>
+       <version>3.8.1</version>
+       <configuration>
+           <source>1.8</source>
+           <target>1.8</target>
+       </configuration>
+   </plugin>
+   ```
+
+### 6.2 获取插件信息（寻找插件）
+
+以下是几个常用的 Maven 插件仓库地址：
+
+- Apache Maven Central Repository：Maven 官方中央仓库。[[1](https://search.maven.org/)]
+- JCenter：由 Bintray 提供的免费 Maven 仓库。[[2](https://bintray.com/bintray/jcenter)]
+- Spring Plugins Repository：Spring 官方提供的 Maven 插件仓库。[[3](https://repo.spring.io/plugins-release/)]
+- Google Maven Repository：由 Google 提供的 Maven 仓库，包含 Android 和 Google Cloud 相关的依赖。[[4](https://maven.google.com/)]
+
 ## 7. 关于聚合和继承这件事
+
+软件设计人员往往会采用各种方式对软件划分模块,以得到更清晰的设计及更高的重用性。当把 Maven 应用到实际项目中的时候,也需要将项目分成不同的模块。Maven 的聚合特性能够把项目的各个模块聚合在一起构建,而 Maven 的继承特性则能帮助抽取各模块相同的依赖和插件等配置,在简简化 POM 的同时,还能促进各个模块配置的一致性。
+
+以一个购物网站项目为例：我们把该项目拆分为'下单模块'和'发货模块'，分别为 shopping-order 和 shopping-delivery：
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>tech.fengjian</groupId>
+    <artifactId>shopping-order</artifactId>
+    <version>1.0-SNAPSHOT</version>
+
+    <properties>
+        <maven.compiler.source>8</maven.compiler.source>
+        <maven.compiler.target>8</maven.compiler.target>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+</project>
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>tech.fengjian</groupId>
+    <artifactId>shopping-delivery</artifactId>
+    <version>1.0-SNAPSHOT</version>
+
+    <properties>
+        <maven.compiler.source>8</maven.compiler.source>
+        <maven.compiler.target>8</maven.compiler.target>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+</project>
+```
+
+一般来说,一个项目的子模块都应该使用同样的 groupld,如果它们一起开发和发布,还应该使用同样的 version,此外,它们的 artifactld 还应该使用一致的前缀,以方便同其他项目区分。
+
+### 7.1 聚合
+
+上面我们创建了两个项目，那一个简单的需求就会自然而然地显现出来:我们会想要一次构建两个项目,而不是到两个模块的日录下分别执行 mvn 命令。Maven 聚合(或者称为多模块)这一特性就是为该需求服务的。
+为了能够使用一条命令就能构建 shopping-order 和 shopping-delivery 两个模块,我们需要创建一个额外的名为 shopping-aggregator 的模块,然后通过该模块构建整个项目的所有模块。shopping-aggregator 本身作为一个 Maven 项目,它必须要有自己的 POM,不过,同时作为一个聚合项目,其 POM 又有特殊的地方。如下为 shopping-aggregatorf的pom.xml内容:
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>tech.fengjian</groupId>
+    <artifactId>shopping-aggregator</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+
+    <modules>
+        <module>../shopping-delivery</module>
+        <module>../shopping-order</module>
+    </modules>
+
+    <properties>
+        <maven.compiler.source>8</maven.compiler.source>
+        <maven.compiler.target>8</maven.compiler.target>
+    </properties>
+
+</project>
+```
+
+* 上述 POM 依旧使用了账户注册服务共同的 tech.fengjian, artifactld 为独立的 shopping-aggregator,版本也与其他两个模块-致,为1.0-SNAPSHOT。这里的第一个特殊的地方为packaging,其值为POM。回顾 shopping-order 和 shopping-delivery,它们都没有声明 packaging,即使用了默认值 jar。对于聚合模块来说,其打包方式 packaging 的值必须为 pom,否则就无法构建。
+
+* modules 是实现聚合的最核心的配置，我们可以通过在一个打包方式为 pom 的 Maven 项目中声明任意数量的 module 元素来实现模块聚合。这里的每一个 module 值都是一个当前 POM 的相对目录。
+
+  一般来说,为了方便快速定位内容,模块所处的目录名称应当与其 artifactld 一致,不过这不是Maven的要求,用户也可以将shopping-order项目放到order-shopping/目录下。这时聚合的配置就需要相应地改成<module>order-shopping</module >。
+
+* 为了方便用户构建项目、通常将聚合模块放在项目目录的最顶层,其他模块则作为聚合模块的子目录存在,这样当用户得到源码的时候,第一眼发现的就是聚合模块的 POM,不用从多个模块中去寻找聚合模块来构建整个项目。
+
+* 关于目录结构还需要注意的是,聚合模块与其他模块的目录结构并非一定要是父子关
+  系。还可以是另一种平行的目录结构。
 
 ## 8. 使用 IDEA 进行实战
 
