@@ -601,11 +601,7 @@ Maven 的生命周期跟你理解的生命周期有一点不同，它有三套�
     <groupId>tech.fengjian</groupId>
     <artifactId>shopping-order</artifactId>
     <version>1.0-SNAPSHOT</version>
-
-    <properties>
-        <maven.compiler.source>8</maven.compiler.source>
-        <maven.compiler.target>8</maven.compiler.target>
-    </properties>
+    <name>Shopping Order</name>
 
     <dependencies>
         <dependency>
@@ -616,6 +612,19 @@ Maven 的生命周期跟你理解的生命周期有一点不同，它有三套�
         </dependency>
     </dependencies>
 
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.1</version>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>
 ```
 
@@ -629,11 +638,7 @@ Maven 的生命周期跟你理解的生命周期有一点不同，它有三套�
     <groupId>tech.fengjian</groupId>
     <artifactId>shopping-delivery</artifactId>
     <version>1.0-SNAPSHOT</version>
-
-    <properties>
-        <maven.compiler.source>8</maven.compiler.source>
-        <maven.compiler.target>8</maven.compiler.target>
-    </properties>
+    <name>Shopping Delievery</name>
 
     <dependencies>
         <dependency>
@@ -643,6 +648,20 @@ Maven 的生命周期跟你理解的生命周期有一点不同，它有三套�
             <scope>test</scope>
         </dependency>
     </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.1</version>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>
 ```
@@ -665,34 +684,283 @@ Maven 的生命周期跟你理解的生命周期有一点不同，它有三套�
     <artifactId>shopping-aggregator</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
+    <name>Shopping Aggregator</name>
 
     <modules>
         <module>../shopping-delivery</module>
         <module>../shopping-order</module>
     </modules>
 
-    <properties>
-        <maven.compiler.source>8</maven.compiler.source>
-        <maven.compiler.target>8</maven.compiler.target>
-    </properties>
-
 </project>
 ```
 
-* 上述 POM 依旧使用了账户注册服务共同的 tech.fengjian, artifactld 为独立的 shopping-aggregator,版本也与其他两个模块-致,为1.0-SNAPSHOT。这里的第一个特殊的地方为packaging,其值为POM。回顾 shopping-order 和 shopping-delivery,它们都没有声明 packaging,即使用了默认值 jar。对于聚合模块来说,其打包方式 packaging 的值必须为 pom,否则就无法构建。
+* 上述 POM 依旧使用了购物网站服务共同的 tech.fengjian, artifactld 为独立的 shopping-aggregator,版本也与其他两个模块-致,为 1.0-SNAPSHOT。这里的第一个特殊的地方为 packaging,其值为 POM。回顾 shopping-order 和 shopping-delivery,它们都没有声明 packaging,即使用了默认值 jar。对于聚合模块来说,其打包方式 packaging 的值必须为 pom,否则就无法构建。
 
 * modules 是实现聚合的最核心的配置，我们可以通过在一个打包方式为 pom 的 Maven 项目中声明任意数量的 module 元素来实现模块聚合。这里的每一个 module 值都是一个当前 POM 的相对目录。
 
-  一般来说,为了方便快速定位内容,模块所处的目录名称应当与其 artifactld 一致,不过这不是Maven的要求,用户也可以将shopping-order项目放到order-shopping/目录下。这时聚合的配置就需要相应地改成<module>order-shopping</module >。
+  一般来说,为了方便快速定位内容,模块所处的目录名称应当与其 artifactld 一致,不过这不是Maven的要求,用户也可以将shopping-order 项目放到 order-shopping/ 目录下。这时聚合的配置就需要相应地改成<module>order-shopping</module>。
 
 * 为了方便用户构建项目、通常将聚合模块放在项目目录的最顶层,其他模块则作为聚合模块的子目录存在,这样当用户得到源码的时候,第一眼发现的就是聚合模块的 POM,不用从多个模块中去寻找聚合模块来构建整个项目。
 
-* 关于目录结构还需要注意的是,聚合模块与其他模块的目录结构并非一定要是父子关
-  系。还可以是另一种平行的目录结构。
+* 关于目录结构还需要注意的是,聚合模块与其他模块的目录结构并非一定要是父子关系，还可以是另一种平行的目录结构。
 
-## 8. 使用 IDEA 进行实战
+  ![平行目录结构聚合工程](https://s3.bmp.ovh/imgs/2023/05/05/58f1ec49485695d5.png)
 
-### 8.1 使用 IDEA 创建一个 maven 项目
+  ![父子目录结构绝活](https://s3.bmp.ovh/imgs/2023/05/05/151d74c13eec1a0f.png)
+
+   
+
+* 统一构建，在聚合工程上进行操作即可（shopping-aggregator），注意这里显示的是 pom 中的 <name> 标签中的值，如果没有定义 name 则默认显示的是 artifactId
+
+  ![](https://s3.bmp.ovh/imgs/2023/05/05/0b8509167c3379c8.png)
+
+### 7.2 继承
+
+到目前为止,我们已经能够使用 Maven 的聚合特性通过一条命令同时构建 shopping-order 和 shopping-delivery 两个模块,不过这仅仅解决了多模块 Maven 项目的一个问题。那么多模块的项目还有什么问题呢?这两个 POM 有着很多相同的配置,例如它们有相同的 groupId 和 version,有相同的 junit 依赖,还有相同的 maven-compiler-plugin 配置。大量的前人经验告诉我们,重复往往就意味着更多的劳动和更多的潜在的问题。在面向对象世界中,程序员员可以使用类继承在一定程度上消除重复,在 Maven 的世界中,也有类似的机制能让我们抽取出重复的配置,这就是 POM 的继承。
+
+* 新建 shopping-parent 模块
+
+  ```xml
+  <?xml version="1.0" encoding="UTF-8"?>
+  <project xmlns="http://maven.apache.org/POM/4.0.0"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+      <modelVersion>4.0.0</modelVersion>
+  
+      <groupId>tech.fengjian</groupId>
+      <artifactId>shopping-parent</artifactId>
+      <version>1.0-SNAPSHOT</version>
+      <packaging>pom</packaging>
+      <name>Shopping Parent</name>
+  
+  </project>
+  ```
+
+* 修改子模块 shopping-order、shopping-delivery 继承 shopping-parent
+
+  * shopping-order
+
+    ```xml
+    <?xml version="1.0" encoding="UTF-8"?>
+    <project xmlns="http://maven.apache.org/POM/4.0.0"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+        <modelVersion>4.0.0</modelVersion>
+    
+        <parent>
+            <artifactId>shopping-parent</artifactId>
+            <groupId>tech.fengjian</groupId>
+            <version>1.0-SNAPSHOT</version>
+            <relativePath>../shopping-parent/pom.xml</relativePath>
+        </parent>
+    
+        <artifactId>shopping-order</artifactId>
+        <name>Shopping Order</name>
+    
+        <dependencies>
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>4.12</version>
+                <scope>test</scope>
+            </dependency>
+        </dependencies>
+    
+        <build>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>3.1</version>
+                    <configuration>
+                        <source>1.8</source>
+                        <target>1.8</target>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </build>
+    </project>
+    ```
+
+  * shopping-delivery
+
+    ```xml
+    <?xml version="1.0" encoding="UTF-8"?>
+    <project xmlns="http://maven.apache.org/POM/4.0.0"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+        <modelVersion>4.0.0</modelVersion>
+    
+        <parent>
+            <artifactId>shopping-parent</artifactId>
+            <groupId>tech.fengjian</groupId>
+            <version>1.0-SNAPSHOT</version>
+            <relativePath>../shopping-parent/pom.xml</relativePath>
+        </parent>
+    
+        <artifactId>shopping-delivery</artifactId>
+        <name>Shopping Delievery</name>
+    
+        <dependencies>
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>4.12</version>
+                <scope>test</scope>
+            </dependency>
+        </dependencies>
+    
+        <build>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>3.1</version>
+                    <configuration>
+                        <source>1.8</source>
+                        <target>1.8</target>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </build>
+    
+    </project>
+    ```
+
+上述 POM 中使用 parent 元素声明父模块,parent 下的子元素 groupId、artifactId 和 version 指定了父模块的坐标,这三个元素是必须的。元素 relativePath 表示父模块 POM 的相对路径,该例中的../shopping-account/pom.xml 表示父 POM 的位置在与 shopping-order/ 目录平行的 shopping-account/ 目录下。当项目构建时,Maven 会首先根据 rellativePath 检查父 POM,如果找不到,再从本地仓库查找。relativePath 的默认值是../pom.xml,也就是说,Maven 默认父 POM 在上一层目录下。正确设置 relativePath 非常重要。考虑这样一个情况,开发团队的新成员从源码库签出一个包含父子模块关系的 Maven 项目。由于只关心其中的某一个子模块,它就直接到该模块的目录下执行构建,这个时候,父模块是没有被安装到本地仓库的,因此如果子模块没有设置正确的 relativePath,Maven 将无法找到父 POM,这将直接导致构建失败。如果 Maven 能够根据 relativePath 找到父POM,它就不需要再去检查本地仓库。这个更新过的 POM 没有为 shopping-order 声明 groupId 和 version,不过这并不代表 shopping-order 没有 groupld 和 version。实际上,这个子模块隐式地从父模均快继承了这两个元素,这也就消除了一些不必要的配置。在该例中,父子模块使用同样的 groupId 和 version,如果遇到子模块需要使用和父模块不一样的 groupld 或者 version 的情况,那么用户完全可以在子模块中显式声明。对于 artifactld 元素来说,子模块应该显式声明,一方面,如果完全继承 groupId、artifactld 和 version,会造成坐标冲突;另一方面,即使使用不同的 groupId 或 version,同样的 artifactld 容易造成混淆。
+
+* 除了 groupId 和 version 可以被继承，还有一些元素也同样可以被继承，下表是完整的可继承的列表
+
+  | 元素                   | 说明                                                         |
+  | ---------------------- | ------------------------------------------------------------ |
+  | groupld                | 项目组ID,项目坐标的核心元素                                  |
+  | version                | 项目版本,项目坐标的核心元素                                  |
+  | description            | 项目的组织信息                                               |
+  | organization           | 项目的组织信息                                               |
+  | inceptionYear          | 项目的创始年份                                               |
+  | url                    | 项目的URL地址                                                |
+  | developers             | 项目的开发者信息                                             |
+  | contributors           | 项目的贡献者信息                                             |
+  | distributionManagement | 项目的部署配置                                               |
+  | issueManagement        | 项目的缺陷跟踪系统信息                                       |
+  | ciManagement           | 项目的持续集成系统信息                                       |
+  | scm                    | 项目的版本控制系统信息                                       |
+  | mailingLists           | 项目的邮件列表信息                                           |
+  | properties             | 自定义的Maven属性                                            |
+  | dependencies           | 项目的依赖配置                                               |
+  | dependencyManagement   | 项目的依赖管理配置                                           |
+  | repositories           | 项目的仓库配置                                               |
+  | build                  | 包括项目的源码目录配置、输出目录配置、插件配置、插件管理配置等 |
+  | reporting              | 包括项目的报告输出目录配置、报告插件配置等                   |
+
+* 依赖管理
+
+  模块 shopping-order 和模块 shopping-delivery 都依赖 junit，那很自然的想到把 junit 依赖从子模块中抽取到 shopping-parent 中。这样就会产生一个问题，如果现在又新增了一个子母块 shopping-a，而 shopping-a 并不需要 junit 依赖，上面直接抽取的做法会强加给 a 一个 junit 依赖。
+
+  Maven 提供了依赖管理标签来解决这种问题，Maven 提供的 dependencyManagement 元素既能让子模块的依赖配置,又能保证子模块依赖使用的灵活性。在dependencyManagement元素下的依赖声明不会引人实际的依赖,不过它能够约束 dependencies 下的依赖使用。例如,可以在 shopping-parent 中加入这样的 dependencyManagement 配置:
+
+  ```xml
+  <?xml version="1.0" encoding="UTF-8"?>
+  <project xmlns="http://maven.apache.org/POM/4.0.0"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+      <modelVersion>4.0.0</modelVersion>
+  
+      <groupId>tech.fengjian</groupId>
+      <artifactId>shopping-parent</artifactId>
+      <version>1.0-SNAPSHOT</version>
+      <packaging>pom</packaging>
+      <name>Shopping Parent</name>
+  
+      <modules>
+          <module>../shopping-delivery</module>
+          <module>../shopping-order</module>
+      </modules>
+  
+      <properties>
+          <junit.version>4.12</junit.version>
+      </properties>
+  
+      <dependencyManagement>
+          <dependencies>
+              <dependency>
+                  <groupId>junit</groupId>
+                  <artifactId>junit</artifactId>
+                  <version>${java.version}</version>
+                  <scope>test</scope>
+              </dependency>
+          </dependencies>
+      </dependencyManagement>
+  </project>
+  ```
+
+  * 首先该父 POM 将 junit 依赖的版本以 Maven 变量的形式提取了出来,不仅消除了一些重复,也使得各依赖喷的版本处于更加明显的位置。
+
+  * 这里使用 dependencyManagement 声明的依赖既不会给 shopping-parent 引人依赖,也不会给它的子模块引入依赖,不过这段配置是会被继承的。
+
+    shopping-order 和 shopping-delivery 如果需要使用 junit，则可配置：
+
+    ```xml
+    <dependency>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+    </dependency>
+    ```
+
+    父 POM中 使用 dependencyManagement 声明依赖能够统一项目范围中依赖的版本,当依赖版本在父 POM中 声明之后,子模块在使用你赖的时候就无须声明版本,也就不会发生多个子模块使用依赖版本不一致的情况:这可以帮助降低依赖冲突的几率。
+
+    如果子模块不声明依赖的使用,即使该依赖已经在父 POM的dependeneyManagement 中声明了,也不会产生任何实际的效果。
+
+* 在介绍依赖范围的时候提到了名为 import 的依赖范围,推迟到现在介绍是因为该范围的依赖只在 dependencyManagement 元素下才有效果,使用该范围国的依赖通常指向一个 POM,作用是将目标 POM 中的 dependencyManagement 配置导人并合并到当前 POM 的 dependencyManagement 元素中。例如想要在另外一个模块中使用与 shopping-parent 完全一样的 dependencyManagement 配置,除了复制配置或者继承这两种方式之外,还可以使用 import 范围依赖将这一配置导入：
+
+  ```xml
+   <dependencyManagement>
+      <dependencies>
+          <dependency>
+              <groupId>tech.fengjian</groupId>
+              <artifactId>shopping-parent</artifactId>
+              <version>1.0-SNAPSHOT</version>
+              <type>pom</type>
+              <scope>import</scope>
+          </dependency>
+      </dependencies>
+  </dependencyManagement>
+  ```
+
+* 插件的继承也遵循同依赖继承一样的规则（pluginManagement），不在赘述
+
+### 7.3 聚合和继承的关系
+
+基于前面的内容,可以了解到,多模块 Maven 项目中的聚合与继承其实是两个概念,其目的完全是不同的。前者主要是为了方便快速构建项目,后者主要是为了消除重复配置。
+对于聚合模块来说,它知道有哪些被聚合的模块,但那些被聚合的模块不知道这个聚合模块的存在。
+对于继承关系的父POM来说,它不知道有哪些子模块继承于它,但那些子模块都必须知道自己的父 POM 是什么。
+如果非要说这两个特性的共同点,那么可以看到,要聚合 POM 与继承关系中的父 POM 的 packaging 都必须是 pom,同时,聚合模块与继承关系中的父模块除了 POM 之外都没有实
+际的内容。
+
+在现有的实际项目中,我们往往会发现一个 POM 既是聚合 POM,又是父 POM,这么做主要是为了方便。一般来说,融合使用聚合与继承也没有什么问题。
+
+Maven 默认能识别的父模块位置,所以当父子模块的目录关系也是父子目录时，不再需要配置 relativePath。
+
+## 8. 实践
+
+### 8.1 约定优于配置
+
+maven 的项目约定：
+
+源码目录为 src/main/java/
+编译输出日录为 target/classes/
+打包方式为 jar
+包输出目录为 target/
+
+### 8.2 maven 项目的构件顺序
+
+实际的构建顺序是这样形成的:Maven 按序读取 POM,如果该 POM 没有依赖模块,那么就构建该模块,否则就先构建其依赖模块,如果该依赖还依赖于其他模块,则进一步先构建依赖的依赖换。
+
+聚合项目之间往往没有依赖关系，按顺序。
+
+父子项目之间，子项目继承（依赖）父项目，先构建父项目，然后再构建子项目。（这也就是如果单独执行子项目的 maven 命令往往会报错的原因，没有设置 relativePath 也没用 install 父项目到本地仓库）
+
+### 8.3 使用 IDEA 创建一个 maven 项目
 
 1. 不使用骨架（Archetype） 创建（`tips：` IDEA 版本不同，功能项位置可能会变化（演示版本为：2022.1.4））
 
@@ -706,11 +974,7 @@ Maven 的生命周期跟你理解的生命周期有一点不同，它有三套�
 
 
 
-3. maven 项目坐标
-
-   
-
-4. maven 项目标准目录结构（约定优于配置）
+3. maven 项目标准目录结构（约定优于配置）
 
    * src
 
@@ -735,9 +999,7 @@ Maven 的生命周期跟你理解的生命周期有一点不同，它有三套�
 
      
 
-### 2.4 maven 核心 pom 文件
-
-
+### 8.4 maven 核心 pom 文件
 
 1. 什么是 pom
 
@@ -886,7 +1148,7 @@ Maven 的生命周期跟你理解的生命周期有一点不同，它有三套�
            </dependency>
            ```
 
-### 2.5 maven 生命周期
+### 8.5 maven 生命周期
 
 1. 什么是生命周期
 
@@ -908,7 +1170,7 @@ Maven 的生命周期跟你理解的生命周期有一点不同，它有三套�
      * deploy：部署到远程的仓库，使得其他开发者或工程可以共享
    * site：生成项目信息、站点
 
-### 2.6 常用的 maven 命令
+### 8.6 常用的 maven 命令
 
 * 常用命令
 
@@ -938,9 +1200,13 @@ Maven 的生命周期跟你理解的生命周期有一点不同，它有三套�
   * mvn jetty:run 启动 jetty
   * mvn tomcat:deploy 运行打包部署
 
-## 3. jar 包管理
 
-### 3.1 如何添加项目需要的 jar 包
+
+### 8.7  jar 包管理
+
+
+
+#### 8.7.1 如何添加项目需要的 jar 包
 
 1. 原理
 
@@ -968,7 +1234,7 @@ Maven 的生命周期跟你理解的生命周期有一点不同，它有三套�
 
    
 
-### 3.2 如何使用 maven 运行一个单元测试
+#### 8.7.2 如何使用 maven 运行一个单元测试
 
 1. 导入依赖
 
@@ -994,7 +1260,7 @@ Maven 的生命周期跟你理解的生命周期有一点不同，它有三套�
    }
    ```
 
-### 3.3 如何建立一个 web 应用
+#### 8.7.3 如何建立一个 web 应用
 
 1. 从 Archetype 新建 web 项目
 
@@ -1010,7 +1276,7 @@ Maven 的生命周期跟你理解的生命周期有一点不同，它有三套�
 
    
 
-### 3.4 如何导入第三方 jar 包到本地仓库
+#### 8.7.4 如何导入第三方 jar 包到本地仓库
 
 1. 搜索并下载 jar
 
@@ -1034,7 +1300,7 @@ Maven 的生命周期跟你理解的生命周期有一点不同，它有三套�
      * -Dversion 是版本号
      * -Dpackaging 是打包类型
 
-### 3.5 常用的 maven 插件
+#### 8.7.5 常用的 maven 插件
 
 1. 官方插件列表
    * groupId 为 org.apache.maven.plugins
@@ -1047,3 +1313,7 @@ Maven 的生命周期跟你理解的生命周期有一点不同，它有三套�
      * maven-antrun-plugin 能让用户在 maven 项目中运行 Ant 任务。用户可以直接在该插件的配置以 Ant 的方式编写 Target，然后交给该插件的 run 目标去执行
    * maven-archetype-plugin
      * archetype 指项目的骨架，maven 初学者最开始执行的 maven 命令可能就是 mvn archetype:generate，这实际上就是让 maven-archetype-plugin 生成一个很简单的项目骨架，帮助开发者快速上手
+
+## 9. 总结
+
+至此，本文已经提供了 maven 详细指南。通过这个教程，我们可以轻松使用 maven 地构建自己的 Maven java项目，方便团队内部开发和组织内共享代码。如果有任何问题，请在评论区留言。
