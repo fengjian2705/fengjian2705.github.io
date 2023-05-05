@@ -706,7 +706,7 @@ Maven 的生命周期跟你理解的生命周期有一点不同，它有三套�
 
   ![平行目录结构聚合工程](https://s3.bmp.ovh/imgs/2023/05/05/58f1ec49485695d5.png)
 
-  ![父子目录结构绝活](https://s3.bmp.ovh/imgs/2023/05/05/151d74c13eec1a0f.png)
+  ![父子目录结构聚合工程](https://s3.bmp.ovh/imgs/2023/05/05/151d74c13eec1a0f.png)
 
    
 
