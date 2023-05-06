@@ -629,15 +629,15 @@ Spring @Enable*
 
 **<font color="orange" size="2">996面试题</font>**-Spring Framework有哪些核心模块？
 
-spring-core:Spring 基础 API 模块,如资源管理,泛型处理
+* spring-core:Spring 基础 API 模块,如资源管理,泛型处理
 
-spring-beans:Spring Bean 相关,如依赖查找,依赖注入
+* spring-beans:Spring Bean 相关,如依赖查找,依赖注入
 
-spring-aop:SpringAOP 处理,如动态代理,AOP 字节码提升
+* spring-aop:SpringAOP 处理,如动态代理,AOP 字节码提升
 
-spring-context:事件驱动、注解驱动,模块驱动等
+* spring-context:事件驱动、注解驱动,模块驱动等
 
-spring-expression:Spring 表达式语言模块
+* spring-expression:Spring 表达式语言模块
 
 **<font color="red" size="2">劝退面试题</font>**-Spring Framework 的优势和不足是什么？
 

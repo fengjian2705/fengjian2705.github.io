@@ -61,7 +61,7 @@ reusable libraries to take care of generic tasks, but with inversion of control,
 
   "In object-oriented programming, there are several basic techniquees to implement inversion of control. These are:
 
-  * Using a service locator pattern：服务定位模式，这种模式是 JavaEE 里面所定义的一种模式，通常通过 JNDI 这种技术获取 JavaEE 的组件，比如说获取 EJB 组件或者 DataSource 这样的东西
+  * Using a service IoCator pattern：服务定位模式，这种模式是 JavaEE 里面所定义的一种模式，通常通过 JNDI 这种技术获取 JavaEE 的组件，比如说获取 EJB 组件或者 DataSource 这样的东西
   * Using dependency injection, for example：依赖注入
     * Constructor injection：构造器注入
     * Parameter injection：参数注入
@@ -339,7 +339,47 @@ call you'."
 
   Setter 注入应主要仅用于可以在类内分配合理默认值的可选依赖项。否则，在代码使用该依赖项的所有地方都必须执行非空检查。 Setter 注入的一个好处是，setter 方法使得那个类的对象容易在以后进行重新配置或重新注入。因此，通过JMX MBeans进行管理是 Setter 注入的一个很好的用例。
 
-* 《Expert One-on-OneTM J2EETM Development without EJBTM》认为Setter注入的缺点:
+* 《Expert One-on-One<sup>TM</sup> J2EE<sup>TM</sup> Development without EJB<sup>TM</sup>)认为 Setter 注入的优点:
+
+  "<font color="red">Advantages of Setter Injection</font> include:
+
+  * JavaBean properties are <font color="red">well supported</font> in IDES.
+
+  * JavaBean properties are <font color="red">self-documenting</font>.
+
+  * JavaBean properties are inherited by subclasses without the need for any code
+
+  * It's possible to use <font color="red">the standard JavaBeans property-editor machinery for type conversions</font> if necessary
+
+  * Many existing JavaBeans can be used within a JavaBean-oriented IoC container without modification
+
+  * If there is a corresponding getter for each setter (making the property readable, as well as writable), it is possible to ask
+
+  the component for its current configuration state. This is particularly useful if we want to persist that state: for example,
+
+  in an XML form or in a database. With Constructor Injection, there's no way to find the current state.
+
+  * Setter Injection works well for objects that have default values, meaning that not all properties need to be supplied at
+
+  runtime."
+
+  Setter 注入的优点包括：
+
+  * JavaBean 属性在 IDE 中获得很好的支持。
+
+  * JavaBean 属性是自我记录的。
+
+  * JavaBean 属性被子类继承，无需任何代码。
+
+  * 如有必要，可以使用标准的 JavaBeans 属性编辑器机制进行类型转换。
+
+  * 许多现有的 JavaBeans 可以在 JavaBean 导向的 IoC 容器中使用而无需修改。
+
+  * 如果每个 setter 都有相应的 getter（使属性可读和可写），则可以询问组件其当前配置状态。如果想要保存该状态，这非常有用，例如在XML表单或数据库中。使用构造函数注入，没有办法找到当前状态。
+
+  * Setter 注入适用于具有默认值的对象，这意味着不需要在运行时提供所有属性。
+
+* 《Expert One-on-One<sup>TM</sup> J2EE<sup>TM</sup> Development without EJB<sup>TM</sup>》认为 Setter 注入的缺点:
 
   "<font color="red">Disadvantages</font> include:
 
@@ -347,4 +387,51 @@ call you'."
 
   缺点包括：
 
-  在任何契约中都没有表达调用 setter 的顺序。因此，我们有时需要在最后一个setter被调用之后调用方法来初始化组件。Spring 提供了 `org.springframework.beans.factory.InitializingBean` 接口和调用任意初始化方法的能力。然而，这个契约必须被记录以确保在容器之外正确使用。在使用之前可能没有调用所有必要的setter，因此对象可能会部分配置不完整。
+  在任何契约中都没有表达调用 setter 的顺序。因此，我们有时需要在最后一个 setter 被调用之后调用方法来初始化组件。Spring 提供了`org.springframework.beans.factory.InitializingBean` 接口和调用任意初始化方法的能力。然而，这个契约必须被记录以确保在容器之外正确使用。在使用之前可能没有调用所有必要的setter，因此对象可能会部分配置不完整。
+
+* 《Expert One-on-One<sup>TM</sup> J2EE<sup>TM</sup> Development without EJB<sup>TM</sup>》认为构造器注入的优点:
+  "<font color="red">Advantages of Constructor Injection</font> include:
+  * Each managed object is guaranteed to be in a consistent state-fully configured-before it can be invoked in any
+    business methods. This is the primary motivation of Constructtor Injection. (However, it is possible to achieve the
+    same result with JavaBeans via dependency checking, as Spring can optionally perform.) There's no need for
+    initialization methods.
+  * There may be slightly less code than results from the useof multiple JavaBean methods, although will be no
+    difference in complexity."
+* 《Expert One-on-One<sup>TM</sup> J2EE<sup>TM</sup> Development without EJB<sup>TM</sup>)认为构造器注入的缺点:
+  "<font color="red">Disadvantages</font> include:
+  * Although also a Java-language feature, multi-argument coonstructors are probably less common in existing code thause
+    of JavaBean properties.
+  * Java constructor arguments don't have names visible by introspection
+  * Constructor argument lists are less well supported by IDEs tharJavaBean setter methods.
+  * Long constructor argument lists and large constructor bodies can become unwieldy
+  * Concrete inheritance can become problematic.
+  * Poor support for optional properties, compared to JavaBeaans
+  * Unittesting can be slightly more difficult
+  * When collaborators are passed in on object construction, it becomes impossible to change the reference held in the
+    object."
+
+## 10. 面试题
+
+**<font color="green" size="2">沙雕面试题</font>**-什么是 IoC？
+
+答:
+
+简单地说,IoC 是反转控制,类似于好莱坞原则,主要有依赖查找和依赖注入实现，
+
+进一步说的话：按照IoC的定义很多方面都是IoC,我们常说的比如说 JavaBeans 是 IoC 的一个容器实现、Servlet 的容器也是 IoC 的实现，因为 Servlet 可以去依赖或者反向地通过 JNDI 的方式进行得到一些外部的一些资源包括 DataSource 或者相关的 EJB 的组件，与此同时像是 Spring Framework 或者 PicoContainer 的依赖注入的框架也能够帮助我们去实现我们的IoC。同时除此之外这些东西是我们比较常见的一个 IoC 的实现策略。按照它这个定义如果是反转控制那东西就多了去了，包括我们说消息其实也算，因为消息其实是被动的我们如果说我们传统的调用链路是一个主动拉的模式那么 IoC 其实是一种推的模式，那么推的模式在消息事件以及各种这样类似于这种反向的观察者模式的扩展都属于 IoC 那么这东西就无穷无尽了，那么它如果仅仅关注于依赖注入比如说通过构造器注入或 Setter 注入，那么它其中有什么好处。
+
+**<font color="orange" size="2">996面试题</font>**-依赖查找和依赖注入的区别？
+
+答:依赖查找是主动或手动的依赖查找方式,通常需要依赖容器或标准 API 实现。而依赖注入则是手动或自动依赖绑定的方式,无需依赖特定的容器和 API。
+
+**<font color="red" size="2">劝退面试题</font>**-Spring 作为 IoC 容器有什么优势？
+
+答:
+典型的 IoC 管理,依赖查找和依赖注入
+AOP 抽象
+事务抽象
+事件机制
+SPI 扩展
+强大的第三方整合
+易测试性
+更好的面向对象
