@@ -136,7 +136,7 @@ call you'."
     * Google Guice (https://github.com/google/guice)
     * Spring Framework (https://spring.io/projects/spring-framework)
 
-### 5.1 Java Beans 作为 IoC 容器
+## 6. 传统 IoC 容器实现：Java Beans
 
 * 特性
   * 依赖查找
@@ -276,4 +276,75 @@ call you'."
     BeanInfo beanInfo = Introspector.getBeanInfo(Person.class,Object.class);
     ```
 
-    
+## 7. 轻量级 IoC 容器
+
+* 《Expert One-on-One<sup>TM</sup> J2EE<sup>TM</sup> Development without EJB<sup>TM</sup>》认为轻量级容器的特征:
+
+  A container that can manage application code.能够管理到我的应用代码，并不是说我们是个代码的托管工具，它是说我们的容器可以管理代码运行，比如说可以控制代码的一个启停。
+
+  A container that is quick to start up.说它能够快速地启动。
+
+  A container that doesn't require any special deployment steps to deploy objects within it.它不需要一些特殊的配置
+
+  A container that has such a light footprint and minimal API dependencies that it can be run in a variety of environments.容器它能够达到一些比较轻量级的内存占用,以及最小化的 API 的一个依赖
+
+  A container that sets the bar for adding a managed object so low in terms of deployment effort and performance. overhead that it's possible to deploy and
+
+  manage fine-grained objects, as well as coarse-grained components.
+
+  容器就需要一些可以管控的这么一个渠道去部署和管理一些细粒度的对象甚至是一些粗粒度的组件，主要它是要达到一些部署上的一个效率以及相关的性能上面的一个开销，那么是它对相当于容器的一个补充说明。
+
+* 《Expert One-on-One<sup>TM</sup> J2EE<sup>TM</sup> Development without EJB<sup>TM</sup>》认为轻量级容器的好处：
+
+  Escaping the monolithic container 释放掉一些容器，就所谓的聚式或者是单体这样的容器，monolithic 这种单词就是聚式或者说我们的单体应用
+
+  Maximizing codereusability 要实现最大化的一个代码的复用
+
+  Greater object orientation 更大程度上面的面向对象
+
+  Greater productivity 更大化的一个产品化
+
+  Better testability 更好的可测试性
+
+
+
+## 8. 依赖查找 VS 依赖注入
+
+从 5 个纬度来进行对比：没有绝对的好与坏，只有相对的合理
+
+| 类型     | 依赖处理 | 实现便利性 | 代码侵入性   | API 依赖性     | 可读性 |
+| -------- | -------- | ---------- | ------------ | -------------- | ------ |
+| 依赖查找 | 主动获取 | 相对繁琐   | 侵入业务逻辑 | 依赖容器 API   | 良好   |
+| 依赖注入 | 被动提供 | 相对便利   | 低侵入性     | 不依赖容器 API | 一般   |
+
+## 9. 构造器注入 VS Setter注入
+
+* Spring Framework 对构造器注入与 Setter 的论点:
+
+  "The Spring team generally <font color="red">advocates constructor injection</font>, as it lets you implement application components as immutable objects and ensures that required 
+
+  dependencies are not null. Furthermore, constructor-injected components are always returned to the client (calling) code in a fully initialized state. As a side note, a large number of constructor arguments a bad code smell, implying that the class likely has too many responsibilities and should be refactored
+
+  to better address proper separation of concerns.
+
+  Spring 团队通常倡导使用构造函数注入（constructor injection），因为它可以让你把应用组件实现为不可变对象，并确保必需的依赖项不为空。此外，构造函数注入的组件总是以完全初始化的状态返回给客户端代码（调用方）。一个额外的说明是，大量的构造函数参数是一种不好的代码气味，意味着这个类可能有太多的职责，应该进行重构，以更好地实现关注点分离。
+
+  <font color="red"> Setter injection should primarily only be used for optional dependencies</font> that can be assigned reasonable default values within 
+
+  the class. Otherwise, not-null checks must be performed everywhere the code uses the dependency. One benefit of setter injection is that setter methods
+
+  make objects of that class amenable to reconfiguration or re-injection later Management through JMX MBeans is therefore a compelling use case for setter
+
+  injection."
+
+  Setter 注入应主要仅用于可以在类内分配合理默认值的可选依赖项。否则，在代码使用该依赖项的所有地方都必须执行非空检查。 Setter 注入的一个好处是，setter 方法使得那个类的对象容易在以后进行重新配置或重新注入。因此，通过JMX MBeans进行管理是 Setter 注入的一个很好的用例。
+
+* 《Expert One-on-OneTM J2EETM Development without EJBTM》认为Setter注入的缺点:
+
+  "<font color="red">Disadvantages</font> include:
+
+  The order in which setters are called is not expressed in any contract. Thus, we sometimes need to invoke a method after the last setter has been called to initialize the component. Spring provides the `org.springframework.beans.factory.InitializingBean` interface for this; it also provides the ability to invoke an arbitrary init method. However, this contract must be documented to ensure correct use outside a container. Not all the necessary setters may have been called before use. The object can thus be left partially configured."
+
+  缺点包括：
+
+  在任何契约中都没有表达调用 setter 的顺序。因此，我们有时需要在最后一个setter被调用之后调用方法来初始化组件。Spring 提供了 `org.springframework.beans.factory.InitializingBean` 接口和调用任意初始化方法的能力。然而，这个契约必须被记录以确保在容器之外正确使用。在使用之前可能没有调用所有必要的setter，因此对象可能会部分配置不完整。
