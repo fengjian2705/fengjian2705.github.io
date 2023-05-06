@@ -1,0 +1,279 @@
+---
+title: Spring 核心编程思想（二）：重新认识 IoC
+tags:
+  - spring
+index_img: https://s3.bmp.ovh/imgs/2023/05/06/43c27790d5a8ea71.jpg
+# excerpt: spring
+categories:
+  - 后端
+  - spring 核心编程思想
+---
+
+## 1. 重新认识 IoC
+
+| 内容                     | 说明                                                         |
+| ------------------------ | ------------------------------------------------------------ |
+| IoC 发展简介             | 包括 IoC 的定义以及它的一个简史                              |
+| IoC 主要实现策略         | 其实 IoC 不只是我们所看到的包括 Martin Fowler 或者是像 Spring 官方的它的一个讨论 |
+| IoC 容器的职责           | 有多方解读来进行说明                                         |
+| IoC 容器的实现           | 包括了我们的开源实现和传统实现                               |
+| 传统 IoC 容器实现        | 着重介绍就是一种关于Java Beans 对 IoC 的容器的一个实现       |
+| 轻量级 IoC 容器          | 如何定义以及它给我们带来的好处，有什么值得我们学习的地方     |
+| 依赖查找 VS 依赖注入     | 为什么我们说Spring框架里面会偏好于依赖注入而非依赖查找       |
+| 构造器注入 VS Setter注入 | 关于构造器注入和 Setter 方法注入的一个区别和优势             |
+| 面试题精选               | -                                                            |
+
+## 2. IoC 发展简介
+
+### 2.1 什么是 IoC?
+
+In software engineering, inversion of control (IoC) is a programmiing principle. IoC inverts the flow of control as compared to traditional control flow. In IoC, custom-wvritten portions of a computer program receive the flow of control from a generic framework. Asoftware architecture with this design inverts
+
+control as compared to traditional procedural programming: in traaditional programming, the custom code that expresses the purpose of the program calls into 
+
+reusable libraries to take care of generic tasks, but with inversion of control, it is the framework that calls into the custom,or task-specific,code.
+
+在软件工程中，控制反转（IoC）是一种编程原则。与传统的控制流相比，IoC 反转了控制流。在 IoC 中，计算机程序的自定义部分从通用框架接收控制流。具有这种设计的软件架构与传统的过程式编程相比，控
+
+制被反转了：在传统的编程中，表达程序目的的自定义代码调用可重用库来处理通用任务，但是在控制反转中，是框架调用自定义或特定任务的代码。
+
+
+
+​                                                                                                       来源:https://en.wikipedia.org/wiki/Inversion_of_control
+
+### 2.2 发展简介
+
+1983 年,Richard E. Sweet 在《The Mesa Programming Environment》中提出"Hollywood Principle"(好莱坞原则)
+
+1988 年,Ralph E.Johnson&Brian Foote在《Designing ReusableClasses》中提出"Inversion of control"(控制反转)
+
+1996 年,Michael Mattson 在《Object-Oriented Frameworks, Asurvey of methodological issues》中将 "Inversion of control" 命名为 "Hollywood principle"
+
+<font color="red">2004 年,Martin Fowler 在《Inversion of Control Containers andthe Dependency Injectionpattern》中提出了自己对 IoC 以及 DI 的理解</font>
+
+2005 年,Martin Fowler 在《Inversion of Control》对 IoC 做出进一步的说明
+
+## 3. IoC 主要实现策略
+
+* 维基百科(https://en.wikipedia.org/wiki/Inversion_of_control)
+
+  Implementation techniques小节的定义:
+
+  "In object-oriented programming, there are several basic techniquees to implement inversion of control. These are:
+
+  * Using a service locator pattern：服务定位模式，这种模式是 JavaEE 里面所定义的一种模式，通常通过 JNDI 这种技术获取 JavaEE 的组件，比如说获取 EJB 组件或者 DataSource 这样的东西
+  * Using dependency injection, for example：依赖注入
+    * Constructor injection：构造器注入
+    * Parameter injection：参数注入
+    * Setter injection：set 方法注入
+    * Interface injection：接口注入
+  * Using a contextualized lookup：上下文依赖查询，由另外一种技术来进行实现，比如说在 Java 里面有 Java Beans 这样的技术，Java Beans 里面有一个通用的上下文叫做 bean context，这种里面既可以传输我的 Bean 也可以来管理我的Bean的层次性
+  * Using template method design pattern：关于模板方法的一个设计模式，这种设计模式在Spring里面大量地会用到，比如说是SpringJDBC里面会用到，JDBC Template这样的实现会给我们一种类似于比如说Statement这样的Callback这种Callback能够帮助我们实现地更为抽象，当我们去实现这样的接口的时候我们不需要关心Callback从哪来，那么也实现了一种反转控制的方式
+  * Using strategy design pattern:策略模式"
+
+* 《Expert One-on-One<sup>TM</sup> J2EE<sup>TM</sup> Development without EJB<sup>TM</sup>》提到的主要实现策略:
+
+  "IoC is a broad concept that can be implemented in different ways. There are two main types:
+
+  **Dependency Lookup（依赖查找）**: The container provides callbacks to components, and a lookup context. This is
+
+  the EJB and Apache Avalon approach. It leaves the onus each component to use container APls
+
+  look up resources and collaborators. The Inversion of Control is limited to the container invoking
+
+  callback methods that application code can use to obtain resources.
+
+  **Dependency Injection（依赖注入）**: Components do no look up; they provide plain Java methods enabling the
+
+  container to resolve dependencies. The container is wholly responsible for wiring up components,
+
+  passing resolved objects in to JavaBean properties or constructors. Use of JavaBean properties is
+
+  called Setter Injection; use of constructor arguments is called Constructor Injection."
+
+## 4. IoC 容器的职责
+
+1. 维基百科(https://en.wikipedia.org/wiki/Inversion_of_control)
+
+在Overview小节中提到:
+
+"Inversion of control serves the following design purposes:
+
+* To decouple（解耦） the execution of a task from implementation.
+* To focus a module on the task it is designed for.
+* To free modules from assumptions about how other systems do what they do and instead rely on
+  contracts.
+* To prevent side effects when replacing a module.
+
+Inversion of control is sometimes facetiously referred to as the 'Hollywood Principle: Don't call us, we'll
+call you'."
+
+* 通用职责
+* 依赖处理
+  * 依赖查找
+  * 依赖注入
+* 生命周期管理
+  * 容器
+  * 托管的资源(JavaBeans 或其他资源)
+* 配置
+  * 容器
+  * 外部化配置
+  * 托管的资源(JavaBeans 或其他资源)
+
+## 5. IoC 容器的实现
+
+* 主要实现
+  * Java SE
+    * Java Beans
+    * Java ServiceLoader SPl
+    * JNDI (Java Naming and Directory Interface)
+  * Java EE
+    * EJB (Enterprise Java Beans)
+    * Servlet
+  * 开源
+    * Apache Avalon (http://avalon.apache.org/closed.html)
+    * PicoContainer (http://picocontainer.com/)
+    * Google Guice (https://github.com/google/guice)
+    * Spring Framework (https://spring.io/projects/spring-framework)
+
+### 5.1 Java Beans 作为 IoC 容器
+
+* 特性
+  * 依赖查找
+  * 生命周期管理
+  * 配置元信息
+  * 事件
+  * 自定义
+  * 资源管理
+  * 持久化
+* 规范
+  * JavaBeans: https://www.oracle.com/technetwork/java/javase/tech/index-jsp-138795.html
+  * BeanContext: https://docs.oracle.com/javase/8/docs/technotes/guides/beans/spec/beancontext.htm
+
+* Java Beans 实战
+
+  通常来说对于 Java Bean 的理解可以认为是一个简单的 POJO，但是对 Java Bean 的理解可以了解得更多
+
+  * 新建 maven 项目 java-beans-demo
+
+  * 新建 Person 类 
+
+    ```java
+    package tech.fengjian.ioc.java.beans;
+    
+    /**
+     * 描述人的 POJO 类
+     * <p>
+     * POJO: Setter/Getter方法
+     * Java Beans：可写方法(Writable)/可读方法(Readable)
+     */
+    public class Person {
+    
+        private String name;// Property
+        private Integer age;
+    
+        public String getName() {
+            return name;
+        }
+    
+        public void setName(String name) {
+            this.name = name;
+        }
+    
+        public Integer getAge() {
+            return age;
+        }
+    
+        public void setAge(Integer age) {
+            this.age = age;
+        }
+    }
+    ```
+
+    
+
+  * 新建 BeanInfoDemo 类
+
+    ```java
+    package tech.fengjian.ioc.java.beans;
+    
+    import java.beans.BeanInfo;
+    import java.beans.IntrospectionException;
+    import java.beans.Introspector;
+    import java.util.Arrays;
+    
+    /**
+     * {@link java.beans.BeanInfo} 示例
+     */
+    public class BeanInfoDemo {
+    
+        public static void main(String[] args) throws IntrospectionException {
+    
+            // 通过 Java Beans 自省操作定义 BeanInfo
+            BeanInfo beanInfo = Introspector.getBeanInfo(Person.class);
+    
+            Arrays.stream(beanInfo.getPropertyDescriptors()).forEach(propertyDescriptor -> {
+                System.out.println(propertyDescriptor);
+            });
+        }
+    }
+    ```
+
+  * 关于 BeanInfo 的解析
+
+    ```java
+    package java.beans;
+    
+    import java.awt.Image;
+    
+    public interface BeanInfo {
+    
+        BeanDescriptor getBeanDescriptor();
+    
+        EventSetDescriptor[] getEventSetDescriptors();
+    
+        int getDefaultEventIndex();
+    
+        PropertyDescriptor[] getPropertyDescriptors();
+    
+        int getDefaultPropertyIndex();
+    
+        MethodDescriptor[] getMethodDescriptors();
+    
+        BeanInfo[] getAdditionalBeanInfo();
+    
+        Image getIcon(int iconKind);
+    
+    }
+    
+    ```
+
+    这个类里会有一些描述：
+
+    * BeanDescriptor getBeanDescriptor();
+
+      Bean 的 Descriptor，那么 Bean 的 Descriptor 这里主要是指的一些Bean的基本的描述
+
+    * EventSetDescriptor[] getEventSetDescriptors();
+
+      关于事件上的描述，那么这事件就包括我的事件的一个处理的方法
+
+    * PropertyDescriptor[] getPropertyDescriptors();
+
+      还有就是关于我的 Property 描述器或者描述符，描述我们定义的写方法和读方法
+
+  * 上面 BeanInfoDemo 输出结果：
+
+    ```java
+    java.beans.PropertyDescriptor[name=age; propertyType=class java.lang.Integer; readMethod=public java.lang.Integer tech.fengjian.ioc.java.beans.Person.getAge(); writeMethod=public void tech.fengjian.ioc.java.beans.Person.setAge(java.lang.Integer)]
+    java.beans.PropertyDescriptor[name=class; propertyType=class java.lang.Class; readMethod=public final native java.lang.Class java.lang.Object.getClass()]
+    java.beans.PropertyDescriptor[name=name; propertyType=class java.lang.String; readMethod=public java.lang.String tech.fengjian.ioc.java.beans.Person.getName(); writeMethod=public void tech.fengjian.ioc.java.beans.Person.setName(java.lang.String)]
+    ```
+
+    输出了 age、class、name 三个 Property 描述信息。这里多出了一个 class，这个是 Object 类中的 getClass 方法，跟定义 BeanInfo 的方法参数有关，若指定 stopClass 为 Object有，那么 class 就不会输出
+
+    ```java
+    BeanInfo beanInfo = Introspector.getBeanInfo(Person.class,Object.class);
+    ```
+
+    
