@@ -955,3 +955,7 @@ ApplicationContext 除了 IoC 容器角色,还有提供:
 * 注解(Annotations)
 * Environment抽象(Environment Abstraction)
 
+## 9. 使用 IoC 容器
+
+* BeanFactory 是 Spring 底层 IoC 容器
+* ApplicationContext 是具备应用特性的 BeanFactory 超集
