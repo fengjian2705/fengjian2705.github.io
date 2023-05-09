@@ -111,19 +111,138 @@ public class BeanDefinitionCreationDemo {
 
   每个 Bean 拥有一个或多个标识符(identifiers),这些标识符在 Bean 所在的容器必须是唯一的。通常,一个 Bean 仅有一个标识符,如果需要额外的,可考虑使用别名(Alias)来扩充。
 
-  在基于XML的配置元信息中,开发人员可用 id 或者 name 属性来规定 Bean 的标识符。通常 Bean 的标识符由字母组成,允许出现特殊字符。如果要想引入 Bean 的别名的话,可在 name 属性使用半角逗号
+  在基于 XML 的配置元信息中,开发人员可用 id 或者 name 属性来规定 Bean 的标识符。通常 Bean 的标识符由字母组成,允许出现特殊字符。如果要想引入 Bean 的别名的话,可在 name 属性使用半角逗号(",")或分号(";")来间隔。Bean 的 id 或 name 属性并非必须制定,如果留空的话,容器会为 Bean 自动生成一个唯一的名称。Bean 的命名尽管没有限制,不过官方建议采用驼峰的方式,更符合 Java 的命名约定。
 
-  (",")或分号(";")来间隔。Bean 的 id 或 name 属性并非必须制定,如果留空的话,容器会为Bean自动生成一个唯一的名称。Bean 的命名尽管没有限制,不过官方建议采用驼峰的方式,更符合 Java 的命
+​	**tips：**每个 Bean 它的识别符是在它所在的容器，也就说它所在的 BeanDefinition 里面或者说 BeanFactory 里面是唯一的并非是整个应用是唯一的这个地方是要加以区别的。
 
-  名约定。
+* Bean 名称生成器(BeanNameGenerator)
 
-**tips：**每个 Bean 它的识别符是在它所在的容器，也就说它所在的 BeanDefinition 里面或者说 BeanFactory 里面是唯一的并非是整个应用是唯一的这个地方是要加以区别的。
+* 由 Spring Framework 2.0.3 引入,框架內建两种实现:
+
+  DefaultBeanNameGenerator：默认通用 BeanNameGenerator 实现
+
+* AnnotationBeanNameGenerator: 基于注解扫描的 BeanNameGenerator 实现,起始于 Spring Framework 2.5,关联的官方文档:
+
+  With component scanning in the classpath, Spring generates bean names for unnamed components,following the rules described earlier: essentially,taking 
+
+  the simple class name and turning its initial character to lower-case. However, in the (unusual) special case when there is more than one character and 
+
+  both the first and second characters are upper case, the original casing gets preserved. These are the same rules as defined by 
+
+  java.beans.Introspector.decapitalize (which Spring uses here).
+
+   当在 classpath 中使用组件扫描时，Spring 会根据之前描述的规则为未命名的组件生成 bean 名称，即将**类名开头字母转换为小写**。但是，在一个罕见的特殊情况下，如果**类名超过一个字符且前两个字        	符都是大写字母，则保留原始大小写**。这些规则与 java.beans.Introspector.decapitalize 所定义的规则相同（Spring 在此处使用它）。
+
+BeanNameGenerator:
+
+```java
+
+package org.springframework.beans.factory.support;
+
+import org.springframework.beans.factory.config.BeanDefinition;
+
+/**
+ * Strategy interface for generating bean names for bean definitions.
+ *
+ * @author Juergen Hoeller
+ * @since 2.0.3
+ */
+public interface BeanNameGenerator {
+
+	/**
+	 * Generate a bean name for the given bean definition.
+	 * @param definition the bean definition to generate a name for
+	 * @param registry the bean definition registry that the given definition
+	 * is supposed to be registered with
+	 * @return the generated bean name
+	 */
+	String generateBeanName(BeanDefinition definition, BeanDefinitionRegistry registry);
+
+}
+```
+
+DefaultBeanNameGenerator:
+
+```java
+
+package org.springframework.beans.factory.support;
+
+import org.springframework.beans.factory.config.BeanDefinition;
+
+/**
+ * Default implementation of the {@link BeanNameGenerator} interface, delegating to
+ * {@link BeanDefinitionReaderUtils#generateBeanName(BeanDefinition, BeanDefinitionRegistry)}.
+ *
+ * @author Juergen Hoeller
+ * @since 2.0.3
+ */
+public class DefaultBeanNameGenerator implements BeanNameGenerator {
+
+	/**
+	 * A convenient constant for a default {@code DefaultBeanNameGenerator} instance,
+	 * as used for {@link AbstractBeanDefinitionReader} setup.
+	 * @since 5.2
+	 */
+	public static final DefaultBeanNameGenerator INSTANCE = new DefaultBeanNameGenerator();
 
 
+	@Override
+	public String generateBeanName(BeanDefinition definition, BeanDefinitionRegistry registry) {
+		return BeanDefinitionReaderUtils.generateBeanName(definition, registry);
+	}
 
+}
+```
 
+从 5.2 版本开始它用的单例的方式来进行做,那么相当于说它为了节约内存的开销，那么这时候用单例来进行表达就可以了。这里为什么没有把构造器变成 private？我们通常说一个单例我们不希望外部来进行初始化，那么为什么这里不把它变成私有的，因为你这个 BeanDefinition 就是 DefaultBeanNameGenerator 实现它是个公有的 API，如果你擅自从高版本里面把它构造函数的一个我们说访问限定改成了非public 的话那么其他版本其他老的兼容方式就会出问题所以这个时候还是保持这样的原样，那么换言之 Spring 官方希望如果你要用API实现的话最好是用单例的方式来进行呈现。
 
+进一步查看 generateBeanName 方法：
 
+```java
+public static String generateBeanName(BeanDefinition beanDefinition, BeanDefinitionRegistry registry)
+        throws BeanDefinitionStoreException {
+
+    return generateBeanName(beanDefinition, registry, false);
+}
+```
+
+```java
+public static String generateBeanName(
+        BeanDefinition definition, BeanDefinitionRegistry registry, boolean isInnerBean)
+        throws BeanDefinitionStoreException {
+
+    String generatedBeanName = definition.getBeanClassName();
+    if (generatedBeanName == null) {
+        if (definition.getParentName() != null) {
+            generatedBeanName = definition.getParentName() + "$child";
+        }
+        else if (definition.getFactoryBeanName() != null) {
+            generatedBeanName = definition.getFactoryBeanName() + "$created";
+        }
+    }
+    if (!StringUtils.hasText(generatedBeanName)) {
+        throw new BeanDefinitionStoreException("Unnamed bean definition specifies neither " +
+                "'class' nor 'parent' nor 'factory-bean' - can't generate bean name");
+    }
+
+    String id = generatedBeanName;
+    if (isInnerBean) {
+        // Inner bean: generate identity hashcode suffix.
+        id = generatedBeanName + GENERATED_BEAN_NAME_SEPARATOR + ObjectUtils.getIdentityHexString(definition);
+    }
+    else {
+        // Top-level bean: use plain class name with unique suffix if necessary.
+        return uniqueBeanName(generatedBeanName, registry);
+    }
+    return id;
+}
+```
+
+首先我们去生成这个Bean的名称的时候它首先去取的是 Bean 的一个 Class,Bean 的 Class 之后我们可以看一下这里会有两种实现方式:
+
+* 第一个它如果是一个嵌套的 Bean 这个时候会生成一个,就说 Bean 名称后面会增加一个分隔符就是个#号,通过调试就会发现会发现在这个 Name 名后面通常会加上一个井号后面带个数字或带一个字符来进行唯一的标识，
+
+* 如果它是唯一的话，,它会变成一个等于 uniqueBean，这种方式其实比较简单
 
 
 
