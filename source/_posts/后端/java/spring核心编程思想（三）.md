@@ -959,3 +959,444 @@ ApplicationContext 除了 IoC 容器角色,还有提供:
 
 * BeanFactory 是 Spring 底层 IoC 容器
 * ApplicationContext 是具备应用特性的 BeanFactory 超集
+
+### 9.1 XML 场景下底层 IoC 容器：BeanFactory
+
+```java
+	package tech.fengjian.ioc.container.overview.container;
+
+import org.springframework.beans.factory.support.DefaultListableBeanFactory;
+import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
+
+/**
+* <h1>{@link BeanFactory} 作为 IoC 容器示例</h1>
+* @author 风间
+* @since 2023/5/9
+*/
+public class BeanFactoryAsIoCContainerDemo {
+
+    public static void main(String[] args) {
+
+        // 创建 BeanFactory 容器
+        DefaultListableBeanFactory beanFactory = new DefaultListableBeanFactory();
+        XmlBeanDefinitionReader reader = new XmlBeanDefinitionReader(beanFactory);
+        // XML 配置文件 classpath 路径
+        String IoCation = "META-INF/dependency-injection-context.xml";
+        // 加载配置，返回加载到的 Bean 个数
+        int loadBeanDefinitions = reader.loadBeanDefinitions(IoCation);
+        System.out.println(loadBeanDefinitions);
+
+    }
+}
+```
+
+解析：DefaultListableBeanFactory 是 IoC 的底层容器，XmlBeanDefinitionReader 是 XML 方式的 Bean 定义的一个读取器，观察他的构造方法：需要一个 BeanDefinitionRegistry 接口类型
+
+的参数，DefaultListableBeanFactory 这个类呢又实现了 BeanDefinitionRegistry 接口，所以可以利用 XmlBeanDefinitionReader 和 DefaultListableBeanFactory 来加载 Bean 的配置。
+
+一句话可以总结为：从 IoCation 的位置把配置好的 Bean 加载到 DefaultListableBeanFactory 定义的 IoC 容器中去。
+
+```java
+public XmlBeanDefinitionReader(BeanDefinitionRegistry registry) {
+		super(registry);
+	}
+```
+
+### 9.2 注解场景下 ApplicationContext 作为 IoC 容器
+
+```java
+package tech.fengjian.ioc.container.overview.container;
+
+import org.springframework.beans.factory.ListableBeanFactory;
+import org.springframework.beans.factory.support.DefaultListableBeanFactory;
+import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.context.annotation.Bean;
+import tech.fengjian.ioc.container.overview.domain.User;
+
+import java.util.Map;
+
+/**
+ * <h1>{@link org.springframework.beans.factory.BeanFactory}作为 IoC 容器示例</h1>
+ *
+ * @author 风间
+ * @since 2023/5/9
+ */
+public class AnnotationApplicationContextAsIoCContainerDemo {
+
+    public static void main(String[] args) {
+
+        // 创建 ApplicationContext 容器
+        AnnotationConfigApplicationContext applicationContext = new AnnotationConfigApplicationContext();
+        // 将当前类 AnnotationApplicationContextAsIoCContainerDemo 作为配置类（Configuration Class）
+        applicationContext.register(AnnotationApplicationContextAsIoCContainerDemo.class);
+        // 启动应用上下文
+        applicationContext.refresh();
+        // 依赖查找集合对象
+        lookupCollectionByType(applicationContext);
+    }
+
+    @Bean
+    public User user() {
+        User user = new User();
+        user.setId(1l);
+        user.setName("jack");
+        user.setAge(18);
+        return user;
+    }
+
+    private static void lookupCollectionByType(AnnotationConfigApplicationContext beanFactory) {
+        if (beanFactory instanceof ListableBeanFactory) {
+            ListableBeanFactory listableBeanFactory = (ListableBeanFactory) beanFactory;
+            Map<String, User> users = listableBeanFactory.getBeansOfType(User.class);
+            System.out.println("查找到的所有 User 集合对象：" + users);
+        }
+    }
+
+}
+
+```
+
+## 10. IoC 容器生命周期
+
+### 启动
+
+我们先看下 applicationContext.refresh() 方法，字面意思是重新刷新，实际意义呢是启动。
+
+```java
+@Override
+public void refresh() throws BeansException, IllegalStateException {
+    synchronized (this.startupShutdownMonitor) {
+        // Prepare this context for refreshing.
+        prepareRefresh();
+
+        // Tell the subclass to refresh the internal bean factory.
+        ConfigurableListableBeanFactory beanFactory = obtainFreshBeanFactory();
+
+        // Prepare the bean factory for use in this context.
+        prepareBeanFactory(beanFactory);
+
+        try {
+            // Allows post-processing of the bean factory in context subclasses.
+            postProcessBeanFactory(beanFactory);
+
+            // Invoke factory processors registered as beans in the context.
+            invokeBeanFactoryPostProcessors(beanFactory);
+
+            // Register bean processors that intercept bean creation.
+            registerBeanPostProcessors(beanFactory);
+
+            // Initialize message source for this context.
+            initMessageSource();
+
+            // Initialize event multicaster for this context.
+            initApplicationEventMulticaster();
+
+            // Initialize other special beans in specific context subclasses.
+            onRefresh();
+
+            // Check for listener beans and register them.
+            registerListeners();
+
+            // Instantiate all remaining (non-lazy-init) singletons.
+            finishBeanFactoryInitialization(beanFactory);
+
+            // Last step: publish corresponding event.
+            finishRefresh();
+        }
+
+        catch (BeansException ex) {
+            if (logger.isWarnEnabled()) {
+                logger.warn("Exception encountered during context initialization - " +
+                        "cancelling refresh attempt: " + ex);
+            }
+
+            // Destroy already created singletons to avoid dangling resources.
+            destroyBeans();
+
+            // Reset 'active' flag.
+            cancelRefresh(ex);
+
+            // Propagate exception to caller.
+            throw ex;
+        }
+
+        finally {
+            // Reset common introspection caches in Spring's core, since we
+            // might not ever need metadata for singleton beans anymore...
+            resetCommonCaches();
+        }
+    }
+}
+```
+
+* `synchronized (this.startupShutdownMonitor)`：首先他加了一把锁，这个锁为什么要加，因为任何一个 ApplicationContext 可以在任意的代码里去进行创建，那也可以多线程创建，Spring 的设计者也不知道你是不是处于一个线程安全还是非安全的情况。
+* `prepareRefresh`:准备刷新，做一些前期准备工作,
+  * 记录启动时间
+  * 初始化 PropertySources 
+  * 和校验有关的一些东西 getEnvironment().validateRequiredProperties()
+  * earlyApplicationListeners
+
+```java
+protected void prepareRefresh() {
+		// Switch to active.
+		this.startupDate = System.currentTimeMillis();
+		this.closed.set(false);
+		this.active.set(true);
+
+		if (logger.isDebugEnabled()) {
+			if (logger.isTraceEnabled()) {
+				logger.trace("Refreshing " + this);
+			}
+			else {
+				logger.debug("Refreshing " + getDisplayName());
+			}
+		}
+
+		// Initialize any placeholder property sources in the context environment.
+		initPropertySources();
+
+		// Validate that all properties marked as required are resolvable:
+		// see ConfigurablePropertyResolver#setRequiredProperties
+		getEnvironment().validateRequiredProperties();
+
+		// Store pre-refresh ApplicationListeners...
+		if (this.earlyApplicationListeners == null) {
+			this.earlyApplicationListeners = new LinkedHashSet<>(this.applicationListeners);
+		}
+		else {
+			// Reset IoCal application listeners to pre-refresh state.
+			this.applicationListeners.clear();
+			this.applicationListeners.addAll(this.earlyApplicationListeners);
+		}
+
+		// Allow for the collection of early ApplicationEvents,
+		// to be published once the multicaster is available...
+		this.earlyApplicationEvents = new LinkedHashSet<>();
+	}
+```
+
+* obtainFreshBeanFactory：用于创建一个新的、空的 `BeanFactory`，要使用此方法必须先调用 `refresh()` 方法刷新应用程序上下文。该方法将创建一个基本的 `DefaultListableBeanFactory` 实例，如果需要可以自定义实现
+
+```java
+protected ConfigurableListableBeanFactory obtainFreshBeanFactory() {
+		refreshBeanFactory();
+		return getBeanFactory();
+	}
+```
+
+​	看下 `refreshBeanFactory` 方法，在 `AbstractRefreshableApplicationContext` 类中，创建了 `DefaultListableBeanFactory`对象
+
+```java
+@Override
+protected final void refreshBeanFactory() throws BeansException {
+    if (hasBeanFactory()) {
+        destroyBeans();
+        closeBeanFactory();
+    }
+    try {
+        DefaultListableBeanFactory beanFactory = createBeanFactory();
+        beanFactory.setSerializationId(getId());
+        customizeBeanFactory(beanFactory);
+        loadBeanDefinitions(beanFactory);
+        synchronized (this.beanFactoryMonitor) {
+            this.beanFactory = beanFactory;
+        }
+    }
+    catch (IOException ex) {
+        throw new ApplicationContextException("I/O error parsing bean definition source for " + getDisplayName(), ex);
+    }
+}
+
+```
+
+* `prepareBeanFactory(beanFactory)` 方法，一大段操作
+
+```java
+protected void prepareBeanFactory(ConfigurableListableBeanFactory beanFactory) {
+		// Tell the internal bean factory to use the context's class loader etc.
+		beanFactory.setBeanClassLoader(getClassLoader());
+		beanFactory.setBeanExpressionResolver(new StandardBeanExpressionResolver(beanFactory.getBeanClassLoader()));
+		beanFactory.addPropertyEditorRegistrar(new ResourceEditorRegistrar(this, getEnvironment()));
+
+		// Configure the bean factory with context callbacks.
+		beanFactory.addBeanPostProcessor(new ApplicationContextAwareProcessor(this));
+		beanFactory.ignoreDependencyInterface(EnvironmentAware.class);
+		beanFactory.ignoreDependencyInterface(EmbeddedValueResolverAware.class);
+		beanFactory.ignoreDependencyInterface(ResourceLoaderAware.class);
+		beanFactory.ignoreDependencyInterface(ApplicationEventPublisherAware.class);
+		beanFactory.ignoreDependencyInterface(MessageSourceAware.class);
+		beanFactory.ignoreDependencyInterface(ApplicationContextAware.class);
+
+		// BeanFactory interface not registered as resolvable type in a plain factory.
+		// MessageSource registered (and found for autowiring) as a bean.
+		beanFactory.registerResolvableDependency(BeanFactory.class, beanFactory);
+		beanFactory.registerResolvableDependency(ResourceLoader.class, this);
+		beanFactory.registerResolvableDependency(ApplicationEventPublisher.class, this);
+		beanFactory.registerResolvableDependency(ApplicationContext.class, this);
+
+		// Register early post-processor for detecting inner beans as ApplicationListeners.
+		beanFactory.addBeanPostProcessor(new ApplicationListenerDetector(this));
+
+		// Detect a LoadTimeWeaver and prepare for weaving, if found.
+		if (beanFactory.containsBean(LOAD_TIME_WEAVER_BEAN_NAME)) {
+			beanFactory.addBeanPostProcessor(new LoadTimeWeaverAwareProcessor(beanFactory));
+			// Set a temporary ClassLoader for type matching.
+			beanFactory.setTempClassLoader(new ContextTypeMatchClassLoader(beanFactory.getBeanClassLoader()));
+		}
+
+		// Register default environment beans.
+		if (!beanFactory.containsIoCalBean(ENVIRONMENT_BEAN_NAME)) {
+			beanFactory.registerSingleton(ENVIRONMENT_BEAN_NAME, getEnvironment());
+		}
+		if (!beanFactory.containsIoCalBean(SYSTEM_PROPERTIES_BEAN_NAME)) {
+			beanFactory.registerSingleton(SYSTEM_PROPERTIES_BEAN_NAME, getEnvironment().getSystemProperties());
+		}
+		if (!beanFactory.containsIoCalBean(SYSTEM_ENVIRONMENT_BEAN_NAME)) {
+			beanFactory.registerSingleton(SYSTEM_ENVIRONMENT_BEAN_NAME, getEnvironment().getSystemEnvironment());
+		}
+	}
+```
+
+我们说`Environment`对象为什么能够通过依赖查找的方式可以查得到，就是受到这段 registerSingleton 代码的注入进去，为什么我们可以得到`BeanFactory`这个对象，因为这里通过registerResolvableDependency 可以把 BeanFactory 作为一个非 Bean 的方式来进行注入
+
+* postProcessBeanFactory、invokeBeanFactoryPostProcessors：进一步初始化动作，这里相当于交给你去做，相当于 BeanFactory 扩展点，制定你的 Factory 来实现
+
+* registerBeanPostProcessors：对 Bean 进行调整
+* initMessageSource：国际化
+* initApplicationEventMulticaster：事件广播
+* registerListeners：注册监听器
+* finishBeanFactoryInitialization：初始化完成 
+
+总结一下 ApplicationContext 启动过程中的一些基本操作：
+
+第一个：创建 BeanFactory -> 进行初步的初始化 -> 加入一些内建的 Bean 对象或者 Bean 依赖以及加上一些内建的非 Bean 依赖
+
+第二个：BeanFactory的扩展点，通过执行 BeanFactoryPostProcessor，你可以定义成 Bean，可以添加到容器
+
+第三个：对 Bean 的一些修改或者扩展，通过执行 BeanPostProcessor，这里只是注册，具体的调用是在 BeanFactory 中进行操作的
+
+接下来就会进行国际化、事件注册，那资源操作在哪里呢，ResourceLoader
+
+### 停止
+
+applicationContext.close() 方法
+
+```java
+@Override
+public void close() {
+    synchronized (this.startupShutdownMonitor) {
+        doClose();
+        // If we registered a JVM shutdown hook, we don't need it anymore now:
+        // We've already explicitly closed the context.
+        if (this.shutdownHook != null) {
+            try {
+                Runtime.getRuntime().removeShutdownHook(this.shutdownHook);
+            }
+            catch (IllegalStateException ex) {
+                // ignore - VM is already shutting down
+            }
+        }
+    }
+}
+```
+
+再看 doClose 方法
+
+```java
+protected void doClose() {
+    // Check whether an actual close attempt is necessary...
+    if (this.active.get() && this.closed.compareAndSet(false, true)) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("Closing " + this);
+        }
+
+        LiveBeansView.unregisterApplicationContext(this);
+
+        try {
+            // Publish shutdown event.
+            publishEvent(new ContextClosedEvent(this));
+        }
+        catch (Throwable ex) {
+            logger.warn("Exception thrown from ApplicationListener handling ContextClosedEvent", ex);
+        }
+
+        // Stop all Lifecycle beans, to avoid delays during individual destruction.
+        if (this.lifecycleProcessor != null) {
+            try {
+                this.lifecycleProcessor.onClose();
+            }
+            catch (Throwable ex) {
+                logger.warn("Exception thrown from LifecycleProcessor on context close", ex);
+            }
+        }
+
+        // Destroy all cached singletons in the context's BeanFactory.
+        destroyBeans();
+
+        // Close the state of this context itself.
+        closeBeanFactory();
+
+        // Let subclasses do some final clean-up if they wish...
+        onClose();
+
+        // Reset IoCal application listeners to pre-refresh state.
+        if (this.earlyApplicationListeners != null) {
+            this.applicationListeners.clear();
+            this.applicationListeners.addAll(this.earlyApplicationListeners);
+        }
+
+        // Switch to inactive.
+        this.active.set(false);
+    }
+}
+```
+
+销毁 Bean，关闭 BeanFactory，还可以进一步的自定义操作 onClose() 做一些动作。
+
+## 11. 面试题
+
+**<font color="green" size="2">沙雕面试题</font>**-什么是 Spring IoC 容器？
+
+答：Spring Framework implementation of the Inversion of Control (IoC) principle. IoCis also known as dependency injection (DI). It is a process whereby 
+
+objects define their dependencies (that is, the other objects they work with) only through constructor arguments, arguments to a factory imethod,or properties 
+
+that are set on the object instance after it is constructed or returned from a factory method. The containerthen injects those dependencies when it creates 
+
+the bean.
+
+Spring Framework 是一种实现控制反转（IoC）原则的框架，IoC 也被称为依赖注入（DI）。它是一种过程，其中对象通过构造函数参数、工厂方法的参数或在构造对象后或从工厂方法返回后设置在对象实例上
+
+的属性来定义其依赖项（即其与其他对象的配合工作）。容器然后在创建 Bean 时注入这些依赖项。
+
+**<font color="orange" size="2">996面试题</font>**-BeanFactory 和 FactoryBean 的区别？
+
+答：BeanFactory是IoC底层容器 FactoryBean 是创建 Bean 的一种方式,帮助实现复杂的初始化逻辑，看下代码说明：
+
+Interface to be implemented by objects used within a BeanFactory which are themselves factories for individual objects. If a bean implements this interface,it
+
+ is used as a factory for an object to expose, not directly as a bean instance that will be exposed itself.
+
+这是一个接口去实现一个 Object，然后这个 Object 中有几个特性，这个特性其实就是为了帮助你去暴露一个 Bean，他这个 Bean 呢通常来说不是一个正常的 Bean，或者说不是一个能够简单处理的 Bean。
+
+我们看下之前的 User 对象，他是非常简单的 POJO,他就是一个默认的构造器参数通过反射的方式进行调用。但是现实情况可能没这么简单，假设 User 这个对象是第三方来进行创建的，这个时候咋办呢，没办法
+
+通过反射的方式直接去获取这个对象进行初始化，因此你可以通过 BeanFactory 的方式来进行操作：
+
+getObject 是主要逻辑，这个方法会被容器调用，这个容器怎么知道这个方法要被调用呢，这个前提就是 getObjectType，这个 getObjectType 去决定哪个对象要去做，如果对象的类型相同怎么办，就通过
+
+是不是单例（isSingleton）的方式来进行区分，如果每次去获取的时候都是同一个对象的话，如果 isSingleton 是 true（默认），他返回的是同一个对象，否则的话呢就不是同一个对象。
+
+那 getObject 是不是每次都会被调用，答案是否定的。
+
+也就是说 FactoryBean 是解决复杂场景下 Bean 的初始化或者构造问题，那么创建的 Bean 是不是还会经过 Bean 的生命周期呢？后续揭秘
+
+**<font color="red" size="2">劝退面试题</font>**-Spring IoC 容器启动时做了哪些准备?？
+
+答：IoC 配置元信息读取和解析、IoC 容器生命周期、Spring 事件发布、国际化等,更多答案将在后续专题章节逐一讨论
+
+
+
+__本节完__
