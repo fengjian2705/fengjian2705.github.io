@@ -133,7 +133,7 @@ public class BeanDefinitionCreationDemo {
 
    当在 classpath 中使用组件扫描时，Spring 会根据之前描述的规则为未命名的组件生成 bean 名称，即将**类名开头字母转换为小写**。但是，在一个罕见的特殊情况下，如果**类名超过一个字符且前两个字        	符都是大写字母，则保留原始大小写**。这些规则与 java.beans.Introspector.decapitalize 所定义的规则相同（Spring 在此处使用它）。
 
-BeanNameGenerator:
+### BeanNameGenerator:
 
 ```java
 
@@ -244,7 +244,7 @@ public static String generateBeanName(
 
 * 如果它是唯一的话，,它会变成一个等于 uniqueBean，这种方式其实比较简单
 
-
+### AnnotationBeanNameGenerator
 
 ## 11. 面试题
 
