@@ -133,7 +133,7 @@ public class BeanDefinitionCreationDemo {
 
    当在 classpath 中使用组件扫描时，Spring 会根据之前描述的规则为未命名的组件生成 bean 名称，即将**类名开头字母转换为小写**。但是，在一个罕见的特殊情况下，如果**类名超过一个字符且前两个字        	符都是大写字母，则保留原始大小写**。这些规则与 java.beans.Introspector.decapitalize 所定义的规则相同（Spring 在此处使用它）。
 
-### BeanNameGenerator:
+### BeanNameGenerator
 
 ```java
 
@@ -245,6 +245,216 @@ public static String generateBeanName(
 * 如果它是唯一的话，,它会变成一个等于 uniqueBean，这种方式其实比较简单
 
 ### AnnotationBeanNameGenerator
+
+```java
+
+package org.springframework.context.annotation;
+
+import java.beans.Introspector;
+import java.util.Map;
+import java.util.Set;
+
+import org.springframework.beans.factory.annotation.AnnotatedBeanDefinition;
+import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.beans.factory.support.BeanDefinitionRegistry;
+import org.springframework.beans.factory.support.BeanNameGenerator;
+import org.springframework.core.annotation.AnnotationAttributes;
+import org.springframework.core.type.AnnotationMetadata;
+import org.springframework.lang.Nullable;
+import org.springframework.util.Assert;
+import org.springframework.util.ClassUtils;
+import org.springframework.util.StringUtils;
+
+/**
+ * {@link org.springframework.beans.factory.support.BeanNameGenerator}
+ * implementation for bean classes annotated with the
+ * {@link org.springframework.stereotype.Component @Component} annotation
+ * or with another annotation that is itself annotated with
+ * {@link org.springframework.stereotype.Component @Component} as a
+ * meta-annotation. For example, Spring's stereotype annotations (such as
+ * {@link org.springframework.stereotype.Repository @Repository}) are
+ * themselves annotated with
+ * {@link org.springframework.stereotype.Component @Component}.
+ *
+ * <p>Also supports Java EE 6's {@link javax.annotation.ManagedBean} and
+ * JSR-330's {@link javax.inject.Named} annotations, if available. Note that
+ * Spring component annotations always override such standard annotations.
+ *
+ * <p>If the annotation's value doesn't indicate a bean name, an appropriate
+ * name will be built based on the short name of the class (with the first
+ * letter lower-cased). For example:
+ *
+ * <pre class="code">com.xyz.FooServiceImpl -&gt; fooServiceImpl</pre>
+ *
+ * @author Juergen Hoeller
+ * @author Mark Fisher
+ * @since 2.5
+ * @see org.springframework.stereotype.Component#value()
+ * @see org.springframework.stereotype.Repository#value()
+ * @see org.springframework.stereotype.Service#value()
+ * @see org.springframework.stereotype.Controller#value()
+ * @see javax.inject.Named#value()
+ */
+public class AnnotationBeanNameGenerator implements BeanNameGenerator {
+
+	/**
+	 * A convenient constant for a default {@code AnnotationBeanNameGenerator} instance,
+	 * as used for component scanning purposes.
+	 * @since 5.2
+	 */
+	public static final AnnotationBeanNameGenerator INSTANCE = new AnnotationBeanNameGenerator();
+
+	private static final String COMPONENT_ANNOTATION_CLASSNAME = "org.springframework.stereotype.Component";
+
+
+	@Override
+	public String generateBeanName(BeanDefinition definition, BeanDefinitionRegistry registry) {
+		if (definition instanceof AnnotatedBeanDefinition) {
+			String beanName = determineBeanNameFromAnnotation((AnnotatedBeanDefinition) definition);
+			if (StringUtils.hasText(beanName)) {
+				// Explicit bean name found.
+				return beanName;
+			}
+		}
+		// Fallback: generate a unique default bean name.
+		return buildDefaultBeanName(definition, registry);
+	}
+
+	/**
+	 * Derive a bean name from one of the annotations on the class.
+	 * @param annotatedDef the annotation-aware bean definition
+	 * @return the bean name, or {@code null} if none is found
+	 */
+	@Nullable
+	protected String determineBeanNameFromAnnotation(AnnotatedBeanDefinition annotatedDef) {
+		AnnotationMetadata amd = annotatedDef.getMetadata();
+		Set<String> types = amd.getAnnotationTypes();
+		String beanName = null;
+		for (String type : types) {
+			AnnotationAttributes attributes = AnnotationConfigUtils.attributesFor(amd, type);
+			if (attributes != null && isStereotypeWithNameValue(type, amd.getMetaAnnotationTypes(type), attributes)) {
+				Object value = attributes.get("value");
+				if (value instanceof String) {
+					String strVal = (String) value;
+					if (StringUtils.hasLength(strVal)) {
+						if (beanName != null && !strVal.equals(beanName)) {
+							throw new IllegalStateException("Stereotype annotations suggest inconsistent " +
+									"component names: '" + beanName + "' versus '" + strVal + "'");
+						}
+						beanName = strVal;
+					}
+				}
+			}
+		}
+		return beanName;
+	}
+
+	/**
+	 * Check whether the given annotation is a stereotype that is allowed
+	 * to suggest a component name through its annotation {@code value()}.
+	 * @param annotationType the name of the annotation class to check
+	 * @param metaAnnotationTypes the names of meta-annotations on the given annotation
+	 * @param attributes the map of attributes for the given annotation
+	 * @return whether the annotation qualifies as a stereotype with component name
+	 */
+	protected boolean isStereotypeWithNameValue(String annotationType,
+			Set<String> metaAnnotationTypes, @Nullable Map<String, Object> attributes) {
+
+		boolean isStereotype = annotationType.equals(COMPONENT_ANNOTATION_CLASSNAME) ||
+				metaAnnotationTypes.contains(COMPONENT_ANNOTATION_CLASSNAME) ||
+				annotationType.equals("javax.annotation.ManagedBean") ||
+				annotationType.equals("javax.inject.Named");
+
+		return (isStereotype && attributes != null && attributes.containsKey("value"));
+	}
+
+	/**
+	 * Derive a default bean name from the given bean definition.
+	 * <p>The default implementation delegates to {@link #buildDefaultBeanName(BeanDefinition)}.
+	 * @param definition the bean definition to build a bean name for
+	 * @param registry the registry that the given bean definition is being registered with
+	 * @return the default bean name (never {@code null})
+	 */
+	protected String buildDefaultBeanName(BeanDefinition definition, BeanDefinitionRegistry registry) {
+		return buildDefaultBeanName(definition);
+	}
+
+	/**
+	 * Derive a default bean name from the given bean definition.
+	 * <p>The default implementation simply builds a decapitalized version
+	 * of the short class name: e.g. "mypackage.MyJdbcDao" -> "myJdbcDao".
+	 * <p>Note that inner classes will thus have names of the form
+	 * "outerClassName.InnerClassName", which because of the period in the
+	 * name may be an issue if you are autowiring by name.
+	 * @param definition the bean definition to build a bean name for
+	 * @return the default bean name (never {@code null})
+	 */
+	protected String buildDefaultBeanName(BeanDefinition definition) {
+		String beanClassName = definition.getBeanClassName();
+		Assert.state(beanClassName != null, "No bean class name set");
+		String shortClassName = ClassUtils.getShortName(beanClassName);
+		return Introspector.decapitalize(shortClassName);
+	}
+
+}
+
+```
+
+这里使用 @Component 注解及其派生的注解 @Repository @Service @Controller，可以看到 @Repository 注解上面打了一个 @Component 注解
+
+```java
+@Target({ElementType.TYPE})
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
+@Component
+public @interface Repository {
+
+	/**
+	 * The value may indicate a suggestion for a logical component name,
+	 * to be turned into a Spring bean in case of an autodetected component.
+	 * @return the suggested component name, if any (or empty String otherwise)
+	 */
+	@AliasFor(annotation = Component.class)
+	String value() default "";
+
+}
+
+```
+
+我们再来看它的生成方式：
+
+```java
+@Override
+public String generateBeanName(BeanDefinition definition, BeanDefinitionRegistry registry) {
+    if (definition instanceof AnnotatedBeanDefinition) {
+        String beanName = determineBeanNameFromAnnotation((AnnotatedBeanDefinition) definition);
+        if (StringUtils.hasText(beanName)) {
+            // Explicit bean name found.
+            return beanName;
+        }
+    }
+    // Fallback: generate a unique default bean name.
+    return buildDefaultBeanName(definition, registry);
+}
+```
+
+第一种方法就是说它如果是一个标注这个 Definition 就说如果你是一个注解的方式会被命名成 AnnotatedBeanDefinition，如果它不是的话它会采用什么采用 Fallback 一个补偿的方式，这种方式呢就和传统的方式没有太大的区别。 
+
+## 5. Spring Bean 的别名
+
+Bean别名(Alias)的价值
+
+* 复用现有的 BeanDefinition
+
+* 更具有场景化的命名方法,比如:
+
+  <alias name="myApp-dataSource" alias="subsystemA-dataSource"/>
+
+  <alias name="myApp-dataSource" alias="subsystemB-dataSource"/>
+
+
+
+
 
 ## 11. 面试题
 
