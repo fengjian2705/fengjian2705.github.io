@@ -452,9 +452,266 @@ Bean别名(Alias)的价值
 
   <alias name="myApp-dataSource" alias="subsystemB-dataSource"/>
 
+* XML 配置文件中设置 Bean 别名
+
+```java
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        https://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<!--复用-->
+    <import resource="classpath:/META-INF/dependency-injection-context.xml"/>
+
+    <!--将 Spring 容器中的 Bean 建立/关联别名-->
+    <alias name="user" alias="tom-user"/>
+
+</beans>
+```
+
+测试
+
+```java
+package thinking.in.spring.spring.bean.definition;
+
+import org.springframework.beans.factory.BeanFactory;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+import tech.fengjian.ioc.container.overview.domain.User;
+
+/**
+ * <h1>Bean 别名示例</h1>
+ *
+ * @author 风间
+ * @since 2023/5/11
+ */
+public class BeanAliasDemo {
+
+    public static void main(String[] args) {
+
+        // 配置 XML 文件
+        // 启动 Spring 应用上下文
+        BeanFactory beanFactory = new ClassPathXmlApplicationContext("classpath:/META-INF/bean-definitions-context.xml");
+
+        User tomUser = (User) beanFactory.getBean("tom-user");
+        System.out.println("tomUser: " + tomUser);
+
+        User user = (User) beanFactory.getBean("user");
+        System.out.println("user: " + user);
+
+        System.out.println("tomUser == user: " + (tomUser == user));
+    }
+}
+```
+
+## 6. 注册 Spring Bean
+
+BeanDefinition 注册
+
+* XML 配置元信息
+  * <bean name="..." ... />
+
+```java
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        https://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="user" class="tech.fengjian.ioc.container.overview.domain.User">
+        <property name="id" value="1"/>
+        <property name="name" value="jack"/>
+        <property name="age" value="18"/>
+    </bean>
+</beans>
+```
+
+```java
+public class DependencyLookupDemo {
+
+    public static void main(String[] args) {
+
+        // 配置 XML 信息
+        // 启动 Spring 应用上下文
+        BeanFactory beanFactory = new ClassPathXmlApplicationContext("classpath:/META-INF/dependency-lookup-context.xml");
+        User user = (User) beanFactory.getBean("user");
+        System.out.println("XML 方式注册 Spring Bean，User：" + user);
+    }
+}
+
+```
+
+* Java 注解配置元信息
+
+  * @Bean
+
+  * @Component
+
+  * @Import
+
+@Bean 方式：
+
+这里的 new AnnotationConfigApplicationContext(Config.class); 实现了将 Config 类配置为 Spring 的 Bean 对象，并且会将 Config 类中标记为 @Bean 注解的类也加载成 Bean 对象。
+
+new AnnotationConfigApplicationContext(Config.class);传参的方式相比无参构造的话省去了 refresh 方法。他其实执行两步：
+
+register(componentClasses);// 将 Config 类及类中的 @Bean 修饰的注册为 Bean 对象
+
+refresh();// 启动 Spring 应用上下文
+
+```java
+ublic class DependencyLookupDemo {
+
+    public static void main(String[] args) {
+
+        // 配置 XML 信息
+        // 启动 Spring 应用上下文
+        ApplicationContext applicationContext = new AnnotationConfigApplicationContext(Config.class);
+        Map<String, User> users = applicationContext.getBeansOfType(User.class);
+        System.out.println("users:"+users);
+        System.out.println("Configs:"+applicationContext.getBeansOfType(Config.class));
+
+    }
+
+    public static class Config{
+
+        @Bean
+        public User user(){
+            User user = new User();
+            user.setId(11L);
+            user.setName("林黛玉");
+            user.setAge(15);
+            return user;
+        }
+
+    }
+}
+```
+
+@Component 方式
+
+`applicationContext.register(Config.class);`并不会加载其他的标记为`@Component`的Bean，因为它只会注册指定类中声明的Bean。
+
+如果要让`applicationContext.register()`方法注册其他`@Component`注解的bean，需要在配置类中通过`@Import`注解导入其他的配置类或者使用`@ComponentScan`注解扫描并注册bean。
+
+```java
+public class DependencyLookupDemo {
+
+    public static void main(String[] args) {
+
+        // 配置 XML 信息
+        // 启动 Spring 应用上下文
+        ApplicationContext applicationContext = new AnnotationConfigApplicationContext(Config.class);
+        System.out.println("Configs:"+applicationContext.getBeansOfType(Config2.class));
+
+    }
+	
+    // 在配置类上加上组件扫描注解，等效于在 XML 配置文件中开启扫描注解
+    @ComponentScan("tech.fengjian.ioc.container.overview.dependency.lookup")
+    public static class Config{
+
+        @Bean
+        public User user(){
+            User user = new User();
+            user.setId(11L);
+            user.setName("林黛玉");
+            user.setAge(15);
+            return user;
+        }
+    }
+
+    @Component
+    public static class Config2{
+
+    }
+}
+```
+
+@Import 方式
+
+在 Spring 中，当我们使用 `applicationContext.register(Config.class)` 方法手动注册配置类时，该配置类中定义的 Bean 也不会被后续导入的配置类所覆盖。
+
+这是因为，手动注册配置类与通过 `@Import` 注解导入配置类的机制是不同的。手动注册配置类时，Spring 容器会创建一个新的子容器，并将手动注册的配置类放入该子容器中。而子容器中的 Bean 只能被该
+
+子容器中的其他 Bean 或父级容器中的 Bean 所依赖或访问，从而保证了手动注册的配置类中定义的 Bean 不受其他配置类的影响。
+
+这里 Config 中的 User 对象不会被 Import 的对象覆盖，而后续多次 Import 的 Bean，后面的会覆盖前面的。
+
+```java
+public class DependencyLookupDemo {
+
+    public static void main(String[] args) {
+
+        // 配置 XML 信息
+        // 启动 Spring 应用上下文
+        AnnotationConfigApplicationContext applicationContext = new AnnotationConfigApplicationContext(Config.class);
+
+        System.out.println("Configs:"+applicationContext.getBeansOfType(Config.class));
+        System.out.println("Configs:"+applicationContext.getBeansOfType(Config2.class));
+        System.out.println("Users:"+applicationContext.getBeansOfType(User.class));
+
+    }
+
+    // Config 中的 User 对象不会被 Import 的对象覆盖
+    // 而后续多次 Import 的 Bean，后面的会覆盖前面的
+    @Import(value = {Config3.class,Config2.class})
+    public static class Config{
+
+        @Bean
+        public User user(){
+            User user = new User();
+            user.setId(11L);
+            user.setName("林黛玉");
+            user.setAge(15);
+            return user;
+        }
+
+    }
+
+    public static class Config2{
+
+        @Bean
+        public User user(){
+            User user = new User();
+            user.setId(12L);
+            user.setName("薛宝钗");
+            user.setAge(16);
+            return user;
+        }
+    }
+
+    public static class Config3{
+
+        @Bean
+        public User user(){
+            User user = new User();
+            user.setId(13L);
+            user.setName("凤姐");
+            user.setAge(18);
+            return user;
+        }
+    }
+}
+
+```
 
 
 
+* Java API 配置元信息
+
+  * 命名方式: BeanDefinitionRegistry#registerBeanDefinition(Striing,BeanDefinition)
+
+  * 非命名方式:
+
+  * BeanDefinitionReaderUtils#registerWithGeneratedName(AbstiractBeanDefinition,BeafinitionRegistry)
+
+  * 配置类方式: AnnotatedBeanDefinition Reader#reaister(Class...)
+
+通过 Java 注解方式：
+
+
+
+**tips：**在 Spring 中 Bean 不会被重复注册，后面的会覆盖前面的
 
 ## 11. 面试题
 
