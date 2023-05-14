@@ -109,9 +109,9 @@ public class BeanDefinitionCreationDemo {
 
 * Bean 的名称
 
-  每个 Bean 拥有一个或多个标识符(identifiers),这些标识符在 Bean 所在的容器必须是唯一的。通常,一个 Bean 仅有一个标识符,如果需要额外的,可考虑使用别名(Alias)来扩充。
+  每个 Bean 拥有一个或多个标识符(identifiers),这些标识符在 Bean 所在的容器必须是唯一的。通常一个 Bean 仅有一个标识符,如果需要额外的,可考虑使用别名(Alias)来扩充。
 
-  在基于 XML 的配置元信息中,开发人员可用 id 或者 name 属性来规定 Bean 的标识符。通常 Bean 的标识符由字母组成,允许出现特殊字符。如果要想引入 Bean 的别名的话,可在 name 属性使用半角逗号(",")或分号(";")来间隔。Bean 的 id 或 name 属性并非必须制定,如果留空的话,容器会为 Bean 自动生成一个唯一的名称。Bean 的命名尽管没有限制,不过官方建议采用驼峰的方式,更符合 Java 的命名约定。
+  在基于 XML 的配置元信息中,开发人员可用 id 或者 name 属性来规定 Bean 的标识符。通常 Bean 的标识符由字母组成,允许出现特殊字符。如果要想引入 Bean 的别名的话,可在 name 属性使用半角逗号(",")或分号(";")来间隔。Bean 的 id 或 name 属性并非必须指定,如果留空的话,容器会为 Bean 自动生成一个唯一的名称。Bean 的命名尽管没有限制,不过官方建议采用驼峰的方式,更符合 Java 的命名约定。
 
 ​	**tips：**每个 Bean 它的识别符是在它所在的容器，也就说它所在的 BeanDefinition 里面或者说 BeanFactory 里面是唯一的并非是整个应用是唯一的这个地方是要加以区别的。
 
@@ -553,7 +553,7 @@ public class DependencyLookupDemo {
 
 这里的 new AnnotationConfigApplicationContext(Config.class); 实现了将 Config 类配置为 Spring 的 Bean 对象，并且会将 Config 类中标记为 @Bean 注解的类也加载成 Bean 对象。
 
-new AnnotationConfigApplicationContext(Config.class);传参的方式相比无参构造的话省去了 refresh 方法。他其实执行两步：
+new AnnotationConfigApplicationContext(Config.class);传参的方式相比无参构造的话省去了 refresh() 方法。他其实内部执行两步：
 
 register(componentClasses);// 将 Config 类及类中的 @Bean 修饰的注册为 Bean 对象
 
@@ -590,9 +590,9 @@ ublic class DependencyLookupDemo {
 
 @Component 方式
 
-`applicationContext.register(Config.class);`并不会加载其他的标记为`@Component`的Bean，因为它只会注册指定类中声明的Bean。
+`applicationContext.register(Config.class);`并不会加载其他的标记为`@Component`的 Bean，因为它只会注册指定类中声明的 Bean。
 
-如果要让`applicationContext.register()`方法注册其他`@Component`注解的bean，需要在配置类中通过`@Import`注解导入其他的配置类或者使用`@ComponentScan`注解扫描并注册bean。
+如果要让`applicationContext.register()`方法注册其他`@Component`注解的 bean，需要在配置类中通过`@Import`注解导入其他的配置类或者使用`@ComponentScan`注解扫描并注册bean。
 
 ```java
 public class DependencyLookupDemo {
@@ -699,13 +699,19 @@ public class DependencyLookupDemo {
 
 * Java API 配置元信息
 
-  * 命名方式: BeanDefinitionRegistry#registerBeanDefinition(Striing,BeanDefinition)
+  * 命名方式: BeanDefinitionRegistry#registerBeanDefinition(String,BeanDefinition)
 
-  * 非命名方式:
 
+```java
+```
+
+
+
+* 非命名方式:
   * BeanDefinitionReaderUtils#registerWithGeneratedName(AbstiractBeanDefinition,BeafinitionRegistry)
 
   * 配置类方式: AnnotatedBeanDefinition Reader#reaister(Class...)
+
 
 通过 Java 注解方式：
 
