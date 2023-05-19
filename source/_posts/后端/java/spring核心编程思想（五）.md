@@ -1,15 +1,15 @@
 ---
-title: Spring 核心编程思想（四）：Spring 依赖查找
+title: Spring 核心编程思想（五）：Spring 依赖查找
 tags:
   - spring
-index_img: https://s3.bmp.ovh/imgs/2023/04/27/4b24c59fe6e1571c.jpg
+index_img: https://s3.bmp.ovh/imgs/2023/05/19/b5298159ed069919.jpg
 # excerpt: spring
 categories:
   - 后端
   - spring 核心编程思想
 ---
 
-## 1. Spring Bean 基础
+## 1. Spring IoC 依赖查找
 
 | 内容                 |
 | -------------------- |
@@ -23,49 +23,263 @@ categories:
 | 依赖查找中的经典异常 |
 | 面试题精选           |
 
+## 2. 依赖查找的前世今生
 
+1. 单一类型依赖查找
+
+* JNDI - javax.naming.Context#lookup(javax.naming.Name)
+
+* JavaBeans - java.beans.beancontext.BeanContext
+
+2. 集合类型依赖查找
+
+* java.beans.beancontext.BeanContext
+
+3. 层次性依赖查找
+
+* java.beans.beancontext.BeanContext
+
+It is desirable to both provide a logical, traversable, hierarchyof JavaBeans, and further to provide a general mechanism whereby an object instantiating an arbitrary JavaBean can offer that JavaBean a variety of services, or interpose itself between the uniderlying system service and the JavaBean, in a conventional fashion.
+
+这段文字主要讲述了在Java编程中，提供一个有逻辑和可遍历的 JavaBean 层次结构的需求，同时还需要提供一种通用机制，使得实例化JavaBean对象的对象可以向其提供各种服务或者在系统服务和JavaBean之间插入自己。通俗的说，就是需要建立一个 JavaBean 的层次结构，并提供一种机制，以便在 JavaBean 使用过程中可以提供服务。
+
+具体来说，要实现这个需求，需要考虑以下几个方面：
+
+1. JavaBean 的层次结构：可以使用组合模式来实现JavaBean的逻辑、可遍历的层次结构，以便可以按照树形结构来查找和访问JavaBean。
+
+2. 服务提供机制：可以使用反射机制和注入等技术来实现服务提供机制，使得可以在JavaBean实例化时向其注入服务对象，并在需要时调用服务对象的方法来为JavaBean提供服务。
+
+3. 中介模式：可以使用代理或装饰器等模式来实现中介模式，使得JavaBean可以通过中介对象来访问系统服务或者其他JavaBean。通过中介对象，可以在系统服务和JavaBean之间添加额外的逻辑处理。
+
+综上所述，建立一个 JavaBean 的层次结构并提供服务机制是Java编程中常见的需求，可以通过组合模式、反射机制、注入、代理或装饰器等技术来实现。
+
+![javabeans](https://s3.bmp.ovh/imgs/2023/05/19/7f7b7f4337b8091c.png)
+
+## 3. 单一依赖查找
+
+单一类型依赖查找接口-BeanFactory
+
+1. 根据 Bean 名称查找
+
+* getBean(String)
+
+* Spring 2.5 覆盖默认参数:getBean(String,Object...)
+
+2. 根据 Bean 类型查找
+
+* Bean 实时查找
+
+  * Spring 3.0 getBean(Class)
+
+  * Spring 4.1 覆盖默认参数:getBean(Class,Object...)
+
+**tips:**关于覆盖参数这个方法的调用，建议大家不需要去掌握，也不需要去运用，因为这个非常危险。因为这个接口会覆盖掉默认的一些参数，同时我们会看到 API 里面有这么一个描述
+
+```java
+/**
+ * Return an instance, which may be shared or independent, of the specified bean.
+ * <p>Allows for specifying explicit constructor arguments / factory method arguments,
+ * overriding the specified default arguments (if any) in the bean definition.
+ * @param name the name of the bean to retrieve
+ * @param args arguments to use when creating a bean instance using explicit arguments
+ * (only applied when creating a new instance as opposed to retrieving an existing one)
+ * @return an instance of the bean
+ * @throws NoSuchBeanDefinitionException if there is no such bean definition
+ * @throws BeanDefinitionStoreException if arguments have been given but
+ * the affected bean isn't a prototype
+ * @throws BeansException if the bean could not be created
+ * @since 2.5
+ */
+Object getBean(String name, Object... args) throws BeansException;
+```
+
+实例可能是 shared 可能是 independent，这个 share d就是指的单例，那么 independent 主要是原生。这里就会告诉你一个不好的特点，如果当你是 shared 的话，你每调一次就会覆盖它的方法，这种方式实际上是有点不可取的。
+
+* Spring 5.1 Bean 延迟查找
+  * getBeanProvider(Class)
+  * getBeanProvider(ResolvableType)
+
+BeanFactory:
+
+```java
+<T> ObjectProvider<T> getBeanProvider(Class<T> requiredType);
+```
+
+ObjectProvider:
+
+```java
+public interface ObjectProvider<T> extends ObjectFactory<T>, Iterable<T> {...
+```
+
+OjbectProvider 是继承了 ObjectFactory，ObjectFactory 它就通过某种参数关联类型去关联一个特性
+
+```java
+/**
+ * <h1>通过{@link org.springframework.beans.factory.ObjectProvider}进行依赖查找</h1>
+ *
+ * @author 风间
+ * @since 2023/5/19
+ */
+public class ObjectProviderDemo {
+
+    public static void main(String[] args) {
+        AnnotationConfigApplicationContext applicationContext = new AnnotationConfigApplicationContext();
+        applicationContext.register(ObjectProviderDemo.class);
+        applicationContext.refresh();
+
+        lookupByObjectProvider(applicationContext);
+
+        applicationContext.close();
+    }
+
+    @Bean
+    public String hello() {// 方法名就是 Bean 名称 = "hello"
+        return "hello";
+    }
+
+    private static void lookupByObjectProvider(AnnotationConfigApplicationContext applicationContext) {
+
+        ObjectProvider<String> beanProvider = applicationContext.getBeanProvider(String.class);
+        String object = beanProvider.getObject();
+        System.out.println(object);
+
+    }
+}
+```
+
+3. 根据 Bean 名称 + 类型查找:getBean(String,Class)
+
+## 4. 集合类型依赖查找
+
+集合类型依赖查找接口-ListableBeanFactory
+
+1. 根据 Bean 类型查找
+
+* 获取同类型 Bean 名称列表
+  * getBeanNamesForType(Class)
+  * Spring 4.2 getBeanNamesForType(ResolvableType)
+
+* 获取同类型 Bean 实例列表
+  * getBeansOfType(Class)以及重载方法
+
+2. 通过注解类型查找
+
+* Spring 3.0 获取标注类型 Bean 名称列表
+  * getBeanNamesForAnnotation(Class<? extends Annotation>)
+
+* Spring 3.0 获取标注类型 Bean 实例列表
+  * getBeansWithAnnotation(Class<? extends Annotation>)
+
+* Spring 3.0 获取指定名称+标注类型 Bean 实例
+  * findAnnotationOnBean(String,Ciass<? extends Annotation>)
+
+## 5. 层次性依赖查找
+
+层次性依赖查找接口-HierarchicalBeanFactory
+
+1. 双亲 BeanFactory:getParentBeanFactory()
+
+2. 层次性查找
+
+* 根据 Bean 名称查找
+  * 基于 containsLocalBean 方法实现
+
+* 根据Bean类型查找实例列表
+  * 单一类型:BeanFactoryUtils#beanOfType
+  * 集合类型:BeanFactoryUtils#beansOfTypelncludingAncestors
+
+* 根据 Java 注解查找名称列表
+  * BeanFactoryUtils#beanNamesForTypelncludingAncestors
+
+```java
+public static void main(String[] args) {
+
+    // 创建  容器
+    AnnotationConfigApplicationContext applicationContext = new AnnotationConfigApplicationContext();
+    // 将当前类 AnnotationApplicationContextAsIoCContainerDemo 作为配置类（Configuration Class）
+    applicationContext.register(AnnotationApplicationContextAsIoCContainerDemo.class);
+    // 启动应用上下文
+    applicationContext.refresh();
+
+    // 1. 获取 HierarchicalBeanFactory <- ConfigurableBeanFactory <- ConfigurableListableBeanFactory
+    ConfigurableListableBeanFactory beanFactory = applicationContext.getBeanFactory();
+    System.out.println("获取 BeanFactory 的 Parent BeanFactory : " + beanFactory.getParentBeanFactory());
+    // 2. 设置 Parent BeanFactory
+    HierarchicalBeanFactory parentBeanFactory = crateParentBeanFactory();
+    beanFactory.setParentBeanFactory(parentBeanFactory);
+    System.out.println("获取 BeanFactory 的 Parent BeanFactory : " + beanFactory.getParentBeanFactory());
+
+    displayLocalBean(beanFactory,"user");
+    displayLocalBean(parentBeanFactory,"user");
+
+    displayContainsBean(beanFactory,"user");
+    displayContainsBean(parentBeanFactory,"user");
+    // 关闭应用上下文
+    applicationContext.close();
+}
+
+public static void displayContainsBean(HierarchicalBeanFactory beanFactory,String beanName){
+
+    System.out.printf("当前 BeanFactory[%s] 是否包含 bean[name : %s]: %s\n", beanFactory, beanName,
+            containsBean(beanFactory,beanName));
+}
+
+private static boolean containsBean(HierarchicalBeanFactory beanFactory,String beanName){
+    BeanFactory parentBeanFactory = beanFactory.getParentBeanFactory();
+    if (parentBeanFactory instanceof HierarchicalBeanFactory) {
+        HierarchicalBeanFactory parentHierarchicalBeanFactory = HierarchicalBeanFactory.class.cast(parentBeanFactory);
+        if (containsBean(parentHierarchicalBeanFactory,beanName)) {
+            return true;
+        }
+    }
+    return beanFactory.containsLocalBean(beanName);
+}
+
+private static void displayLocalBean(HierarchicalBeanFactory beanFactory, String beanName) {
+
+    System.out.printf("当前 BeanFactory[%s] 是否包含 bean[name : %s]: %s\n", beanFactory, beanName,
+            beanFactory.containsLocalBean(beanName));
+}
+
+private static ConfigurableListableBeanFactory crateParentBeanFactory() {
+    // 创建 BeanFactory 容器
+    DefaultListableBeanFactory beanFactory = new DefaultListableBeanFactory();
+    XmlBeanDefinitionReader reader = new XmlBeanDefinitionReader(beanFactory);
+    // XML 配置文件 classpath 路径
+    String location = "META-INF/dependency-injection-context.xml";
+    // 加载配置，返回加载到的 Bean 个数
+    reader.loadBeanDefinitions(location);
+    return beanFactory;
+
+}
+```
+
+## 6. 延迟依赖查找
+
+Bean延迟依赖查找接口
+
+* org.springframework.beans.factory.ObjectFactory
+
+* org.springframework.beans.factory.ObjectProvider
+  * Spring5 对 Java8 特性扩展
+    * 函数式接口
+      * getIfAvailable(Supplier)
+      * ifAvailable(Consumer)
+    * Stream 扩展-stream()
 
 ## 12. 面试题
 
 **<font color="green" size="2">沙雕面试题</font>**-什么是 Spring IoC 容器？
 
-答：Spring Framework implementation of the Inversion of Control (IoC) principle. IoCis also known as dependency injection (DI). It is a process whereby 
 
-objects define their dependencies (that is, the other objects they work with) only through constructor arguments, arguments to a factory imethod,or properties 
-
-that are set on the object instance after it is constructed or returned from a factory method. The containerthen injects those dependencies when it creates 
-
-the bean.
-
-Spring Framework 是一种实现控制反转（IoC）原则的框架，IoC 也被称为依赖注入（DI）。它是一种过程，其中对象通过构造函数参数、工厂方法的参数或在构造对象后或从工厂方法返回后设置在对象实例上
-
-的属性来定义其依赖项（即其与其他对象的配合工作）。容器然后在创建 Bean 时注入这些依赖项。
 
 **<font color="orange" size="2">996面试题</font>**-BeanFactory 和 FactoryBean 的区别？
 
-答：BeanFactory是IoC底层容器 FactoryBean 是创建 Bean 的一种方式,帮助实现复杂的初始化逻辑，看下代码说明：
 
-Interface to be implemented by objects used within a BeanFactory which are themselves factories for individual objects. If a bean implements this interface,it
-
- is used as a factory for an object to expose, not directly as a bean instance that will be exposed itself.
-
-这是一个接口去实现一个 Object，然后这个 Object 中有几个特性，这个特性其实就是为了帮助你去暴露一个 Bean，他这个 Bean 呢通常来说不是一个正常的 Bean，或者说不是一个能够简单处理的 Bean。
-
-我们看下之前的 User 对象，他是非常简单的 POJO,他就是一个默认的构造器参数通过反射的方式进行调用。但是现实情况可能没这么简单，假设 User 这个对象是第三方来进行创建的，这个时候咋办呢，没办法
-
-通过反射的方式直接去获取这个对象进行初始化，因此你可以通过 BeanFactory 的方式来进行操作：
-
-getObject 是主要逻辑，这个方法会被容器调用，这个容器怎么知道这个方法要被调用呢，这个前提就是 getObjectType，这个 getObjectType 去决定哪个对象要去做，如果对象的类型相同怎么办，就通过
-
-是不是单例（isSingleton）的方式来进行区分，如果每次去获取的时候都是同一个对象的话，如果 isSingleton 是 true（默认），他返回的是同一个对象，否则的话呢就不是同一个对象。
-
-那 getObject 是不是每次都会被调用，答案是否定的。
-
-也就是说 FactoryBean 是解决复杂场景下 Bean 的初始化或者构造问题，那么创建的 Bean 是不是还会经过 Bean 的生命周期呢？后续揭秘
 
 **<font color="red" size="2">劝退面试题</font>**-Spring IoC 容器启动时做了哪些准备?？
 
-答：IoC 配置元信息读取和解析、IoC 容器生命周期、Spring 事件发布、国际化等,更多答案将在后续专题章节逐一讨论
+
 
 
 
