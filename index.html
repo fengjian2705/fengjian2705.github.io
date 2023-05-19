@@ -1,0 +1,901 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="风间">
+  <meta name="keywords" content="">
+  
+    <meta property="og:type" content="website">
+<meta property="og:title" content="风间小栈">
+<meta property="og:url" content="http://example.com/index.html">
+<meta property="og:site_name" content="风间小栈">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:author" content="风间">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  <title>风间小栈</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.8.13","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":"§"},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 100vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>风间小栈</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/cpu.jpg') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="日间工夫，觉纷扰则静坐，觉懒看书则且看书，是亦因病而药">
+              
+            </span>
+
+            
+          </div>
+
+          
+            <div class="scroll-down-bar">
+              <i class="iconfont icon-arrowdown"></i>
+            </div>
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      <div class="container nopadding-x-md">
+        <div class="py-5" id="board"
+          style=margin-top:0>
+          
+          <div class="container">
+            <div class="row">
+              <div class="col-12 col-md-10 m-auto">
+                
+
+
+  <div class="row mx-auto index-card">
+    
+    
+      <div class="col-12 col-md-4 m-auto index-img">
+        <a href="/2023/05/18/%E5%90%8E%E7%AB%AF/java/spring%E6%A0%B8%E5%BF%83%E7%BC%96%E7%A8%8B%E6%80%9D%E6%83%B3%EF%BC%88%E4%BA%94%EF%BC%89/" target="_self">
+          <img src="https://s3.bmp.ovh/imgs/2023/05/19/b5298159ed069919.jpg" srcset="/img/loading.gif" lazyload alt="Spring 核心编程思想（五）：Spring 依赖查找">
+        </a>
+      </div>
+    
+    <article class="col-12 col-md-8 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/05/18/%E5%90%8E%E7%AB%AF/java/spring%E6%A0%B8%E5%BF%83%E7%BC%96%E7%A8%8B%E6%80%9D%E6%83%B3%EF%BC%88%E4%BA%94%EF%BC%89/" target="_self">
+          Spring 核心编程思想（五）：Spring 依赖查找
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2023/05/18/%E5%90%8E%E7%AB%AF/java/spring%E6%A0%B8%E5%BF%83%E7%BC%96%E7%A8%8B%E6%80%9D%E6%83%B3%EF%BC%88%E4%BA%94%EF%BC%89/" target="_self">
+          
+          1. Spring IoC 依赖查找   内容    依赖查找的今世前生   单一类型依赖查找   集合类型依赖查找   层次性依赖查找   延迟依赖查找   安全依赖查找   内建可查找的依赖   依赖查找中的经典异常   面试题精选   2. 依赖查找的前世今生 单一类型依赖查找   JNDI - javax.naming.Context#lookup(javax.naming.Name)
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-05-18 16:51" pubdate>
+              2023-05-18
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/%E5%90%8E%E7%AB%AF/">后端</a>
+            
+              <a href="/categories/%E5%90%8E%E7%AB%AF/spring-%E6%A0%B8%E5%BF%83%E7%BC%96%E7%A8%8B%E6%80%9D%E6%83%B3/">spring 核心编程思想</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/spring/">spring</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+      <div class="col-12 col-md-4 m-auto index-img">
+        <a href="/2023/05/09/%E5%90%8E%E7%AB%AF/java/spring%E6%A0%B8%E5%BF%83%E7%BC%96%E7%A8%8B%E6%80%9D%E6%83%B3%EF%BC%88%E5%9B%9B%EF%BC%89/" target="_self">
+          <img src="https://s3.bmp.ovh/imgs/2023/04/27/4b24c59fe6e1571c.jpg" srcset="/img/loading.gif" lazyload alt="Spring 核心编程思想（四）：Spring Bean 基础">
+        </a>
+      </div>
+    
+    <article class="col-12 col-md-8 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/05/09/%E5%90%8E%E7%AB%AF/java/spring%E6%A0%B8%E5%BF%83%E7%BC%96%E7%A8%8B%E6%80%9D%E6%83%B3%EF%BC%88%E5%9B%9B%EF%BC%89/" target="_self">
+          Spring 核心编程思想（四）：Spring Bean 基础
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2023/05/09/%E5%90%8E%E7%AB%AF/java/spring%E6%A0%B8%E5%BF%83%E7%BC%96%E7%A8%8B%E6%80%9D%E6%83%B3%EF%BC%88%E5%9B%9B%EF%BC%89/" target="_self">
+          
+          1. Spring Bean 基础   内容    定义 Spring Bean   BeanDefinition 元信息   命名 Spring Bean   Spring Bean 的别名   注册 Spring Bean   实例化 Spring Bean   初始化 Spring Bean   延迟初始化 Spring Bean   销毁 Spring Bean   垃圾回收 Spring
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-05-09 18:48" pubdate>
+              2023-05-09
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/%E5%90%8E%E7%AB%AF/">后端</a>
+            
+              <a href="/categories/%E5%90%8E%E7%AB%AF/spring-%E6%A0%B8%E5%BF%83%E7%BC%96%E7%A8%8B%E6%80%9D%E6%83%B3/">spring 核心编程思想</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/spring/">spring</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+      <div class="col-12 col-md-4 m-auto index-img">
+        <a href="/2023/05/08/%E7%9F%AD%E8%A7%86%E9%A2%91/%E8%A7%86%E9%A2%91%E5%90%8E%E6%9C%9F%E5%A4%84%E7%90%86/" target="_self">
+          <img src="https://s3.bmp.ovh/imgs/2023/04/27/fcf2fc9b601219fc.jpg" srcset="/img/loading.gif" lazyload alt="视频后期处理">
+        </a>
+      </div>
+    
+    <article class="col-12 col-md-8 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/05/08/%E7%9F%AD%E8%A7%86%E9%A2%91/%E8%A7%86%E9%A2%91%E5%90%8E%E6%9C%9F%E5%A4%84%E7%90%86/" target="_self">
+          视频后期处理
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2023/05/08/%E7%9F%AD%E8%A7%86%E9%A2%91/%E8%A7%86%E9%A2%91%E5%90%8E%E6%9C%9F%E5%A4%84%E7%90%86/" target="_self">
+          
+          视频后期处理1. 剪辑套路整理视频素材 - 剪辑 - 音乐字幕 - 后期导出 1.1 整理素材 导入素材 删减素材 素材分类 项目分类  1.2 剪辑 粗剪排序 声音处理 渐变与转场 变速与变焦 画面调色与抠图 关键帧动画  1.3 音乐字幕 音频添加 过渡处理 字幕生成 字幕添加 AI声音添加  1.4 后期导出 设计封面&#x2F;开头 多平台压制 保存项目文件 后期反馈调整  2. 常见剪辑问题 剪辑
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-05-08 09:46" pubdate>
+              2023-05-08
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/%E8%A7%86%E9%A2%91%E5%A4%84%E7%90%86/">视频处理</a>
+            
+              <a href="/categories/%E8%A7%86%E9%A2%91%E5%A4%84%E7%90%86/%E5%89%AA%E8%BE%91%E5%A5%97%E8%B7%AF/">剪辑套路</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E8%A7%86%E9%A2%91%E5%90%8E%E6%9C%9F/">视频后期</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+      <div class="col-12 col-md-4 m-auto index-img">
+        <a href="/2023/05/08/%E6%9D%82%E8%AE%B0/%E7%94%B5%E8%84%91%E7%96%91%E9%9A%BE%E6%9D%82%E7%97%87/" target="_self">
+          <img src="https://s3.bmp.ovh/imgs/2023/04/27/c6d4cd81e9afe628.png" srcset="/img/loading.gif" lazyload alt="电脑疑难杂症">
+        </a>
+      </div>
+    
+    <article class="col-12 col-md-8 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/05/08/%E6%9D%82%E8%AE%B0/%E7%94%B5%E8%84%91%E7%96%91%E9%9A%BE%E6%9D%82%E7%97%87/" target="_self">
+          电脑疑难杂症
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2023/05/08/%E6%9D%82%E8%AE%B0/%E7%94%B5%E8%84%91%E7%96%91%E9%9A%BE%E6%9D%82%E7%97%87/" target="_self">
+          
+          1. 文件夹删除不掉 打开文件资源管理器（Ctrl + Alt + Delete）   打开资源监视器   选择 CPU –&gt; 关联句柄 –&gt; 输入文件夹或文件 –&gt; 查看占用进程 –&gt; 右键结束进程   2. 添加进 .gitigore 的文件还是会进入待提交列表在gitignore中忽略了.idea文件夹,但是提交时仍旧会出现.idea内文件变动的情况 原因：.idea
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-05-08 09:46" pubdate>
+              2023-05-08
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/%E6%9D%82%E8%AE%B0/">杂记</a>
+            
+              <a href="/categories/%E6%9D%82%E8%AE%B0/%E7%94%B5%E8%84%91/">电脑</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E6%9D%82%E8%AE%B0/">杂记</a>
+            
+              <a href="/tags/%E7%94%B5%E8%84%91%E7%96%91%E9%9A%BE%E6%9D%82%E7%97%87/">电脑疑难杂症</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+      <div class="col-12 col-md-4 m-auto index-img">
+        <a href="/2023/05/08/%E6%B5%8B%E8%AF%95/JMeter/" target="_self">
+          <img src="https://s3.bmp.ovh/imgs/2023/04/27/fcf2fc9b601219fc.jpg" srcset="/img/loading.gif" lazyload alt="JMeter">
+        </a>
+      </div>
+    
+    <article class="col-12 col-md-8 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/05/08/%E6%B5%8B%E8%AF%95/JMeter/" target="_self">
+          JMeter
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2023/05/08/%E6%B5%8B%E8%AF%95/JMeter/" target="_self">
+          
+          
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-05-08 09:46" pubdate>
+              2023-05-08
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/%E6%B5%8B%E8%AF%95/">测试</a>
+            
+              <a href="/categories/%E6%B5%8B%E8%AF%95/JMeter/">JMeter</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/JMeter/">JMeter</a>
+            
+              <a href="/tags/%E5%8E%8B%E6%B5%8B%E5%B7%A5%E5%85%B7/">压测工具</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+      <div class="col-12 col-md-4 m-auto index-img">
+        <a href="/2023/05/08/%E5%90%8E%E7%AB%AF/python/python%E5%9F%BA%E7%A1%80/" target="_self">
+          <img src="https://s3.bmp.ovh/imgs/2023/02/01/499c2245fc8100dc.png" srcset="/img/loading.gif" lazyload alt="Python 基础语法">
+        </a>
+      </div>
+    
+    <article class="col-12 col-md-8 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/05/08/%E5%90%8E%E7%AB%AF/python/python%E5%9F%BA%E7%A1%80/" target="_self">
+          Python 基础语法
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2023/05/08/%E5%90%8E%E7%AB%AF/python/python%E5%9F%BA%E7%A1%80/" target="_self">
+          
+          1. Python多版本问题1.1 环境搭建概览 1.2 python下载安装 下载最新稳定版本 官网地址  执行安装程序，选择自定义安装Customize installation，并勾选Add python 3.11 to PATH，下一步   Optional Features 保持默认勾选即可，至少保证pip勾选上，下一步   Advanced Options 保持默认勾选即可，可以更改安
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-05-08 09:46" pubdate>
+              2023-05-08
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/%E5%90%8E%E7%AB%AF/">后端</a>
+            
+              <a href="/categories/%E5%90%8E%E7%AB%AF/python/">python</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/python/">python</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+      <div class="col-12 col-md-4 m-auto index-img">
+        <a href="/2023/05/08/%E5%90%8E%E7%AB%AF/python/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/" target="_self">
+          <img src="https://s3.bmp.ovh/imgs/2023/04/27/447d7a4952e429f6.jpg" srcset="/img/loading.gif" lazyload alt="正则表达式">
+        </a>
+      </div>
+    
+    <article class="col-12 col-md-8 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/05/08/%E5%90%8E%E7%AB%AF/python/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/" target="_self">
+          正则表达式
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2023/05/08/%E5%90%8E%E7%AB%AF/python/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/" target="_self">
+          
+          1. 概念 正则表达式是一个特殊的字符序列，它可以帮我们检测一个字符串是与我们设定的字符序列相匹配。可以快速检索文本、实现一些替换文本的操作，比如：  检查一串数字是否是电话号码 检测一个字符串是否是 email 把一个文本里的单词替换为另一个单词   1.1 初使用 判断字符串 ‘C|C++|C#|JAVA|Python|Javascript’ 中是否包含 ‘Python’12345678910
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-05-08 09:46" pubdate>
+              2023-05-08
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/%E5%90%8E%E7%AB%AF/">后端</a>
+            
+              <a href="/categories/%E5%90%8E%E7%AB%AF/python/">python</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/python/">python</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+      <div class="col-12 col-md-4 m-auto index-img">
+        <a href="/2023/05/08/%E5%90%8E%E7%AB%AF/mysql/%E5%AD%98%E5%82%A8%E8%BF%87%E7%A8%8B/" target="_self">
+          <img src="https://s3.bmp.ovh/imgs/2023/04/27/2c4868bbb6aad920.jpg" srcset="/img/loading.gif" lazyload alt="存储过程">
+        </a>
+      </div>
+    
+    <article class="col-12 col-md-8 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/05/08/%E5%90%8E%E7%AB%AF/mysql/%E5%AD%98%E5%82%A8%E8%BF%87%E7%A8%8B/" target="_self">
+          存储过程
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2023/05/08/%E5%90%8E%E7%AB%AF/mysql/%E5%AD%98%E5%82%A8%E8%BF%87%E7%A8%8B/" target="_self">
+          
+          表中插入 10 万行记录123456789101112delimiter ;;create procedure idata()begin  declare i int;  set i&#x3D;1;  while(i&lt;&#x3D;100000)do    insert into t values(i, i, i);    set i&#x3D;i+1;  end while;end;;delimiter ;call id
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-05-08 09:46" pubdate>
+              2023-05-08
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/%E5%90%8E%E7%AB%AF/">后端</a>
+            
+              <a href="/categories/%E5%90%8E%E7%AB%AF/mysql/">mysql</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/mysql/">mysql</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+      <div class="col-12 col-md-4 m-auto index-img">
+        <a href="/2023/05/08/%E5%90%8E%E7%AB%AF/java/%E7%BC%96%E7%A0%81/" target="_self">
+          <img src="http://cdn-hw-static.shanhutech.cn/bizhi/staticwp/202303/9896ce3fc97a511fa18d763ac24ac0a5--2986168318.jpg" srcset="/img/loading.gif" lazyload alt="文件编码">
+        </a>
+      </div>
+    
+    <article class="col-12 col-md-8 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/05/08/%E5%90%8E%E7%AB%AF/java/%E7%BC%96%E7%A0%81/" target="_self">
+          文件编码
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2023/05/08/%E5%90%8E%E7%AB%AF/java/%E7%BC%96%E7%A0%81/" target="_self">
+          
+          gbkgbk 编码中文占用2个字节，英文占用1个字节 123456789public static void main(String[] args) throws UnsupportedEncodingException &amp;#123;        String s &#x3D; &quot;风间ABC&quot;;        byte[] bytes3 &#x3D; s.getBytes(&quot;gbk&amp;q
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-05-08 09:46" pubdate>
+              2023-05-08
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/%E5%90%8E%E7%AB%AF/">后端</a>
+            
+              <a href="/categories/%E5%90%8E%E7%AB%AF/java/">java</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/utf8-%E4%B8%AD%E6%96%87%E4%B9%B1%E7%A0%81/">utf8 中文乱码</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+      <div class="col-12 col-md-4 m-auto index-img">
+        <a href="/2023/05/08/%E5%90%8E%E7%AB%AF/java/%E8%87%AA%E5%AE%9A%E4%B9%89%E6%8C%81%E4%B9%85%E5%B1%82%E6%A1%86%E6%9E%B6/" target="_self">
+          <img src="http://cdn-hw-static.shanhutech.cn/bizhi/staticwp/202212/13746e6880e009d49378a81f0dec5474--569975149.jpg" srcset="/img/loading.gif" lazyload alt="自定义持久层框架">
+        </a>
+      </div>
+    
+    <article class="col-12 col-md-8 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/05/08/%E5%90%8E%E7%AB%AF/java/%E8%87%AA%E5%AE%9A%E4%B9%89%E6%8C%81%E4%B9%85%E5%B1%82%E6%A1%86%E6%9E%B6/" target="_self">
+          自定义持久层框架
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2023/05/08/%E5%90%8E%E7%AB%AF/java/%E8%87%AA%E5%AE%9A%E4%B9%89%E6%8C%81%E4%B9%85%E5%B1%82%E6%A1%86%E6%9E%B6/" target="_self">
+          
+          一、JDBC 的使用与存在的问题1. 编码流程 加载驱动 -&gt; 获取连接 -&gt; 定义 sql -&gt; 获取预处理 statement并设置参数 -&gt; 执行 sql -&gt; 封装结果集 -&gt; 释放资源  2. 引入 mysql 驱动依赖12345&lt;dependency&gt;    &lt;groupId&gt;mysql&lt;&#x2F;groupId&gt;
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-05-08 09:46" pubdate>
+              2023-05-08
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/%E5%90%8E%E7%AB%AF/">后端</a>
+            
+              <a href="/categories/%E5%90%8E%E7%AB%AF/java/">java</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/mybatis/">mybatis</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+
+
+  <nav aria-label="navigation">
+    <span class="pagination" id="pagination">
+      <span class="page-number current">1</span><a class="page-number" href="/page/2/#board">2</a><a class="page-number" href="/page/3/#board">3</a><a class="extend next" rel="next" href="/page/2/#board"><i class="iconfont icon-arrowright"></i></a>
+    </span>
+  </nav>
+
+
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+    风间小栈出品
+  </div>
+  
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- 不蒜子统计PV -->
+        <span id="busuanzi_container_site_pv" style="display: none">
+            总访问量 
+            <span id="busuanzi_value_site_pv"></span>
+             次
+          </span>
+      
+      
+        <!-- 不蒜子统计UV -->
+        <span id="busuanzi_container_site_uv" style="display: none">
+            总访客数 
+            <span id="busuanzi_value_site_uv"></span>
+             人
+          </span>
+      
+    
+  </div>
+
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+        typing(title);
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>

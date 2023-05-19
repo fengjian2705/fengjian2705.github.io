@@ -1,0 +1,529 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="风间">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="ROUND_UP：舍入远离 0123456&#x2F;** * Rounding mode to round away from zero. Always increments the digit prior to a nonzero discarded fraction. * Note that this rounding mode never decreases the magnitude of the">
+<meta property="og:type" content="article">
+<meta property="og:title" content="BigDecimal 舍入模式">
+<meta property="og:url" content="http://example.com/2023/05/08/%E5%90%8E%E7%AB%AF/java/BigDecimal%E8%88%8D%E5%85%A5%E6%A8%A1%E5%BC%8F/index.html">
+<meta property="og:site_name" content="风间小栈">
+<meta property="og:description" content="ROUND_UP：舍入远离 0123456&#x2F;** * Rounding mode to round away from zero. Always increments the digit prior to a nonzero discarded fraction. * Note that this rounding mode never decreases the magnitude of the">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://s3.bmp.ovh/imgs/2023/04/28/f2aa543b032954f0.jpg">
+<meta property="article:published_time" content="2023-05-08T01:46:03.859Z">
+<meta property="article:modified_time" content="2023-05-08T01:46:03.859Z">
+<meta property="article:author" content="风间">
+<meta property="article:tag" content="BigDecimal">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://s3.bmp.ovh/imgs/2023/04/28/f2aa543b032954f0.jpg">
+  
+  
+  <title>BigDecimal 舍入模式 - 风间小栈</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4/github-markdown.min.css" />
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hint.css@2/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.css" />
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.8.13","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":"§"},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>风间小栈</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/%E6%96%87%E6%9C%AC.jpg') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="BigDecimal 舍入模式">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2023-05-08 09:46" pubdate>
+        2023年5月8日 上午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      9.7k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      82 分钟
+    </span>
+  
+
+  
+  
+    
+      <!-- 不蒜子统计文章PV -->
+      <span id="busuanzi_container_page_pv" style="display: none">
+        <i class="iconfont icon-eye" aria-hidden="true"></i>
+        <span id="busuanzi_value_page_pv"></span> 次
+      </span>
+    
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">BigDecimal 舍入模式</h1>
+            
+            <div class="markdown-body">
+              <h2 id="ROUND-UP：舍入远离-0"><a href="#ROUND-UP：舍入远离-0" class="headerlink" title="ROUND_UP：舍入远离 0"></a>ROUND_UP：舍入远离 0</h2><figure class="highlight arduino"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs arduino"><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * Rounding mode to round away from zero. Always increments the digit prior to a nonzero discarded fraction.</span><br><span class="hljs-comment"> * Note that this rounding mode never decreases the magnitude of the calculated value.</span><br><span class="hljs-comment"> * 该模式，远离零，总是在非零丢弃分数之前增加数字，朝远离数轴的方向进位，正数+1，负数-1。（除保留位数后一位为0以外，其它不管正负号，直接进位）</span><br><span class="hljs-comment"> */</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">final</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">int</span> ROUND_UP =  <span class="hljs-number">0</span>;<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight reasonml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs reasonml">log.info(<span class="hljs-string">&quot;BigDecimal.ROUND_UP=&#123;&#125;&quot;</span>, <span class="hljs-keyword">new</span> <span class="hljs-constructor">BigDecimal(<span class="hljs-string">&quot;5.5&quot;</span>)</span>.set<span class="hljs-constructor">Scale(0, BigDecimal.ROUND_UP)</span>);     <span class="hljs-comment">// 6</span><br>log.info(<span class="hljs-string">&quot;BigDecimal.ROUND_UP=&#123;&#125;&quot;</span>, <span class="hljs-keyword">new</span> <span class="hljs-constructor">BigDecimal(<span class="hljs-string">&quot;1.6&quot;</span>)</span>.set<span class="hljs-constructor">Scale(0, BigDecimal.ROUND_UP)</span>);     <span class="hljs-comment">// 2</span><br>log.info(<span class="hljs-string">&quot;BigDecimal.ROUND_UP=&#123;&#125;&quot;</span>, <span class="hljs-keyword">new</span> <span class="hljs-constructor">BigDecimal(<span class="hljs-string">&quot;1.0&quot;</span>)</span>.set<span class="hljs-constructor">Scale(0, BigDecimal.ROUND_UP)</span>);     <span class="hljs-comment">// 1</span><br>log.info(<span class="hljs-string">&quot;BigDecimal.ROUND_UP=&#123;&#125;&quot;</span>, <span class="hljs-keyword">new</span> <span class="hljs-constructor">BigDecimal(<span class="hljs-string">&quot;-1.0&quot;</span>)</span>.set<span class="hljs-constructor">Scale(0, BigDecimal.ROUND_UP)</span>);    <span class="hljs-comment">// -1</span><br>log.info(<span class="hljs-string">&quot;BigDecimal.ROUND_UP=&#123;&#125;&quot;</span>, <span class="hljs-keyword">new</span> <span class="hljs-constructor">BigDecimal(<span class="hljs-string">&quot;-1.6&quot;</span>)</span>.set<span class="hljs-constructor">Scale(0, BigDecimal.ROUND_UP)</span>);    <span class="hljs-comment">// -2</span><br>log.info(<span class="hljs-string">&quot;BigDecimal.ROUND_UP=&#123;&#125;&quot;</span>, <span class="hljs-keyword">new</span> <span class="hljs-constructor">BigDecimal(<span class="hljs-string">&quot;-5.5&quot;</span>)</span>.set<span class="hljs-constructor">Scale(0, BigDecimal.ROUND_UP)</span>);    <span class="hljs-comment">// -6</span><br></code></pre></td></tr></table></figure>
+
+<h2 id="ROUND-DOWN：舍入靠近-0"><a href="#ROUND-DOWN：舍入靠近-0" class="headerlink" title="ROUND_DOWN：舍入靠近 0"></a>ROUND_DOWN：舍入靠近 0</h2><figure class="highlight arduino"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs arduino"><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * Rounding mode to round towards zero. Never increments the digit prior to a discarded fraction (i.e., truncates). </span><br><span class="hljs-comment"> * Note that this rounding mode never increases the magnitude of the calculated value.</span><br><span class="hljs-comment"> * 该模式向零靠近。永远不要在一个被丢弃的分数前增加数字(即截断)。请注意，这种舍入模式不会增加计算值的大小。采用断言式，截断舍弃对应小数位后面的小数，不考虑任何进位。</span><br><span class="hljs-comment"> */</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">final</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">int</span> ROUND_DOWN = <span class="hljs-number">1</span>;<br></code></pre></td></tr></table></figure>
+<figure class="highlight reasonml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs reasonml">log.info(<span class="hljs-string">&quot;BigDecimal.ROUND_DOWN=&#123;&#125;&quot;</span>, <span class="hljs-keyword">new</span> <span class="hljs-constructor">BigDecimal(<span class="hljs-string">&quot;5.5&quot;</span>)</span>.set<span class="hljs-constructor">Scale(0, BigDecimal.ROUND_DOWN)</span>);     <span class="hljs-comment">// 5</span><br>log.info(<span class="hljs-string">&quot;BigDecimal.ROUND_DOWN=&#123;&#125;&quot;</span>, <span class="hljs-keyword">new</span> <span class="hljs-constructor">BigDecimal(<span class="hljs-string">&quot;1.6&quot;</span>)</span>.set<span class="hljs-constructor">Scale(0, BigDecimal.ROUND_DOWN)</span>);     <span class="hljs-comment">// 1</span><br>log.info(<span class="hljs-string">&quot;BigDecimal.ROUND_DOWN=&#123;&#125;&quot;</span>, <span class="hljs-keyword">new</span> <span class="hljs-constructor">BigDecimal(<span class="hljs-string">&quot;1.0&quot;</span>)</span>.set<span class="hljs-constructor">Scale(0, BigDecimal.ROUND_DOWN)</span>);     <span class="hljs-comment">// 1</span><br>log.info(<span class="hljs-string">&quot;BigDecimal.ROUND_DOWN=&#123;&#125;&quot;</span>, <span class="hljs-keyword">new</span> <span class="hljs-constructor">BigDecimal(<span class="hljs-string">&quot;-1.0&quot;</span>)</span>.set<span class="hljs-constructor">Scale(0, BigDecimal.ROUND_DOWN)</span>);    <span class="hljs-comment">// -1</span><br>log.info(<span class="hljs-string">&quot;BigDecimal.ROUND_DOWN=&#123;&#125;&quot;</span>, <span class="hljs-keyword">new</span> <span class="hljs-constructor">BigDecimal(<span class="hljs-string">&quot;-1.6&quot;</span>)</span>.set<span class="hljs-constructor">Scale(0, BigDecimal.ROUND_DOWN)</span>);    <span class="hljs-comment">// -1</span><br>log.info(<span class="hljs-string">&quot;BigDecimal.ROUND_DOWN=&#123;&#125;&quot;</span>, <span class="hljs-keyword">new</span> <span class="hljs-constructor">BigDecimal(<span class="hljs-string">&quot;-5.5&quot;</span>)</span>.set<span class="hljs-constructor">Scale(0, BigDecimal.ROUND_DOWN)</span>);    <span class="hljs-comment">// -5</span><br></code></pre></td></tr></table></figure>
+
+<h2 id="ROUND-CEILING：向上（正数方向）舍入"><a href="#ROUND-CEILING：向上（正数方向）舍入" class="headerlink" title="ROUND_CEILING：向上（正数方向）舍入"></a>ROUND_CEILING：向上（正数方向）舍入</h2><figure class="highlight arduino"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs arduino"><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * Rounding mode to round towards positive infinity. If the BigDecimal is positive, behaves as for ROUND_UP; if negative, behaves as for ROUND_DOWN. </span><br><span class="hljs-comment"> * Note that this rounding mode never decreases the calculated value.</span><br><span class="hljs-comment"> * 该模式向正无穷四舍五入，是 ROUND_UP 和ROUND_DOWN 的组合，如果 BigDecimal 为正数，则行为与 ROUND_UP 相同；如果 BigDecimal 为负数，则行为与 ROUND_DOWN 相同。</span><br><span class="hljs-comment"> */</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">final</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">int</span> ROUND_CEILING = <span class="hljs-number">2</span>;<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight reasonml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs reasonml">log.info(<span class="hljs-string">&quot;BigDecimal.ROUND_CEILING=&#123;&#125;&quot;</span>, <span class="hljs-keyword">new</span> <span class="hljs-constructor">BigDecimal(<span class="hljs-string">&quot;5.5&quot;</span>)</span>.set<span class="hljs-constructor">Scale(0, BigDecimal.ROUND_CEILING)</span>);     <span class="hljs-comment">// 6</span><br>log.info(<span class="hljs-string">&quot;BigDecimal.ROUND_CEILING=&#123;&#125;&quot;</span>, <span class="hljs-keyword">new</span> <span class="hljs-constructor">BigDecimal(<span class="hljs-string">&quot;1.6&quot;</span>)</span>.set<span class="hljs-constructor">Scale(0, BigDecimal.ROUND_CEILING)</span>);     <span class="hljs-comment">// 2</span><br>log.info(<span class="hljs-string">&quot;BigDecimal.ROUND_CEILING=&#123;&#125;&quot;</span>, <span class="hljs-keyword">new</span> <span class="hljs-constructor">BigDecimal(<span class="hljs-string">&quot;1.0&quot;</span>)</span>.set<span class="hljs-constructor">Scale(0, BigDecimal.ROUND_CEILING)</span>);     <span class="hljs-comment">// 1</span><br>log.info(<span class="hljs-string">&quot;BigDecimal.ROUND_CEILING=&#123;&#125;&quot;</span>, <span class="hljs-keyword">new</span> <span class="hljs-constructor">BigDecimal(<span class="hljs-string">&quot;-1.0&quot;</span>)</span>.set<span class="hljs-constructor">Scale(0, BigDecimal.ROUND_CEILING)</span>);    <span class="hljs-comment">// -1</span><br>log.info(<span class="hljs-string">&quot;BigDecimal.ROUND_CEILING=&#123;&#125;&quot;</span>, <span class="hljs-keyword">new</span> <span class="hljs-constructor">BigDecimal(<span class="hljs-string">&quot;-1.6&quot;</span>)</span>.set<span class="hljs-constructor">Scale(0, BigDecimal.ROUND_CEILING)</span>);    <span class="hljs-comment">// -1</span><br>log.info(<span class="hljs-string">&quot;BigDecimal.ROUND_CEILING=&#123;&#125;&quot;</span>, <span class="hljs-keyword">new</span> <span class="hljs-constructor">BigDecimal(<span class="hljs-string">&quot;-5.5&quot;</span>)</span>.set<span class="hljs-constructor">Scale(0, BigDecimal.ROUND_CEILING)</span>);    <span class="hljs-comment">// -5</span><br><br></code></pre></td></tr></table></figure>
+
+<h2 id="ROUND-FLOOR：向下（负数方向）舍入"><a href="#ROUND-FLOOR：向下（负数方向）舍入" class="headerlink" title="ROUND_FLOOR：向下（负数方向）舍入"></a>ROUND_FLOOR：向下（负数方向）舍入</h2><figure class="highlight arduino"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs arduino"><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * Rounding mode to round towards negative infinity. If the BigDecimal is positive, behave as for ROUND_DOWN; if negative, behave as for ROUND_UP. </span><br><span class="hljs-comment"> * Note that this rounding mode never increases the calculated value.</span><br><span class="hljs-comment"> * 该模式向负无穷四舍五入，也是 ROUND_UP 和 ROUND_DOWN 的组合，但是和ROUND_CEILING 是相反的。如果 BigDecimal 为正数，则行为与 ROUND_DOWN 相同；如果为负数，则行为与 ROUND_UP 相同。</span><br><span class="hljs-comment"> */</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">final</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">int</span> ROUND_FLOOR = <span class="hljs-number">3</span>;<br><br></code></pre></td></tr></table></figure>
+<figure class="highlight reasonml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs reasonml">log.info(<span class="hljs-string">&quot;BigDecimal.ROUND_FLOOR=&#123;&#125;&quot;</span>, <span class="hljs-keyword">new</span> <span class="hljs-constructor">BigDecimal(<span class="hljs-string">&quot;5.5&quot;</span>)</span>.set<span class="hljs-constructor">Scale(0, BigDecimal.ROUND_FLOOR)</span>);     <span class="hljs-comment">// 5</span><br>log.info(<span class="hljs-string">&quot;BigDecimal.ROUND_FLOOR=&#123;&#125;&quot;</span>, <span class="hljs-keyword">new</span> <span class="hljs-constructor">BigDecimal(<span class="hljs-string">&quot;1.6&quot;</span>)</span>.set<span class="hljs-constructor">Scale(0, BigDecimal.ROUND_FLOOR)</span>);     <span class="hljs-comment">// 1</span><br>log.info(<span class="hljs-string">&quot;BigDecimal.ROUND_FLOOR=&#123;&#125;&quot;</span>, <span class="hljs-keyword">new</span> <span class="hljs-constructor">BigDecimal(<span class="hljs-string">&quot;1.0&quot;</span>)</span>.set<span class="hljs-constructor">Scale(0, BigDecimal.ROUND_FLOOR)</span>);     <span class="hljs-comment">// 1</span><br>log.info(<span class="hljs-string">&quot;BigDecimal.ROUND_FLOOR=&#123;&#125;&quot;</span>, <span class="hljs-keyword">new</span> <span class="hljs-constructor">BigDecimal(<span class="hljs-string">&quot;-1.0&quot;</span>)</span>.set<span class="hljs-constructor">Scale(0, BigDecimal.ROUND_FLOOR)</span>);    <span class="hljs-comment">// -1</span><br>log.info(<span class="hljs-string">&quot;BigDecimal.ROUND_FLOOR=&#123;&#125;&quot;</span>, <span class="hljs-keyword">new</span> <span class="hljs-constructor">BigDecimal(<span class="hljs-string">&quot;-1.6&quot;</span>)</span>.set<span class="hljs-constructor">Scale(0, BigDecimal.ROUND_FLOOR)</span>);    <span class="hljs-comment">// -2</span><br>log.info(<span class="hljs-string">&quot;BigDecimal.ROUND_FLOOR=&#123;&#125;&quot;</span>, <span class="hljs-keyword">new</span> <span class="hljs-constructor">BigDecimal(<span class="hljs-string">&quot;-5.5&quot;</span>)</span>.set<span class="hljs-constructor">Scale(0, BigDecimal.ROUND_FLOOR)</span>);    <span class="hljs-comment">// -6</span><br></code></pre></td></tr></table></figure>
+
+<h2 id="ROUND-HALF-UP：四舍五入"><a href="#ROUND-HALF-UP：四舍五入" class="headerlink" title="ROUND_HALF_UP：四舍五入"></a>ROUND_HALF_UP：四舍五入</h2><figure class="highlight applescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs applescript">/**<br> * Rounding mode <span class="hljs-keyword">to</span> <span class="hljs-built_in">round</span> towards <span class="hljs-string">&quot;nearest neighbor&quot;</span> unless both neighbors are equidistant, <span class="hljs-keyword">in</span> which case <span class="hljs-built_in">round</span> up. <br> * Behaves <span class="hljs-keyword">as</span> <span class="hljs-keyword">for</span> ROUND_UP <span class="hljs-keyword">if</span> <span class="hljs-keyword">the</span> discarded fraction <span class="hljs-keyword">is</span> ≥ <span class="hljs-number">0.5</span>; otherwise, behaves <span class="hljs-keyword">as</span> <span class="hljs-keyword">for</span> ROUND_DOWN. <br> * Note <span class="hljs-keyword">that</span> this <span class="hljs-keyword">is</span> <span class="hljs-keyword">the</span> rounding mode <span class="hljs-keyword">that</span> most <span class="hljs-keyword">of</span> us were taught <span class="hljs-keyword">in</span> grade school.<br> * 该模式向“最近的邻居”四舍五入。如果丢弃的分数是≥ <span class="hljs-number">0.5</span>，则行为与ROUND_UP相同;否则，行为与ROUND_DOWN相同。请注意，这是我们大多数人在小学时学过的舍入模式。<br> */<br>public final static int ROUND_HALF_UP = <span class="hljs-number">4</span>;<br><br></code></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs shell">log.info(&quot;BigDecimal.ROUND_HALF_UP=&#123;&#125;&quot;, new BigDecimal(&quot;5.5&quot;).setScale(0, BigDecimal.ROUND_HALF_UP));     // 6<br>log.info(&quot;BigDecimal.ROUND_HALF_UP=&#123;&#125;&quot;, new BigDecimal(&quot;1.6&quot;).setScale(0, BigDecimal.ROUND_HALF_UP));     // 2<br>log.info(&quot;BigDecimal.ROUND_HALF_UP=&#123;&#125;&quot;, new BigDecimal(&quot;1.0&quot;).setScale(0, BigDecimal.ROUND_HALF_UP));     // 1<br>log.info(&quot;BigDecimal.ROUND_HALF_UP=&#123;&#125;&quot;, new BigDecimal(&quot;-1.0&quot;).setScale(0, BigDecimal.ROUND_HALF_UP));    // -1<br>log.info(&quot;BigDecimal.ROUND_HALF_UP=&#123;&#125;&quot;, new BigDecimal(&quot;-1.6&quot;).setScale(0, BigDecimal.ROUND_HALF_UP));    // -2<br>log.info(&quot;BigDecimal.ROUND_HALF_UP=&#123;&#125;&quot;, new BigDecimal(&quot;-5.5&quot;).setScale(0, BigDecimal.ROUND_HALF_UP));    // -6<br></code></pre></td></tr></table></figure>
+
+<h2 id="ROUND-HALF-DOWN：五舍六入"><a href="#ROUND-HALF-DOWN：五舍六入" class="headerlink" title="ROUND_HALF_DOWN：五舍六入"></a>ROUND_HALF_DOWN：五舍六入</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs shell">/**<br> * Rounding mode to round towards &quot;nearest neighbor&quot; unless both neighbors are equidistant, in which case round down. <br> * Behaves as for ROUND_UP if the discarded fraction is &gt; 0.5; otherwise, behaves as for ROUND_DOWN.<br> * 该模式向“最近的邻居”四舍五入。如果丢弃的分数是&gt; 0.5，则行为与ROUND_UP相同；否则，行为与ROUND_DOWN相同，也就是五舍六入<br> */<br>public final static int ROUND_HALF_DOWN = 5;<br><br></code></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs shell">log.info(&quot;BigDecimal.ROUND_HALF_DOWN=&#123;&#125;&quot;, new BigDecimal(&quot;5.5&quot;).setScale(0, BigDecimal.ROUND_HALF_DOWN));     // 5<br>log.info(&quot;BigDecimal.ROUND_HALF_DOWN=&#123;&#125;&quot;, new BigDecimal(&quot;1.6&quot;).setScale(0, BigDecimal.ROUND_HALF_DOWN));     // 2<br>log.info(&quot;BigDecimal.ROUND_HALF_DOWN=&#123;&#125;&quot;, new BigDecimal(&quot;1.0&quot;).setScale(0, BigDecimal.ROUND_HALF_DOWN));     // 1<br>log.info(&quot;BigDecimal.ROUND_HALF_DOWN=&#123;&#125;&quot;, new BigDecimal(&quot;-1.0&quot;).setScale(0, BigDecimal.ROUND_HALF_DOWN));    // -1<br>log.info(&quot;BigDecimal.ROUND_HALF_DOWN=&#123;&#125;&quot;, new BigDecimal(&quot;-1.6&quot;).setScale(0, BigDecimal.ROUND_HALF_DOWN));    // -2<br>log.info(&quot;BigDecimal.ROUND_HALF_DOWN=&#123;&#125;&quot;, new BigDecimal(&quot;-5.5&quot;).setScale(0, BigDecimal.ROUND_HALF_DOWN));    // -5<br><br></code></pre></td></tr></table></figure>
+
+<h2 id="ROUND-HALF-EVEN：奇（四舍五入）偶（五舍六入）舍入"><a href="#ROUND-HALF-EVEN：奇（四舍五入）偶（五舍六入）舍入" class="headerlink" title="ROUND_HALF_EVEN：奇（四舍五入）偶（五舍六入）舍入"></a>ROUND_HALF_EVEN：奇（四舍五入）偶（五舍六入）舍入</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs shell">/**<br> * Rounding mode to round towards the &quot;nearest neighbor&quot; unless both neighbors are equidistant, in which case, round towards the even neighbor. <br> * Behaves as for ROUND_HALF_UP if the digit to the left of the discarded fraction is odd; behaves as for ROUND_HALF_DOWN if it&#x27;s even. <br> * Note that this is the rounding mode that minimizes cumulative error when applied repeatedly over a sequence of calculations.<br> * 该模式是 ROUND_HALF_UP 和 ROUND_HALF_DOWN 的组合，但是比较特殊的是，如果被丢弃分数左边的数字是奇数，则行为与ROUND_HALF_UP（四舍五入）相同;如果是偶数，则表现为ROUND_HALF_DOWN（五舍六入）。请注意，在对一系列计算重复应用时，这种舍入模式可以最小化累积误差。<br> */<br>public final static int ROUND_HALF_EVEN = 6;<br><br></code></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs shell">log.info(&quot;BigDecimal.ROUND_HALF_EVEN=&#123;&#125;&quot;, new BigDecimal(&quot;5.5&quot;).setScale(0, BigDecimal.ROUND_HALF_EVEN));     // 6<br>log.info(&quot;BigDecimal.ROUND_HALF_EVEN=&#123;&#125;&quot;, new BigDecimal(&quot;6.5&quot;).setScale(0, BigDecimal.ROUND_HALF_EVEN));     // 5<br>log.info(&quot;BigDecimal.ROUND_HALF_EVEN=&#123;&#125;&quot;, new BigDecimal(&quot;1.6&quot;).setScale(0, BigDecimal.ROUND_HALF_EVEN));     // 2<br>log.info(&quot;BigDecimal.ROUND_HALF_EVEN=&#123;&#125;&quot;, new BigDecimal(&quot;1.0&quot;).setScale(0, BigDecimal.ROUND_HALF_EVEN));     // 1<br>log.info(&quot;BigDecimal.ROUND_HALF_EVEN=&#123;&#125;&quot;, new BigDecimal(&quot;-1.0&quot;).setScale(0, BigDecimal.ROUND_HALF_EVEN));    // -1<br>log.info(&quot;BigDecimal.ROUND_HALF_EVEN=&#123;&#125;&quot;, new BigDecimal(&quot;-1.6&quot;).setScale(0, BigDecimal.ROUND_HALF_EVEN));    // -2<br>log.info(&quot;BigDecimal.ROUND_HALF_EVEN=&#123;&#125;&quot;, new BigDecimal(&quot;-5.5&quot;).setScale(0, BigDecimal.ROUND_HALF_EVEN));    // -6<br>log.info(&quot;BigDecimal.ROUND_HALF_EVEN=&#123;&#125;&quot;, new BigDecimal(&quot;-6.5&quot;).setScale(0, BigDecimal.ROUND_HALF_EVEN));    // -5<br><br></code></pre></td></tr></table></figure>
+
+<h2 id="ROUND-UNNECESSARY：非必要舍入（固定格式）"><a href="#ROUND-UNNECESSARY：非必要舍入（固定格式）" class="headerlink" title="ROUND_UNNECESSARY：非必要舍入（固定格式）"></a>ROUND_UNNECESSARY：非必要舍入（固定格式）</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs shell">/**<br> * Rounding mode to assert that the requested operation has an exact result, hence no rounding is necessary. <br> * If this rounding mode is specified on an operation that yields an inexact result, an ArithmeticException is thrown.<br> * 该模式认为传入的数据一定满足设置的小数模式，因此不需要舍入。如果在产生不精确结果的操作上指定了此舍入模式，则会抛出ArithmeticException。<br> */ <br>public final static int ROUND_UNNECESSARY = 7;<br><br></code></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs shell">log.info(&quot;BigDecimal.ROUND_UNNECESSARY=&#123;&#125;&quot;, new BigDecimal(&quot;5.5&quot;).setScale(0, BigDecimal.ROUND_UNNECESSARY));     // throw ArithmeticException<br>log.info(&quot;BigDecimal.ROUND_UNNECESSARY=&#123;&#125;&quot;, new BigDecimal(&quot;1.6&quot;).setScale(0, BigDecimal.ROUND_UNNECESSARY));     // throw ArithmeticException<br>log.info(&quot;BigDecimal.ROUND_UNNECESSARY=&#123;&#125;&quot;, new BigDecimal(&quot;1.0&quot;).setScale(0, BigDecimal.ROUND_UNNECESSARY));     // 1<br>log.info(&quot;BigDecimal.ROUND_UNNECESSARY=&#123;&#125;&quot;, new BigDecimal(&quot;-1.0&quot;).setScale(0, BigDecimal.ROUND_UNNECESSARY));    // -1<br>log.info(&quot;BigDecimal.ROUND_UNNECESSARY=&#123;&#125;&quot;, new BigDecimal(&quot;-1.6&quot;).setScale(0, BigDecimal.ROUND_UNNECESSARY));    // throw ArithmeticException<br>log.info(&quot;BigDecimal.ROUND_UNNECESSARY=&#123;&#125;&quot;, new BigDecimal(&quot;-5.5&quot;).setScale(0, BigDecimal.ROUND_UNNECESSARY));    // throw ArithmeticException<br><br></code></pre></td></tr></table></figure>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E5%90%8E%E7%AB%AF/">后端</a>
+                    
+                      <a class="hover-with-bg" href="/categories/%E5%90%8E%E7%AB%AF/java/">java</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/BigDecimal/">BigDecimal</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2023/05/08/%E5%90%8E%E7%AB%AF/java/ElasticSearch/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">分布式搜索引擎-ElasticSearch</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2023/05/08/%E5%8D%9A%E5%AE%A2%E8%AE%BE%E7%BD%AE/PicGo+ImgUrl/">
+                        <span class="hidden-mobile">PicGo + ImgUrl 图床</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <article class="comments" id="comments" lazyload>
+                
+                  
+                
+                
+  <div id="SOHUCS" sid='http://example.com/2023/05/08/%E5%90%8E%E7%AB%AF/java/BigDecimal%E8%88%8D%E5%85%A5%E6%A8%A1%E5%BC%8F/'></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#SOHUCS', function() {
+      Fluid.utils.createScript("https://changyan.sohu.com/upload/changyan.js", function() {
+        window.changyan.api.config({"appid":"cywjv2D9l","appkey":"2bf2f1231299e92b26393ba6fb2ad9d8"})
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+              </article>
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+    风间小栈出品
+  </div>
+  
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- 不蒜子统计PV -->
+        <span id="busuanzi_container_site_pv" style="display: none">
+            总访问量 
+            <span id="busuanzi_value_site_pv"></span>
+             次
+          </span>
+      
+      
+        <!-- 不蒜子统计UV -->
+        <span id="busuanzi_container_site_uv" style="display: none">
+            总访客数 
+            <span id="busuanzi_value_site_uv"></span>
+             人
+          </span>
+      
+    
+  </div>
+
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  
+    <script  src="https://cdn.jsdelivr.net/npm/tocbot@4/dist/tocbot.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4/anchor.min.js" ></script>
+  
+  
+    <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js" ></script>
+  
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+        typing(title);
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>

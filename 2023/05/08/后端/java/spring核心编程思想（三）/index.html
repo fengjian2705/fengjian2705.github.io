@@ -1,0 +1,875 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="风间">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="1. Spring IoC 容器概述   内容    Spring IoC 依赖查找   Spring IoC 依赖注入   Spring IoC 依赖来源   Spring IoC 配置元信息   Spring IoC 容器   Spring 应用上下文   使用 Spring IoC 容器   Spring IoC 容器生命周期   面试题精选   2. Spring IoC 依赖查找 根据">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Spring 核心编程思想（三）：Spring IoC 容器概述">
+<meta property="og:url" content="http://example.com/2023/05/08/%E5%90%8E%E7%AB%AF/java/spring%E6%A0%B8%E5%BF%83%E7%BC%96%E7%A8%8B%E6%80%9D%E6%83%B3%EF%BC%88%E4%B8%89%EF%BC%89/index.html">
+<meta property="og:site_name" content="风间小栈">
+<meta property="og:description" content="1. Spring IoC 容器概述   内容    Spring IoC 依赖查找   Spring IoC 依赖注入   Spring IoC 依赖来源   Spring IoC 配置元信息   Spring IoC 容器   Spring 应用上下文   使用 Spring IoC 容器   Spring IoC 容器生命周期   面试题精选   2. Spring IoC 依赖查找 根据">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://s3.bmp.ovh/imgs/2023/05/06/debcba54d0f154b7.jpg">
+<meta property="article:published_time" content="2023-05-08T01:46:03.865Z">
+<meta property="article:modified_time" content="2023-05-09T10:48:20.510Z">
+<meta property="article:author" content="风间">
+<meta property="article:tag" content="spring">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://s3.bmp.ovh/imgs/2023/05/06/debcba54d0f154b7.jpg">
+  
+  
+  <title>Spring 核心编程思想（三）：Spring IoC 容器概述 - 风间小栈</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4/github-markdown.min.css" />
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hint.css@2/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.css" />
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.8.13","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":"§"},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>风间小栈</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/%E6%96%87%E6%9C%AC.jpg') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="Spring 核心编程思想（三）：Spring IoC 容器概述">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2023-05-08 09:46" pubdate>
+        2023年5月8日 上午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      38k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      320 分钟
+    </span>
+  
+
+  
+  
+    
+      <!-- 不蒜子统计文章PV -->
+      <span id="busuanzi_container_page_pv" style="display: none">
+        <i class="iconfont icon-eye" aria-hidden="true"></i>
+        <span id="busuanzi_value_page_pv"></span> 次
+      </span>
+    
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">Spring 核心编程思想（三）：Spring IoC 容器概述</h1>
+            
+            <div class="markdown-body">
+              <h2 id="1-Spring-IoC-容器概述"><a href="#1-Spring-IoC-容器概述" class="headerlink" title="1. Spring IoC 容器概述"></a>1. Spring IoC 容器概述</h2><table>
+<thead>
+<tr>
+<th>内容</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Spring IoC 依赖查找</td>
+</tr>
+<tr>
+<td>Spring IoC 依赖注入</td>
+</tr>
+<tr>
+<td>Spring IoC 依赖来源</td>
+</tr>
+<tr>
+<td>Spring IoC 配置元信息</td>
+</tr>
+<tr>
+<td>Spring IoC 容器</td>
+</tr>
+<tr>
+<td>Spring 应用上下文</td>
+</tr>
+<tr>
+<td>使用 Spring IoC 容器</td>
+</tr>
+<tr>
+<td>Spring IoC 容器生命周期</td>
+</tr>
+<tr>
+<td>面试题精选</td>
+</tr>
+</tbody></table>
+<h2 id="2-Spring-IoC-依赖查找"><a href="#2-Spring-IoC-依赖查找" class="headerlink" title="2. Spring IoC 依赖查找"></a>2. Spring IoC 依赖查找</h2><ol>
+<li><p>根据 Bean 名称查找</p>
+<ul>
+<li><p>实时查找</p>
+</li>
+<li><p>延迟查找</p>
+</li>
+</ul>
+</li>
+<li><p>根据 Bean 类型查找</p>
+<ul>
+<li>单个 Bean 对象</li>
+<li>集合 Bean 对象</li>
+</ul>
+</li>
+<li><p>根据 Bean 名称 + 类型查找</p>
+</li>
+<li><p>根据 Java 注解查找</p>
+<ul>
+<li>单个 Bean 对象</li>
+<li>集合 Bean 对象</li>
+</ul>
+</li>
+</ol>
+<h2 id="3-依赖查找实践"><a href="#3-依赖查找实践" class="headerlink" title="3. 依赖查找实践"></a>3. 依赖查找实践</h2><h3 id="3-1-根据-Bean-名称实时查找"><a href="#3-1-根据-Bean-名称实时查找" class="headerlink" title="3.1 根据 Bean 名称实时查找"></a>3.1 根据 Bean 名称实时查找</h3><ol>
+<li><p>新建实体类 User</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">package</span> tech.fengjian.thinking.in.spring.ioc.overview.domain;<br><br><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * 用户类</span><br><span class="hljs-comment"> *</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@author</span> 风间</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@since</span> 2023/5/7 12:58</span><br><span class="hljs-comment"> */</span><br><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">User</span> </span>&#123;<br><br>    <span class="hljs-keyword">private</span> Long id;<br>    <span class="hljs-keyword">private</span> String name;<br><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> Long <span class="hljs-title">getId</span><span class="hljs-params">()</span> </span>&#123;<br>        <span class="hljs-keyword">return</span> id;<br>    &#125;<br><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">setId</span><span class="hljs-params">(Long id)</span> </span>&#123;<br>        <span class="hljs-keyword">this</span>.id = id;<br>    &#125;<br><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">getName</span><span class="hljs-params">()</span> </span>&#123;<br>        <span class="hljs-keyword">return</span> name;<br>    &#125;<br><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">setName</span><span class="hljs-params">(String name)</span> </span>&#123;<br>        <span class="hljs-keyword">this</span>.name = name;<br>    &#125;<br><br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">toString</span><span class="hljs-params">()</span> </span>&#123;<br>        <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;User&#123;&quot;</span> +<br>                <span class="hljs-string">&quot;id=&quot;</span> + id +<br>                <span class="hljs-string">&quot;, name=&#x27;&quot;</span> + name + <span class="hljs-string">&#x27;\&#x27;&#x27;</span> +<br>                <span class="hljs-string">&#x27;&#125;&#x27;</span>;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure></li>
+<li><p>新建 dependency-lookup-context 文件，配置实体类</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-meta">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">beans</span> <span class="hljs-attr">xmlns</span>=<span class="hljs-string">&quot;http://www.springframework.org/schema/beans&quot;</span></span><br><span class="hljs-tag">       <span class="hljs-attr">xmlns:xsi</span>=<span class="hljs-string">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span></span><br><span class="hljs-tag">       <span class="hljs-attr">xsi:schemaIoCation</span>=<span class="hljs-string">&quot;http://www.springframework.org/schema/beans</span></span><br><span class="hljs-string"><span class="hljs-tag">        http://www.springframework.org/schema/beans/spring-beans.xsd&quot;</span>&gt;</span><br><br>    <span class="hljs-tag">&lt;<span class="hljs-name">bean</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;user&quot;</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;tech.fengjian.thinking.in.spring.ioc.overview.domain.User&quot;</span>&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">property</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;id&quot;</span> <span class="hljs-attr">value</span>=<span class="hljs-string">&quot;1&quot;</span>/&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">property</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;name&quot;</span> <span class="hljs-attr">value</span>=<span class="hljs-string">&quot;jack&quot;</span>/&gt;</span><br>    <span class="hljs-tag">&lt;/<span class="hljs-name">bean</span>&gt;</span><br><br><span class="hljs-tag">&lt;/<span class="hljs-name">beans</span>&gt;</span><br></code></pre></td></tr></table></figure></li>
+<li><p>编写测试类 DependencyLookupDemo.java</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">package</span> tech.fengjian.thinking.in.spring.ioc.overview.dependency.lookup;<br><br><span class="hljs-keyword">import</span> org.springframework.beans.factory.BeanFactory;<br><span class="hljs-keyword">import</span> org.springframework.context.support.ClassPathXmlApplicationContext;<br><span class="hljs-keyword">import</span> tech.fengjian.thinking.in.spring.ioc.overview.domain.User;<br><br><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * 依赖查找示例</span><br><span class="hljs-comment"> *</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@author</span> 风间</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@since</span> 2023/5/7 12:51</span><br><span class="hljs-comment"> */</span><br><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">DependencyLookupDemo</span> </span>&#123;<br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> </span>&#123;<br>        <span class="hljs-comment">// 配置 XML 文件</span><br>        <span class="hljs-comment">// 启动 Spring 应用上下文</span><br>        BeanFactory beanFactory = <span class="hljs-keyword">new</span> ClassPathXmlApplicationContext(<span class="hljs-string">&quot;classpath:META-INF/dependency-lookup-context.xml&quot;</span>);<br>        User user = (User) beanFactory.getBean(<span class="hljs-string">&quot;user&quot;</span>);<br>        System.out.println(<span class="hljs-string">&quot;user = &quot;</span> + user);<br>    &#125;<br>&#125;<br><br></code></pre></td></tr></table></figure></li>
+</ol>
+<h3 id="3-2-根据-Bean-名称延迟查找"><a href="#3-2-根据-Bean-名称延迟查找" class="headerlink" title="3.2  根据 Bean 名称延迟查找"></a>3.2  根据 Bean 名称延迟查找</h3><ol>
+<li><p>面试题：ObjectFactory、BeanFactory、FactoryBean 的区别？</p>
+<p>答：<code>ObjectFactory</code>、<code>BeanFactory</code> 和 <code>FactoryBean</code> 是 Spring 框架中几个常用的工厂类，它们的主要区别如下：</p>
+<ul>
+<li><p><code>ObjectFactory</code> 是一个简单的对象创建工厂，用于实现对象的延迟加载，只有在调用 <code>getObject()</code> 方法时才会创建目标对象。</p>
+</li>
+<li><p><code>BeanFactory</code> 是 Spring IoC 容器的根接口，提供了管理 bean 的机制并支持依赖注入等功能。它可以读取配置文件，并创建和管理 bean 实例。<code>BeanFactory</code> 是最基本的容器，其他的容</p>
+</li>
+</ul>
+<p>器都是对它的扩展。</p>
+<ul>
+<li><code>FactoryBean</code> 是一个特殊的 bean，它实现了 <code>FactoryBean</code> 接口，并通过 <code>getObject()</code> 方法创建和管理其他 bean 实例。它可以用来实现一些复杂的 bean 构建逻辑，也可以用来添加一</li>
+</ul>
+<p>些 AOP 切面处理或提供一些自定义的对象包装等功能。需要注意的是，虽然这三个工厂类都与对象的创建和管理有关，但它们的作用与用法略有不同，不能直接混淆使用。总体来说，<code>ObjectFactory</code> </p>
+<p>主要用于实现延迟加载，<code>BeanFactory</code> 是 Spring IoC 容器的基础，用于管理和创建 bean，而 <code>FactoryBean</code> 则是一个特殊的 bean，用于实现一些特殊的创建逻辑。</p>
+</li>
+<li><p>延迟查找就利用到了<code>ObjectFactory</code>，它有一个 FactoryBean 的实现 <code>ObjectFactoryCreatingFactoryBean</code>,<code>ObjectFactoryCreatingFactoryBean</code> 与 <code>ObjectFactory</code> 之间存</p>
+<p>在一定关系，它们都是在实现 Spring 中的延迟初始化时可以使用的工具类。具体来说，<code>ObjectFactoryCreatingFactoryBean</code> 是 Spring 中的一个工厂 bean 实例，它实现了 <code>FactoryBean</code> </p>
+<p>接口，可以用于创建 <code>ObjectFactory</code> 对象。<code>ObjectFactory</code> 本身是 Spring 中的一个接口，可以用于实现对象的延迟初始化。当 <code>ObjectFactoryCreatingFactoryBean</code> 被注入到其他 bean </p>
+<p>中时，Spring IoC 容器会先创建 <code>ObjectFactoryCreatingFactoryBean</code> 实例，并调用其 <code>getObject()</code> 方法，该方法会创建一个 <code>ObjectFactory</code> 对象，并返回该对象实例。当我们需要使</p>
+<p>用被延迟初始化的 bean 时，我们可以从该 <code>ObjectFactory</code> 实例中获取目标 bean 的实例进行使用。因此，可以使用 <code>ObjectFactoryCreatingFactoryBean</code> 和 <code>ObjectFactory</code> 来实现在 </p>
+<p>Spring 中的延迟初始化。其中，<code>ObjectFactoryCreatingFactoryBean</code> 用于创建 <code>ObjectFactory</code> 实例，而 <code>ObjectFactory</code> 则用于实现对象的延迟初始化。</p>
+</li>
+<li><p>dependency-lookup-context.xml</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-meta">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">beans</span> <span class="hljs-attr">xmlns</span>=<span class="hljs-string">&quot;http://www.springframework.org/schema/beans&quot;</span></span><br><span class="hljs-tag">       <span class="hljs-attr">xmlns:xsi</span>=<span class="hljs-string">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span></span><br><span class="hljs-tag">       <span class="hljs-attr">xsi:schemaIoCation</span>=<span class="hljs-string">&quot;http://www.springframework.org/schema/beans</span></span><br><span class="hljs-string"><span class="hljs-tag">        http://www.springframework.org/schema/beans/spring-beans.xsd&quot;</span>&gt;</span><br><br>    <span class="hljs-tag">&lt;<span class="hljs-name">bean</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;user&quot;</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;tech.fengjian.thinking.in.spring.ioc.overview.domain.User&quot;</span>&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">property</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;id&quot;</span> <span class="hljs-attr">value</span>=<span class="hljs-string">&quot;1&quot;</span>/&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">property</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;name&quot;</span> <span class="hljs-attr">value</span>=<span class="hljs-string">&quot;jack&quot;</span>/&gt;</span><br>    <span class="hljs-tag">&lt;/<span class="hljs-name">bean</span>&gt;</span><br><br>    <span class="hljs-tag">&lt;<span class="hljs-name">bean</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;objectFactory&quot;</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;org.springframework.beans.factory.config.ObjectFactoryCreatingFactoryBean&quot;</span>&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">property</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;targetBeanName&quot;</span> <span class="hljs-attr">value</span>=<span class="hljs-string">&quot;user&quot;</span>/&gt;</span><br>    <span class="hljs-tag">&lt;/<span class="hljs-name">bean</span>&gt;</span><br><br><span class="hljs-tag">&lt;/<span class="hljs-name">beans</span>&gt;</span><br><br></code></pre></td></tr></table></figure></li>
+<li><p>测试类，lookupInLazy</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">package</span> tech.fengjian.thinking.in.spring.ioc.overview.dependency.lookup;<br><br><span class="hljs-keyword">import</span> org.springframework.beans.factory.BeanFactory;<br><span class="hljs-keyword">import</span> org.springframework.beans.factory.ObjectFactory;<br><span class="hljs-keyword">import</span> org.springframework.context.support.ClassPathXmlApplicationContext;<br><span class="hljs-keyword">import</span> tech.fengjian.thinking.in.spring.ioc.overview.domain.User;<br><br><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * 依赖查找示例</span><br><span class="hljs-comment"> * 1. 通过名称的方式来查找</span><br><span class="hljs-comment"> *</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@author</span> 风间</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@since</span> 2023/5/7 12:51</span><br><span class="hljs-comment"> */</span><br><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">DependencyLookupDemo</span> </span>&#123;<br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> </span>&#123;<br>        <span class="hljs-comment">// 配置 XML 文件</span><br>        <span class="hljs-comment">// 启动 Spring 应用上下文</span><br>        BeanFactory beanFactory = <span class="hljs-keyword">new</span> ClassPathXmlApplicationContext(<span class="hljs-string">&quot;classpath:META-INF/dependency-lookup-context.xml&quot;</span>);<br>        lookupInLazy(beanFactory);<br>    &#125;<br><br>    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">lookupInLazy</span><span class="hljs-params">(BeanFactory beanFactory)</span> </span>&#123;<br>        ObjectFactory&lt;User&gt; objectFacoty = (ObjectFactory&lt;User&gt;) beanFactory.getBean(<span class="hljs-string">&quot;objectFacoty&quot;</span>);<br>        User user = objectFacoty.getObject();<br>        System.out.println(<span class="hljs-string">&quot;延迟查找：&quot;</span> + user);<br>    &#125;<br><br>&#125;<br></code></pre></td></tr></table></figure></li>
+</ol>
+<h3 id="3-3-根据-Bean-类型查找单个对象"><a href="#3-3-根据-Bean-类型查找单个对象" class="headerlink" title="3.3 根据 Bean 类型查找单个对象"></a>3.3 根据 Bean 类型查找单个对象</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">package</span> tech.fengjian.thinking.in.spring.ioc.overview.dependency.lookup;<br><br><span class="hljs-keyword">import</span> org.springframework.beans.factory.BeanFactory;<br><span class="hljs-keyword">import</span> org.springframework.beans.factory.ObjectFactory;<br><span class="hljs-keyword">import</span> org.springframework.context.support.ClassPathXmlApplicationContext;<br><span class="hljs-keyword">import</span> tech.fengjian.thinking.in.spring.ioc.overview.domain.User;<br><br><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * 依赖查找示例</span><br><span class="hljs-comment"> * 1. 通过名称的方式来查找</span><br><span class="hljs-comment"> *</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@author</span> 风间</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@since</span> 2023/5/7 12:51</span><br><span class="hljs-comment"> */</span><br><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">DependencyLookupDemo</span> </span>&#123;<br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> </span>&#123;<br>        <span class="hljs-comment">// 配置 XML 文件</span><br>        <span class="hljs-comment">// 启动 Spring 应用上下文</span><br>        BeanFactory beanFactory = <span class="hljs-keyword">new</span> ClassPathXmlApplicationContext(<span class="hljs-string">&quot;classpath:META-INF/dependency-lookup-context.xml&quot;</span>);<br>        <span class="hljs-comment">// 按照类型查找单个对象</span><br>        lookupByType(beanFactory);<br>    &#125;<br><br>    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">lookupByType</span><span class="hljs-params">(BeanFactory beanFactory)</span> </span>&#123;<br>        User user = beanFactory.getBean(User.class);<br>        System.out.println(<span class="hljs-string">&quot;实时查找：&quot;</span>+user);<br>    &#125;<br><br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+<h3 id="3-4-根据-Bean-类型查找集合-Bean-对象"><a href="#3-4-根据-Bean-类型查找集合-Bean-对象" class="headerlink" title="3.4 根据 Bean 类型查找集合 Bean 对象"></a>3.4 根据 Bean 类型查找集合 Bean 对象</h3><p>ListableBeanFactory</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">package</span> tech.fengjian.thinking.in.spring.ioc.overview.dependency.lookup;<br><br><span class="hljs-keyword">import</span> org.springframework.beans.factory.BeanFactory;<br><span class="hljs-keyword">import</span> org.springframework.beans.factory.ListableBeanFactory;<br><span class="hljs-keyword">import</span> org.springframework.beans.factory.ObjectFactory;<br><span class="hljs-keyword">import</span> org.springframework.context.support.ClassPathXmlApplicationContext;<br><span class="hljs-keyword">import</span> tech.fengjian.thinking.in.spring.ioc.overview.domain.User;<br><br><span class="hljs-keyword">import</span> java.util.Map;<br><br><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * 依赖查找示例</span><br><span class="hljs-comment"> * 1. 通过名称的方式来查找</span><br><span class="hljs-comment"> * 2. 通过类型的方式来查找</span><br><span class="hljs-comment"> *</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@author</span> 风间</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@since</span> 2023/5/7 12:51</span><br><span class="hljs-comment"> */</span><br><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">DependencyLookupDemo</span> </span>&#123;<br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> </span>&#123;<br>        <span class="hljs-comment">// 配置 XML 文件</span><br>        <span class="hljs-comment">// 启动 Spring 应用上下文</span><br>        BeanFactory beanFactory = <span class="hljs-keyword">new</span> ClassPathXmlApplicationContext(<span class="hljs-string">&quot;classpath:META-INF/dependency-lookup-context.xml&quot;</span>);<br>        <span class="hljs-comment">// 按照类型查找集合对象</span><br>        lookupCollectionByType(beanFactory);<br>       <br>    &#125;<br><br>    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">lookupCollectionByType</span><span class="hljs-params">(BeanFactory beanFactory)</span> </span>&#123;<br>        <span class="hljs-keyword">if</span> (beanFactory <span class="hljs-keyword">instanceof</span> ListableBeanFactory) &#123;<br>            ListableBeanFactory listableBeanFactory = (ListableBeanFactory) beanFactory;<br>            Map&lt;String, User&gt; users = listableBeanFactory.getBeansOfType(User.class);<br>            System.out.println(<span class="hljs-string">&quot;查找到所有的 User 集合对象：&quot;</span> + users);<br>        &#125;<br>    &#125;<br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+<h3 id="3-5-根据-Bean-名称-类型查找"><a href="#3-5-根据-Bean-名称-类型查找" class="headerlink" title="3.5 根据 Bean 名称 + 类型查找"></a>3.5 根据 Bean 名称 + 类型查找</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs java">User user = beanFactory.getBean(<span class="hljs-string">&quot;user&quot;</span>,User.class);<br></code></pre></td></tr></table></figure>
+
+<h3 id="3-6-根据-Java-注解查找-Bean-对象"><a href="#3-6-根据-Java-注解查找-Bean-对象" class="headerlink" title="3.6 根据 Java 注解查找 Bean 对象"></a>3.6 根据 Java 注解查找 Bean 对象</h3><ol>
+<li>编写注解 @Super</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">package</span> tech.fengjian.thinking.in.spring.ioc.overview.annotation;<br><br><span class="hljs-keyword">import</span> java.lang.annotation.ElementType;<br><span class="hljs-keyword">import</span> java.lang.annotation.Retention;<br><span class="hljs-keyword">import</span> java.lang.annotation.RetentionPolicy;<br><span class="hljs-keyword">import</span> java.lang.annotation.Target;<br><br><span class="hljs-meta">@Target(ElementType.TYPE)</span><br><span class="hljs-meta">@Retention(RetentionPolicy.RUNTIME)</span><br><span class="hljs-keyword">public</span> <span class="hljs-meta">@interface</span> Super &#123;<br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>新增实体类 SuperUser 继承 User</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">package</span> tech.fengjian.thinking.in.spring.ioc.overview.domain;<br><br><span class="hljs-keyword">import</span> tech.fengjian.thinking.in.spring.ioc.overview.annotation.Super;<br><br><span class="hljs-meta">@Super</span><br><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">SuperUser</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">User</span></span>&#123;<br><br>    <span class="hljs-keyword">private</span> String address;<br><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">getAddress</span><span class="hljs-params">()</span> </span>&#123;<br>        <span class="hljs-keyword">return</span> address;<br>    &#125;<br><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">setAddress</span><span class="hljs-params">(String address)</span> </span>&#123;<br>        <span class="hljs-keyword">this</span>.address = address;<br>    &#125;<br><br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">toString</span><span class="hljs-params">()</span> </span>&#123;<br>        <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;SuperUser&#123;&quot;</span> +<br>                <span class="hljs-string">&quot;address=&#x27;&quot;</span> + address + <span class="hljs-string">&#x27;\&#x27;&#x27;</span> +<br>                <span class="hljs-string">&quot;&#125; &quot;</span> + <span class="hljs-keyword">super</span>.toString();<br>    &#125;<br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>Dependency-lookup-context.xml</li>
+</ol>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><code class="hljs XML"><span class="hljs-meta">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">beans</span> <span class="hljs-attr">xmlns</span>=<span class="hljs-string">&quot;http://www.springframework.org/schema/beans&quot;</span></span><br><span class="hljs-tag">       <span class="hljs-attr">xmlns:xsi</span>=<span class="hljs-string">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span></span><br><span class="hljs-tag">       <span class="hljs-attr">xsi:schemaIoCation</span>=<span class="hljs-string">&quot;http://www.springframework.org/schema/beans</span></span><br><span class="hljs-string"><span class="hljs-tag">        http://www.springframework.org/schema/beans/spring-beans.xsd&quot;</span>&gt;</span><br><br>    <span class="hljs-tag">&lt;<span class="hljs-name">bean</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;user&quot;</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;tech.fengjian.thinking.in.spring.ioc.overview.domain.User&quot;</span>&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">property</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;id&quot;</span> <span class="hljs-attr">value</span>=<span class="hljs-string">&quot;1&quot;</span>/&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">property</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;name&quot;</span> <span class="hljs-attr">value</span>=<span class="hljs-string">&quot;jack&quot;</span>/&gt;</span><br>    <span class="hljs-tag">&lt;/<span class="hljs-name">bean</span>&gt;</span><br><br>    <span class="hljs-tag">&lt;<span class="hljs-name">bean</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;superUser&quot;</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;tech.fengjian.thinking.in.spring.ioc.overview.domain.SuperUser&quot;</span> <span class="hljs-attr">parent</span>=<span class="hljs-string">&quot;user&quot;</span></span><br><span class="hljs-tag">    <span class="hljs-attr">primary</span>=<span class="hljs-string">&quot;true&quot;</span>&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">property</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;address&quot;</span> <span class="hljs-attr">value</span>=<span class="hljs-string">&quot;苏州&quot;</span>/&gt;</span><br>    <span class="hljs-tag">&lt;/<span class="hljs-name">bean</span>&gt;</span><br><br>    <span class="hljs-tag">&lt;<span class="hljs-name">bean</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;objectFactory&quot;</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;org.springframework.beans.factory.config.ObjectFactoryCreatingFactoryBean&quot;</span>&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">property</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;targetBeanName&quot;</span> <span class="hljs-attr">value</span>=<span class="hljs-string">&quot;user&quot;</span>/&gt;</span><br>    <span class="hljs-tag">&lt;/<span class="hljs-name">bean</span>&gt;</span><br><br><span class="hljs-tag">&lt;/<span class="hljs-name">beans</span>&gt;</span><br><br></code></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>编写测试代码</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">package</span> tech.fengjian.thinking.in.spring.ioc.overview.dependency.lookup;<br><br><span class="hljs-keyword">import</span> org.springframework.beans.factory.BeanFactory;<br><span class="hljs-keyword">import</span> org.springframework.beans.factory.ListableBeanFactory;<br><span class="hljs-keyword">import</span> org.springframework.beans.factory.ObjectFactory;<br><span class="hljs-keyword">import</span> org.springframework.context.support.ClassPathXmlApplicationContext;<br><span class="hljs-keyword">import</span> tech.fengjian.thinking.in.spring.ioc.overview.annotation.Super;<br><span class="hljs-keyword">import</span> tech.fengjian.thinking.in.spring.ioc.overview.domain.User;<br><br><span class="hljs-keyword">import</span> java.util.Map;<br><br><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * 依赖查找示例</span><br><span class="hljs-comment"> * 1. 通过名称的方式来查找</span><br><span class="hljs-comment"> * 2. 通过类型的方式来查找</span><br><span class="hljs-comment"> *</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@author</span> 风间</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@since</span> 2023/5/7 12:51</span><br><span class="hljs-comment"> */</span><br><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">DependencyLookupDemo</span> </span>&#123;<br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> </span>&#123;<br>        <span class="hljs-comment">// 配置 XML 文件</span><br>        <span class="hljs-comment">// 启动 Spring 应用上下文</span><br>        BeanFactory beanFactory = <span class="hljs-keyword">new</span> ClassPathXmlApplicationContext(<span class="hljs-string">&quot;classpath:META-INF/dependency-lookup-context.xml&quot;</span>);<br>        <span class="hljs-comment">// 通过注解查找对象</span><br>        lookupByAnnotationType(beanFactory);<br><br>    &#125;<br><br>    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">lookupByAnnotationType</span><span class="hljs-params">(BeanFactory beanFactory)</span> </span>&#123;<br>        <span class="hljs-keyword">if</span> (beanFactory <span class="hljs-keyword">instanceof</span> ListableBeanFactory) &#123;<br>            ListableBeanFactory listableBeanFactory = (ListableBeanFactory) beanFactory;<br>            Map&lt;String, Object&gt; users = listableBeanFactory.getBeansWithAnnotation(Super.class);<br>            System.out.println(<span class="hljs-string">&quot;查找标注 @Super 所有 User 集合对象：&quot;</span> + users);<br>        &#125;<br>    &#125;<br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+<h2 id="4-依赖注入实践"><a href="#4-依赖注入实践" class="headerlink" title="4. 依赖注入实践"></a>4. 依赖注入实践</h2><ul>
+<li>根据 Bean 名称注入</li>
+<li>根据 Bean 类型注入<ul>
+<li>单个 Bean 对象</li>
+<li>集合 Bean 对象</li>
+</ul>
+</li>
+<li>注入容器内建 Bean 对象</li>
+<li>注入非 Bean 对象</li>
+<li>注入类型<ul>
+<li>实时注入</li>
+<li>延迟注入</li>
+</ul>
+</li>
+</ul>
+<h3 id="4-1-手动配置依赖注入"><a href="#4-1-手动配置依赖注入" class="headerlink" title="4.1 手动配置依赖注入"></a>4.1 手动配置依赖注入</h3><ol>
+<li>新建 UserRepository</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">package</span> tech.fengjian.ioc.container.overview.repository;<br><br><span class="hljs-keyword">import</span> tech.fengjian.ioc.container.overview.domain.User;<br><br><span class="hljs-keyword">import</span> java.util.Collection;<br><br><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">UserRepository</span> </span>&#123;<br><br>    <span class="hljs-keyword">private</span> Collection&lt;User&gt; users;<br><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> Collection&lt;User&gt; <span class="hljs-title">getUsers</span><span class="hljs-params">()</span> </span>&#123;<br>        <span class="hljs-keyword">return</span> users;<br>    &#125;<br><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">setUsers</span><span class="hljs-params">(Collection&lt;User&gt; users)</span> </span>&#123;<br>        <span class="hljs-keyword">this</span>.users = users;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>新建 dependency-injection-context.xml</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><code class="hljs java">&lt;?xml version=<span class="hljs-string">&quot;1.0&quot;</span> encoding=<span class="hljs-string">&quot;UTF-8&quot;</span>?&gt;<br>&lt;beans xmlns=<span class="hljs-string">&quot;http://www.springframework.org/schema/beans&quot;</span><br>       xmlns:xsi=<span class="hljs-string">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span><br>       xmlns:util=<span class="hljs-string">&quot;http://www.springframework.org/schema/util&quot;</span><br>       xsi:schemaIoCation=<span class="hljs-string">&quot;</span><br><span class="hljs-string">        http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd</span><br><span class="hljs-string">        http://www.springframework.org/schema/util https://www.springframework.org/schema/util/spring-util.xsd&quot;</span>&gt;<br><br>    &lt;bean id=<span class="hljs-string">&quot;user&quot;</span> <span class="hljs-class"><span class="hljs-keyword">class</span></span>=<span class="hljs-string">&quot;tech.fengjian.ioc.container.overview.domain.User&quot;</span>&gt;<br>        &lt;property name=<span class="hljs-string">&quot;id&quot;</span> value=<span class="hljs-string">&quot;1&quot;</span>/&gt;<br>        &lt;property name=<span class="hljs-string">&quot;name&quot;</span> value=<span class="hljs-string">&quot;jack&quot;</span>/&gt;<br>        &lt;property name=<span class="hljs-string">&quot;age&quot;</span> value=<span class="hljs-string">&quot;18&quot;</span>/&gt;<br>    &lt;/bean&gt;<br><br>    &lt;bean id=<span class="hljs-string">&quot;superUser&quot;</span> <span class="hljs-class"><span class="hljs-keyword">class</span></span>=<span class="hljs-string">&quot;tech.fengjian.ioc.container.overview.domain.SuperUser&quot;</span>&gt;<br>        &lt;property name=<span class="hljs-string">&quot;address&quot;</span> value=<span class="hljs-string">&quot;苏州&quot;</span>/&gt;<br>    &lt;/bean&gt;<br><br>    &lt;bean id=<span class="hljs-string">&quot;userRepository&quot;</span> <span class="hljs-class"><span class="hljs-keyword">class</span></span>=<span class="hljs-string">&quot;tech.fengjian.ioc.container.overview.repository.UserRepository&quot;</span>&gt;<br>        &lt;property name=<span class="hljs-string">&quot;users&quot;</span>&gt;<br>            &lt;util:list&gt;<br>                &lt;ref bean=<span class="hljs-string">&quot;user&quot;</span>/&gt;<br>                &lt;ref bean=<span class="hljs-string">&quot;superUser&quot;</span>/&gt;<br>            &lt;/util:list&gt;<br>        &lt;/property&gt;<br>    &lt;/bean&gt;<br>&lt;/beans&gt;<br></code></pre></td></tr></table></figure>
+
+<p><strong>tips:</strong><code>&lt;util:list&gt;</code>使用需要引入<code>xmlns:util=&quot;http://www.springframework.org/schema/util</code>约束头</p>
+<ol start="3">
+<li>编写测试代码</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">package</span> tech.fengjian.ioc.container.overview.dependency.injection;<br><br><span class="hljs-keyword">import</span> org.springframework.beans.factory.BeanFactory;<br><span class="hljs-keyword">import</span> org.springframework.context.support.ClassPathXmlApplicationContext;<br><span class="hljs-keyword">import</span> tech.fengjian.ioc.container.overview.repository.UserRepository;<br><br><span class="hljs-comment">/**</span><br><span class="hljs-comment">* &lt;h1&gt;依赖注入示例&lt;/h1&gt;</span><br><span class="hljs-comment">* <span class="hljs-doctag">@author</span> 风间</span><br><span class="hljs-comment">* <span class="hljs-doctag">@since</span> 2023/5/8</span><br><span class="hljs-comment">*/</span><br><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">DependencyInjectionDemo</span> </span>&#123;<br><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> </span>&#123;<br><br>        <span class="hljs-comment">// 配置 XML 配置文件</span><br>        <span class="hljs-comment">// 启动 Spring 应用上下文</span><br>        BeanFactory beanFactory = <span class="hljs-keyword">new</span> ClassPathXmlApplicationContext(<span class="hljs-string">&quot;classpath:META-INF/dependency-injection-context.xml&quot;</span>);<br>        UserRepository userRepository = (UserRepository)beanFactory.getBean(<span class="hljs-string">&quot;userRepository&quot;</span>);<br>        System.out.println(userRepository.getUsers());<br><br>    &#125;<br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+<h3 id="4-2-自动注入依赖"><a href="#4-2-自动注入依赖" class="headerlink" title="4.2 自动注入依赖"></a>4.2 自动注入依赖</h3><p>autowire</p>
+<p>修改 dependency-injection-context.xml 文件</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">bean</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;userRepository&quot;</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;tech.fengjian.ioc.container.overview.repository.UserRepository&quot;</span> <span class="hljs-attr">autowire</span>=<span class="hljs-string">&quot;byType&quot;</span>/&gt;</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="4-3-注入非-Bean-对象"><a href="#4-3-注入非-Bean-对象" class="headerlink" title="4.3 注入非 Bean 对象"></a>4.3 注入非 Bean 对象</h3><p>比较内建的 BeanFactory 和容器 BeanFactory 的异同</p>
+<ol>
+<li>定义 BeanFactory 属性</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">package</span> tech.fengjian.ioc.container.overview.repository;<br><br><span class="hljs-keyword">import</span> org.springframework.beans.factory.BeanFactory;<br><br><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">UserRepository</span> </span>&#123;<br><br>    <span class="hljs-keyword">private</span> BeanFactory beanFactory;<br>    <br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">setBeanFactory</span><span class="hljs-params">(BeanFactory beanFactory)</span> </span>&#123;<br>    	<span class="hljs-keyword">this</span>.beanFactory = beanFactory;<br>    &#125;<br>    <span class="hljs-function"><span class="hljs-keyword">public</span> BeanFactory <span class="hljs-title">getBeanFactory</span><span class="hljs-params">()</span> </span>&#123;<br>        <span class="hljs-keyword">return</span> beanFactory;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>编写测试代码</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">package</span> tech.fengjian.ioc.container.overview.dependency.injection;<br><br><span class="hljs-keyword">import</span> org.springframework.beans.factory.BeanFactory;<br><span class="hljs-keyword">import</span> org.springframework.context.support.ClassPathXmlApplicationContext;<br><span class="hljs-keyword">import</span> tech.fengjian.ioc.container.overview.repository.UserRepository;<br><br><span class="hljs-comment">/**</span><br><span class="hljs-comment">* &lt;h1&gt;依赖注入示例&lt;/h1&gt;</span><br><span class="hljs-comment">* <span class="hljs-doctag">@author</span> 风间</span><br><span class="hljs-comment">* <span class="hljs-doctag">@since</span> 2023/5/8</span><br><span class="hljs-comment">*/</span><br><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">DependencyInjectionDemo</span> </span>&#123;<br><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> </span>&#123;<br><br>        <span class="hljs-comment">// 配置 XML 配置文件</span><br>        <span class="hljs-comment">// 启动 Spring 应用上下文</span><br>        BeanFactory beanFactory = <span class="hljs-keyword">new</span> ClassPathXmlApplicationContext(<span class="hljs-string">&quot;classpath:META-INF/dependency-injection-context.xml&quot;</span>);<br>        UserRepository userRepository = (UserRepository)beanFactory.getBean(<span class="hljs-string">&quot;userRepository&quot;</span>);<br>        System.out.println(userRepository.getBeanFactory());<br>        System.out.println(userRepository.getBeanFactory() == beanFactory);<br>    &#125;<br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>结果分析：</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs shell">org.springframework.beans.factory.support.DefaultListableBeanFactory@22f71333: defining beans [user,superUser,userRepository]; root of factory hierarchy<br>false<br></code></pre></td></tr></table></figure>
+
+<p>这里我们在 UserRepository 中定义的 BeanFactory 是内建 Bean 对象</p>
+<p>我们看下 BeanFactory 是哪里来的？</p>
+<ul>
+<li>从容器中获取一下，依赖查找</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">package</span> tech.fengjian.ioc.container.overview.dependency.injection;<br><br><span class="hljs-keyword">import</span> org.springframework.beans.factory.BeanFactory;<br><span class="hljs-keyword">import</span> org.springframework.context.support.ClassPathXmlApplicationContext;<br><br><span class="hljs-comment">/**</span><br><span class="hljs-comment">* &lt;h1&gt;依赖注入示例&lt;/h1&gt;</span><br><span class="hljs-comment">* <span class="hljs-doctag">@author</span> 风间</span><br><span class="hljs-comment">* <span class="hljs-doctag">@since</span> 2023/5/8</span><br><span class="hljs-comment">*/</span><br><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">DependencyInjectionDemo</span> </span>&#123;<br><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> </span>&#123;<br><br>        <span class="hljs-comment">// 配置 XML 配置文件</span><br>        <span class="hljs-comment">// 启动 Spring 应用上下文</span><br>        BeanFactory beanFactory = <span class="hljs-keyword">new</span> ClassPathXmlApplicationContext(<span class="hljs-string">&quot;classpath:META-INF/dependency-injection-context.xml&quot;</span>);<br>        BeanFactory bean = beanFactory.getBean(BeanFactory.class);<br><br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>输出异常信息：没有这个 Bean 的定义</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs java">Exception in thread <span class="hljs-string">&quot;main&quot;</span> org.springframework.beans.factory.NoSuchBeanDefinitionException: No qualifying bean of type <span class="hljs-string">&#x27;org.springframework.beans.factory.BeanFactory&#x27;</span> available<br>	at org.springframework.beans.factory.support.DefaultListableBeanFactory.getBean(DefaultListableBeanFactory.java:<span class="hljs-number">351</span>)<br>	at org.springframework.beans.factory.support.DefaultListableBeanFactory.getBean(DefaultListableBeanFactory.java:<span class="hljs-number">342</span>)<br>	at org.springframework.context.support.AbstractApplicationContext.getBean(AbstractApplicationContext.java:<span class="hljs-number">1126</span>)<br>	at tech.fengjian.ioc.container.overview.dependency.injection.DependencyInjectionDemo.main(DependencyInjectionDemo.java:<span class="hljs-number">18</span>)<br><br></code></pre></td></tr></table></figure>
+
+<h3 id="4-4-实时注入和延迟注入"><a href="#4-4-实时注入和延迟注入" class="headerlink" title="4.4 实时注入和延迟注入"></a>4.4 实时注入和延迟注入</h3><p>ObjectFactory</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">package</span> tech.fengjian.ioc.container.overview.repository;<br><br><span class="hljs-keyword">import</span> org.springframework.beans.factory.ObjectFactory;<br><br><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">UserRepository</span> </span>&#123;<br><br>    <span class="hljs-keyword">private</span> ObjectFactory&lt;User&gt; objectFactory;<br><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> ObjectFactory&lt;User&gt; <span class="hljs-title">getObjectFactory</span><span class="hljs-params">()</span> </span>&#123;<br>        <span class="hljs-keyword">return</span> objectFactory;<br>    &#125;<br><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">setObjectFactory</span><span class="hljs-params">(ObjectFactory&lt;User&gt; objectFactory)</span> </span>&#123;<br>        <span class="hljs-keyword">this</span>.objectFactory = objectFactory;<br>    &#125;<br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+<p>编写测试代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">package</span> tech.fengjian.ioc.container.overview.dependency.injection;<br><br><span class="hljs-keyword">import</span> org.springframework.beans.factory.BeanFactory;<br><span class="hljs-keyword">import</span> org.springframework.beans.factory.ObjectFactory;<br><span class="hljs-keyword">import</span> org.springframework.context.support.ClassPathXmlApplicationContext;<br><span class="hljs-keyword">import</span> tech.fengjian.ioc.container.overview.domain.User;<br><span class="hljs-keyword">import</span> tech.fengjian.ioc.container.overview.repository.UserRepository;<br><br><span class="hljs-comment">/**</span><br><span class="hljs-comment">* &lt;h1&gt;依赖注入示例&lt;/h1&gt;</span><br><span class="hljs-comment">* <span class="hljs-doctag">@author</span> 风间</span><br><span class="hljs-comment">* <span class="hljs-doctag">@since</span> 2023/5/8</span><br><span class="hljs-comment">*/</span><br><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">DependencyInjectionDemo</span> </span>&#123;<br><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> </span>&#123;<br><br>        <span class="hljs-comment">// 配置 XML 配置文件</span><br>        <span class="hljs-comment">// 启动 Spring 应用上下文</span><br>        BeanFactory beanFactory = <span class="hljs-keyword">new</span> ClassPathXmlApplicationContext(<span class="hljs-string">&quot;classpath:META-INF/dependency-injection-context.xml&quot;</span>);<br>        UserRepository userRepository = (UserRepository) beanFactory.getBean(<span class="hljs-string">&quot;userRepository&quot;</span>);<br>        ObjectFactory&lt;User&gt; objectFactory = userRepository.getObjectFactory();<br>        System.out.println(objectFactory.getObject());<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>修改一下 UserRepository 中的 ObjectFactory 中的实体类型</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">package</span> tech.fengjian.ioc.container.overview.repository;<br><br><span class="hljs-keyword">import</span> org.springframework.beans.factory.ObjectFactory;<br><span class="hljs-keyword">import</span> org.springframework.context.ApplicationContext;<br><br><span class="hljs-keyword">import</span> java.util.Collection;<br><br><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">UserRepository</span> </span>&#123;<br><br>    <span class="hljs-keyword">private</span> ObjectFactory&lt;ApplicationContext&gt; objectFactory;<br><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> ObjectFactory&lt;ApplicationContext&gt; <span class="hljs-title">getObjectFactory</span><span class="hljs-params">()</span> </span>&#123;<br>        <span class="hljs-keyword">return</span> objectFactory;<br>    &#125;<br><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">setObjectFactory</span><span class="hljs-params">(ObjectFactory&lt;ApplicationContext&gt; objectFactory)</span> </span>&#123;<br>        <span class="hljs-keyword">this</span>.objectFactory = objectFactory;<br>    &#125;<br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+<p>再比较下 BeanFactory 和 ObjectFactory 中的 Bean 对象</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">package</span> tech.fengjian.ioc.container.overview.dependency.injection;<br><br><span class="hljs-keyword">import</span> org.springframework.beans.factory.BeanFactory;<br><span class="hljs-keyword">import</span> org.springframework.context.support.ClassPathXmlApplicationContext;<br><span class="hljs-keyword">import</span> tech.fengjian.ioc.container.overview.repository.UserRepository;<br><br><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * &lt;h1&gt;依赖注入示例&lt;/h1&gt;</span><br><span class="hljs-comment"> *</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@author</span> 风间</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@since</span> 2023/5/8</span><br><span class="hljs-comment"> */</span><br><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">DependencyInjectionDemo</span> </span>&#123;<br><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> </span>&#123;<br><br>        <span class="hljs-comment">// 配置 XML 配置文件</span><br>        <span class="hljs-comment">// 启动 Spring 应用上下文</span><br>        BeanFactory beanFactory = <span class="hljs-keyword">new</span> ClassPathXmlApplicationContext(<span class="hljs-string">&quot;classpath:META-INF/dependency-injection-context.xml&quot;</span>);<br>        UserRepository userRepository = (UserRepository) beanFactory.getBean(<span class="hljs-string">&quot;userRepository&quot;</span>);<br>        System.out.println(userRepository.getObjectFactory().getObject() == beanFactory);<br>    &#125;<br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+<p>结果为 true</p>
+<h2 id="5-依赖注入来源"><a href="#5-依赖注入来源" class="headerlink" title="5. 依赖注入来源"></a>5. 依赖注入来源</h2><ul>
+<li>自定义 Bean</li>
+<li>容器內建 Bean 对象</li>
+<li>容器內建依赖</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">package</span> tech.fengjian.ioc.container.overview.dependency.injection;<br><br><span class="hljs-keyword">import</span> org.springframework.beans.factory.BeanFactory;<br><span class="hljs-keyword">import</span> org.springframework.context.support.ClassPathXmlApplicationContext;<br><span class="hljs-keyword">import</span> org.springframework.core.env.Environment;<br><span class="hljs-keyword">import</span> tech.fengjian.ioc.container.overview.repository.UserRepository;<br><br><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * &lt;h1&gt;依赖注入示例&lt;/h1&gt;</span><br><span class="hljs-comment"> *</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@author</span> 风间</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@since</span> 2023/5/8</span><br><span class="hljs-comment"> */</span><br><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">DependencyInjectionDemo</span> </span>&#123;<br><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> </span>&#123;<br><br>        <span class="hljs-comment">// 配置 XML 配置文件</span><br>        <span class="hljs-comment">// 启动 Spring 应用上下文</span><br>        BeanFactory beanFactory = <span class="hljs-keyword">new</span> ClassPathXmlApplicationContext(<span class="hljs-string">&quot;classpath:META-INF/dependency-injection-context.xml&quot;</span>);<br>        <span class="hljs-comment">// 依赖来源一：自定义 Bean</span><br>        UserRepository userRepository = (UserRepository) beanFactory.getBean(<span class="hljs-string">&quot;userRepository&quot;</span>);<br>        <span class="hljs-comment">// 依赖来源二：依赖注入（内建依赖）</span><br>        System.out.println(userRepository.getBeanFactory());<br>        <span class="hljs-comment">// 依赖来源三：容器内建 Bean</span><br>        Environment environment = beanFactory.getBean(Environment.class);<br>        System.out.println(<span class="hljs-string">&quot;获取 Environment 类型的 Bean：&quot;</span> + environment);<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h2 id="6-配置元信息"><a href="#6-配置元信息" class="headerlink" title="6. 配置元信息"></a>6. 配置元信息</h2><ul>
+<li>Bean 定义配置<ul>
+<li>基于 XML 文件<br>基于 Properties 文件<br>基于 Java 注解<br>基于 JavaAPI (专题讨论)</li>
+</ul>
+</li>
+<li>IoC 容器配置<ul>
+<li>基于 XML 文件</li>
+<li>基于 Java 注解</li>
+<li>基于 JavaAPI (专题讨论)</li>
+</ul>
+</li>
+<li>外部化属性配置<ul>
+<li>基于 Java 注解(@Value…)</li>
+</ul>
+</li>
+</ul>
+<h2 id="7-IoC-容器之谜"><a href="#7-IoC-容器之谜" class="headerlink" title="7. IoC 容器之谜"></a>7. IoC 容器之谜</h2><p>BeanFactory 和 ApplicationContext 谁才是 IoC 容器？</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">package</span> tech.fengjian.ioc.container.overview.repository;<br><br><span class="hljs-keyword">import</span> org.springframework.beans.factory.BeanFactory;<br><span class="hljs-keyword">import</span> org.springframework.beans.factory.ObjectFactory;<br><span class="hljs-keyword">import</span> tech.fengjian.ioc.container.overview.domain.User;<br><br><span class="hljs-keyword">import</span> java.util.Collection;<br><br><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">UserRepository</span> </span>&#123;<br><br> <br>    <span class="hljs-keyword">private</span> BeanFactory beanFactory;<span class="hljs-comment">// 内建非 Bean 对象</span><br>  <br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">setBeanFactory</span><span class="hljs-params">(BeanFactory beanFactory)</span> </span>&#123;<br>        <span class="hljs-keyword">this</span>.beanFactory = beanFactory;<br>    &#125;<br><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> BeanFactory <span class="hljs-title">getBeanFactory</span><span class="hljs-params">()</span> </span>&#123;<br>        <span class="hljs-keyword">return</span> beanFactory;<br>    &#125;<br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">package</span> tech.fengjian.ioc.container.overview.dependency.injection;<br><br><span class="hljs-keyword">import</span> org.springframework.beans.factory.BeanFactory;<br><span class="hljs-keyword">import</span> org.springframework.context.support.ClassPathXmlApplicationContext;<br><span class="hljs-keyword">import</span> tech.fengjian.ioc.container.overview.repository.UserRepository;<br><br><span class="hljs-comment">/**</span><br><span class="hljs-comment">* &lt;h1&gt;依赖注入示例&lt;/h1&gt;</span><br><span class="hljs-comment">* <span class="hljs-doctag">@author</span> 风间</span><br><span class="hljs-comment">* <span class="hljs-doctag">@since</span> 2023/5/8</span><br><span class="hljs-comment">*/</span><br><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">DependencyInjectionDemo</span> </span>&#123;<br><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> </span>&#123;<br><br>        <span class="hljs-comment">// 配置 XML 配置文件</span><br>        <span class="hljs-comment">// 启动 Spring 应用上下文</span><br>        BeanFactory beanFactory = <span class="hljs-keyword">new</span> ClassPathXmlApplicationContext(<span class="hljs-string">&quot;classpath:META-INF/dependency-injection-context.xml&quot;</span>);<br>        UserRepository userRepository = (UserRepository)beanFactory.getBean(<span class="hljs-string">&quot;userRepository&quot;</span>);<br>        System.out.println(userRepository.getBeanFactory());<br>        System.out.println(userRepository.getBeanFactory() == beanFactory);<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>为什么 <code>userRepository.getBeanFactory() == beanFactory</code>不成立？</p>
+<p>简单来看他们是两个对象，当然不同。</p>
+<p>官方文档描述：</p>
+<p>The <a target="_blank" rel="noopener" href="https://docs.spring.io/spring-framework/docs/5.3.28-SNAPSHOT/javadoc-api/org/springframework/beans/factory/BeanFactory.html"><code>BeanFactory</code></a> interface provides an advanced configuration mechanism capable of managing any type of object. <a target="_blank" rel="noopener" href="https://docs.spring.io/spring-framework/docs/5.3.28-SNAPSHOT/javadoc-api/org/springframework/context/ApplicationContext.html"><code>ApplicationContext</code></a> is a sub-interface of <code>BeanFactory</code>.It adds:</p>
+<ul>
+<li>Easier integration with Spring’s AOP features</li>
+<li>Message resource handling (for use in internationalization)</li>
+<li>Event publication</li>
+<li>Application-layer specific contexts such as the <code>WebApplicationContext</code> for use in web applications.</li>
+</ul>
+<p>In short, the <code>BeanFactory</code> provides the configuration framework and basic functionality, and the <code>ApplicationContext</code> adds more enterprise-specific functionality. The <code>ApplicationContext</code> is a complete superset of the <code>BeanFactory</code> and is used exclusively in this chapter in descriptions of Spring’s IoC container. For more information on using the <code>BeanFactory</code> instead of the <code>ApplicationContext,</code> see the section covering the <a target="_blank" rel="noopener" href="https://docs.spring.io/spring-framework/docs/5.3.28-SNAPSHOT/reference/html/core.html#beans-beanfactory"><code>BeanFactory</code> API</a></p>
+<p>译：<code>BeanFactory</code> 接口提供了一个高级配置机制，能够管理任何类型的对象。<code>ApplicationContext</code> 是 <code>BeanFactory</code> 的子接口。<code>ApplicationContext</code> 增加了：</p>
+<ul>
+<li><p>更易于集成 Spring 的 AOP 特性</p>
+</li>
+<li><p>消息资源处理（用于国际化）</p>
+</li>
+<li><p>事件发布</p>
+</li>
+<li><p>应用程序层特定的上下文，例如 WebApplicationContext 用于 Web 应用程序。</p>
+</li>
+</ul>
+<p>简而言之，BeanFactory 提供配置框架和基本功能，ApplicationContext 添加了更多企业特定功能。ApplicationContext 是 BeanFactory 的完整超集，在 Spring 的 IoC 容器描述中专门使用。有关使用 BeanFactory 而不是 ApplicationContext 的详细信息，请参阅涵盖 BeanFactory API 的部分。</p>
+<p>他说是管理是对象，他说并没有说管理是 Bean，依赖来源并不只是限于 Bean，所以他对象是描述得非常精确的。</p>
+<p>再来看看我们编写的测试代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs java">BeanFactory beanFactory = <span class="hljs-keyword">new</span> ClassPathXmlApplicationContext(<span class="hljs-string">&quot;classpath:META-INF/dependency-injection-context.xml&quot;</span>);<br></code></pre></td></tr></table></figure>
+
+<p>我们为什么这么写，<code>ClassPathXmlApplicationContext</code>就是<code>ApplicationContext</code>,<code>ApplicationContext</code> is <code>BeanFactory</code>，这里也可以定义如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs java">ApplicationContext applicationContext = <span class="hljs-keyword">new</span> ClassPathXmlApplicationContext(<span class="hljs-string">&quot;classpath:META-INF/dependency-injection-context.xml&quot;</span>);<br></code></pre></td></tr></table></figure>
+
+<p>那也就是说其实比较的是 userRepository.getBeanFactory() 和 ApplicationContext对象，为什么不等于呢，这里的 ApplicationContext 他是一种设计模式：</p>
+<p>ClassPathXmlApplicationContext &lt;- AbstractXmlApplicationContext &lt;- AbstractRefreshableConfigApplicationContext &lt;- AbstractRefreshableApplicationContext &lt;-</p>
+<p>AbstractApplicationContext &lt;- <code>ConfigurableApplicationContext</code></p>
+<p><strong>tips：</strong>&lt;- 代表继承</p>
+<p>ConfigurableXxx 是一种可写的方式，他有 getBeanFactory 方法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-function">ConfigurableListableBeanFactory <span class="hljs-title">getBeanFactory</span><span class="hljs-params">()</span> <span class="hljs-keyword">throws</span> IllegalStateException</span>;<br></code></pre></td></tr></table></figure>
+
+<p><code>ConfigurableApplicationContext</code> &lt;- <code>ApplicationContext</code> &lt;- <code>BeanFactory</code>，也就是 ConfigurableApplicationContext 就是 BeanFactory 了，为什么还多此一举的提供一个</p>
+<p>getBeanFactory()方法来返回一个 BeanFactory 呢？</p>
+<p>我们来进一步看一下 getBeanFactory() 方法的内部实现，AbstractRefreshableApplicationContext 类中：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-comment">/** Bean factory for this context. */</span><br><span class="hljs-meta">@Nullable</span><br><span class="hljs-keyword">private</span> DefaultListableBeanFactory beanFactory;<br><br><span class="hljs-meta">@Override</span><br><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">final</span> ConfigurableListableBeanFactory <span class="hljs-title">getBeanFactory</span><span class="hljs-params">()</span> </span>&#123;<br>    <span class="hljs-keyword">synchronized</span> (<span class="hljs-keyword">this</span>.beanFactoryMonitor) &#123;<br>        <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.beanFactory == <span class="hljs-keyword">null</span>) &#123;<br>            <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> IllegalStateException(<span class="hljs-string">&quot;BeanFactory not initialized or already closed - &quot;</span> +<br>                    <span class="hljs-string">&quot;call &#x27;refresh&#x27; before accessing beans via the ApplicationContext&quot;</span>);<br>        &#125;<br>        <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.beanFactory;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>这个 BeanFactory 其实是一个组合的，就相当于说我这个代码其实是把这个 BeanFactory 的实现 DefaultListableBeanFactory 组合进来了，并不是完全的抽象继承了父类。</p>
+<p>也就是在上下文里面的实现它是组合了一个方式，同时在接口上又是继承的关系，这种方式有点像代理，再看一下 getBean() 方法的实现，在 AbstractApplicationContext 类中：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Override</span><br><span class="hljs-keyword">public</span> &lt;T&gt; <span class="hljs-function">T <span class="hljs-title">getBean</span><span class="hljs-params">(Class&lt;T&gt; requiredType)</span> <span class="hljs-keyword">throws</span> BeansException </span>&#123;<br>    assertBeanFactoryActive();<br>    <span class="hljs-keyword">return</span> getBeanFactory().getBean(requiredType);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>先 getBeanFactory() 获取 BeanFactory 对象，然后去 getBean()，相当于用代理对象（组合对象）去获取这个东西。<br>也就是说 BeanFactory 其实是一个<strong>底层的 IoC 容器</strong>，ApplicationContext 是在这基础上增加了一些他的特性。    </p>
+<h2 id="8-Spring-应用上下文"><a href="#8-Spring-应用上下文" class="headerlink" title="8. Spring 应用上下文"></a>8. Spring 应用上下文</h2><p>ApplicationContext 除了 IoC 容器角色,还有提供:</p>
+<ul>
+<li>面向切面(AOP)</li>
+<li>配置元信息(Configuration Metadata)</li>
+<li>资源管理(Resources)</li>
+<li>事件(Events)</li>
+<li>国际化(i18n)</li>
+<li>注解(Annotations)</li>
+<li>Environment抽象(Environment Abstraction)</li>
+</ul>
+<h2 id="9-使用-IoC-容器"><a href="#9-使用-IoC-容器" class="headerlink" title="9. 使用 IoC 容器"></a>9. 使用 IoC 容器</h2><ul>
+<li>BeanFactory 是 Spring 底层 IoC 容器</li>
+<li>ApplicationContext 是具备应用特性的 BeanFactory 超集</li>
+</ul>
+<h3 id="9-1-XML-场景下底层-IoC-容器：BeanFactory"><a href="#9-1-XML-场景下底层-IoC-容器：BeanFactory" class="headerlink" title="9.1 XML 场景下底层 IoC 容器：BeanFactory"></a>9.1 XML 场景下底层 IoC 容器：BeanFactory</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><code class="hljs java">	<span class="hljs-keyword">package</span> tech.fengjian.ioc.container.overview.container;<br><br><span class="hljs-keyword">import</span> org.springframework.beans.factory.support.DefaultListableBeanFactory;<br><span class="hljs-keyword">import</span> org.springframework.beans.factory.xml.XmlBeanDefinitionReader;<br><br><span class="hljs-comment">/**</span><br><span class="hljs-comment">* &lt;h1&gt;&#123;<span class="hljs-doctag">@link</span> BeanFactory&#125; 作为 IoC 容器示例&lt;/h1&gt;</span><br><span class="hljs-comment">* <span class="hljs-doctag">@author</span> 风间</span><br><span class="hljs-comment">* <span class="hljs-doctag">@since</span> 2023/5/9</span><br><span class="hljs-comment">*/</span><br><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">BeanFactoryAsIoCContainerDemo</span> </span>&#123;<br><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> </span>&#123;<br><br>        <span class="hljs-comment">// 创建 BeanFactory 容器</span><br>        DefaultListableBeanFactory beanFactory = <span class="hljs-keyword">new</span> DefaultListableBeanFactory();<br>        XmlBeanDefinitionReader reader = <span class="hljs-keyword">new</span> XmlBeanDefinitionReader(beanFactory);<br>        <span class="hljs-comment">// XML 配置文件 classpath 路径</span><br>        String IoCation = <span class="hljs-string">&quot;META-INF/dependency-injection-context.xml&quot;</span>;<br>        <span class="hljs-comment">// 加载配置，返回加载到的 Bean 个数</span><br>        <span class="hljs-keyword">int</span> loadBeanDefinitions = reader.loadBeanDefinitions(IoCation);<br>        System.out.println(loadBeanDefinitions);<br><br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>解析：DefaultListableBeanFactory 是 IoC 的底层容器，XmlBeanDefinitionReader 是 XML 方式的 Bean 定义的一个读取器，观察他的构造方法：需要一个 BeanDefinitionRegistry 接口类型</p>
+<p>的参数，DefaultListableBeanFactory 这个类呢又实现了 BeanDefinitionRegistry 接口，所以可以利用 XmlBeanDefinitionReader 和 DefaultListableBeanFactory 来加载 Bean 的配置。</p>
+<p>一句话可以总结为：从 IoCation 的位置把配置好的 Bean 加载到 DefaultListableBeanFactory 定义的 IoC 容器中去。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">XmlBeanDefinitionReader</span><span class="hljs-params">(BeanDefinitionRegistry registry)</span> </span>&#123;<br>		<span class="hljs-keyword">super</span>(registry);<br>	&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="9-2-注解场景下-ApplicationContext-作为-IoC-容器"><a href="#9-2-注解场景下-ApplicationContext-作为-IoC-容器" class="headerlink" title="9.2 注解场景下 ApplicationContext 作为 IoC 容器"></a>9.2 注解场景下 ApplicationContext 作为 IoC 容器</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">package</span> tech.fengjian.ioc.container.overview.container;<br><br><span class="hljs-keyword">import</span> org.springframework.beans.factory.ListableBeanFactory;<br><span class="hljs-keyword">import</span> org.springframework.beans.factory.support.DefaultListableBeanFactory;<br><span class="hljs-keyword">import</span> org.springframework.beans.factory.xml.XmlBeanDefinitionReader;<br><span class="hljs-keyword">import</span> org.springframework.context.ApplicationContext;<br><span class="hljs-keyword">import</span> org.springframework.context.annotation.AnnotationConfigApplicationContext;<br><span class="hljs-keyword">import</span> org.springframework.context.annotation.Bean;<br><span class="hljs-keyword">import</span> tech.fengjian.ioc.container.overview.domain.User;<br><br><span class="hljs-keyword">import</span> java.util.Map;<br><br><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * &lt;h1&gt;&#123;<span class="hljs-doctag">@link</span> org.springframework.beans.factory.BeanFactory&#125;作为 IoC 容器示例&lt;/h1&gt;</span><br><span class="hljs-comment"> *</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@author</span> 风间</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@since</span> 2023/5/9</span><br><span class="hljs-comment"> */</span><br><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">AnnotationApplicationContextAsIoCContainerDemo</span> </span>&#123;<br><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> </span>&#123;<br><br>        <span class="hljs-comment">// 创建 ApplicationContext 容器</span><br>        AnnotationConfigApplicationContext applicationContext = <span class="hljs-keyword">new</span> AnnotationConfigApplicationContext();<br>        <span class="hljs-comment">// 将当前类 AnnotationApplicationContextAsIoCContainerDemo 作为配置类（Configuration Class）</span><br>        applicationContext.register(AnnotationApplicationContextAsIoCContainerDemo.class);<br>        <span class="hljs-comment">// 启动应用上下文</span><br>        applicationContext.refresh();<br>        <span class="hljs-comment">// 依赖查找集合对象</span><br>        lookupCollectionByType(applicationContext);<br>    &#125;<br><br>    <span class="hljs-meta">@Bean</span><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> User <span class="hljs-title">user</span><span class="hljs-params">()</span> </span>&#123;<br>        User user = <span class="hljs-keyword">new</span> User();<br>        user.setId(<span class="hljs-number">1l</span>);<br>        user.setName(<span class="hljs-string">&quot;jack&quot;</span>);<br>        user.setAge(<span class="hljs-number">18</span>);<br>        <span class="hljs-keyword">return</span> user;<br>    &#125;<br><br>    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">lookupCollectionByType</span><span class="hljs-params">(AnnotationConfigApplicationContext beanFactory)</span> </span>&#123;<br>        <span class="hljs-keyword">if</span> (beanFactory <span class="hljs-keyword">instanceof</span> ListableBeanFactory) &#123;<br>            ListableBeanFactory listableBeanFactory = (ListableBeanFactory) beanFactory;<br>            Map&lt;String, User&gt; users = listableBeanFactory.getBeansOfType(User.class);<br>            System.out.println(<span class="hljs-string">&quot;查找到的所有 User 集合对象：&quot;</span> + users);<br>        &#125;<br>    &#125;<br><br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+<h2 id="10-IoC-容器生命周期"><a href="#10-IoC-容器生命周期" class="headerlink" title="10. IoC 容器生命周期"></a>10. IoC 容器生命周期</h2><h3 id="启动"><a href="#启动" class="headerlink" title="启动"></a>启动</h3><p>我们先看下 applicationContext.refresh() 方法，字面意思是重新刷新，实际意义呢是启动。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Override</span><br><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">refresh</span><span class="hljs-params">()</span> <span class="hljs-keyword">throws</span> BeansException, IllegalStateException </span>&#123;<br>    <span class="hljs-keyword">synchronized</span> (<span class="hljs-keyword">this</span>.startupShutdownMonitor) &#123;<br>        <span class="hljs-comment">// Prepare this context for refreshing.</span><br>        prepareRefresh();<br><br>        <span class="hljs-comment">// Tell the subclass to refresh the internal bean factory.</span><br>        ConfigurableListableBeanFactory beanFactory = obtainFreshBeanFactory();<br><br>        <span class="hljs-comment">// Prepare the bean factory for use in this context.</span><br>        prepareBeanFactory(beanFactory);<br><br>        <span class="hljs-keyword">try</span> &#123;<br>            <span class="hljs-comment">// Allows post-processing of the bean factory in context subclasses.</span><br>            postProcessBeanFactory(beanFactory);<br><br>            <span class="hljs-comment">// Invoke factory processors registered as beans in the context.</span><br>            invokeBeanFactoryPostProcessors(beanFactory);<br><br>            <span class="hljs-comment">// Register bean processors that intercept bean creation.</span><br>            registerBeanPostProcessors(beanFactory);<br><br>            <span class="hljs-comment">// Initialize message source for this context.</span><br>            initMessageSource();<br><br>            <span class="hljs-comment">// Initialize event multicaster for this context.</span><br>            initApplicationEventMulticaster();<br><br>            <span class="hljs-comment">// Initialize other special beans in specific context subclasses.</span><br>            onRefresh();<br><br>            <span class="hljs-comment">// Check for listener beans and register them.</span><br>            registerListeners();<br><br>            <span class="hljs-comment">// Instantiate all remaining (non-lazy-init) singletons.</span><br>            finishBeanFactoryInitialization(beanFactory);<br><br>            <span class="hljs-comment">// Last step: publish corresponding event.</span><br>            finishRefresh();<br>        &#125;<br><br>        <span class="hljs-keyword">catch</span> (BeansException ex) &#123;<br>            <span class="hljs-keyword">if</span> (logger.isWarnEnabled()) &#123;<br>                logger.warn(<span class="hljs-string">&quot;Exception encountered during context initialization - &quot;</span> +<br>                        <span class="hljs-string">&quot;cancelling refresh attempt: &quot;</span> + ex);<br>            &#125;<br><br>            <span class="hljs-comment">// Destroy already created singletons to avoid dangling resources.</span><br>            destroyBeans();<br><br>            <span class="hljs-comment">// Reset &#x27;active&#x27; flag.</span><br>            cancelRefresh(ex);<br><br>            <span class="hljs-comment">// Propagate exception to caller.</span><br>            <span class="hljs-keyword">throw</span> ex;<br>        &#125;<br><br>        <span class="hljs-keyword">finally</span> &#123;<br>            <span class="hljs-comment">// Reset common introspection caches in Spring&#x27;s core, since we</span><br>            <span class="hljs-comment">// might not ever need metadata for singleton beans anymore...</span><br>            resetCommonCaches();<br>        &#125;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li><code>synchronized (this.startupShutdownMonitor)</code>：首先他加了一把锁，这个锁为什么要加，因为任何一个 ApplicationContext 可以在任意的代码里去进行创建，那也可以多线程创建，Spring 的设计者也不知道你是不是处于一个线程安全还是非安全的情况。</li>
+<li><code>prepareRefresh</code>:准备刷新，做一些前期准备工作,<ul>
+<li>记录启动时间</li>
+<li>初始化 PropertySources </li>
+<li>和校验有关的一些东西 getEnvironment().validateRequiredProperties()</li>
+<li>earlyApplicationListeners</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">protected</span> <span class="hljs-keyword">void</span> <span class="hljs-title">prepareRefresh</span><span class="hljs-params">()</span> </span>&#123;<br>		<span class="hljs-comment">// Switch to active.</span><br>		<span class="hljs-keyword">this</span>.startupDate = System.currentTimeMillis();<br>		<span class="hljs-keyword">this</span>.closed.set(<span class="hljs-keyword">false</span>);<br>		<span class="hljs-keyword">this</span>.active.set(<span class="hljs-keyword">true</span>);<br><br>		<span class="hljs-keyword">if</span> (logger.isDebugEnabled()) &#123;<br>			<span class="hljs-keyword">if</span> (logger.isTraceEnabled()) &#123;<br>				logger.trace(<span class="hljs-string">&quot;Refreshing &quot;</span> + <span class="hljs-keyword">this</span>);<br>			&#125;<br>			<span class="hljs-keyword">else</span> &#123;<br>				logger.debug(<span class="hljs-string">&quot;Refreshing &quot;</span> + getDisplayName());<br>			&#125;<br>		&#125;<br><br>		<span class="hljs-comment">// Initialize any placeholder property sources in the context environment.</span><br>		initPropertySources();<br><br>		<span class="hljs-comment">// Validate that all properties marked as required are resolvable:</span><br>		<span class="hljs-comment">// see ConfigurablePropertyResolver#setRequiredProperties</span><br>		getEnvironment().validateRequiredProperties();<br><br>		<span class="hljs-comment">// Store pre-refresh ApplicationListeners...</span><br>		<span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.earlyApplicationListeners == <span class="hljs-keyword">null</span>) &#123;<br>			<span class="hljs-keyword">this</span>.earlyApplicationListeners = <span class="hljs-keyword">new</span> LinkedHashSet&lt;&gt;(<span class="hljs-keyword">this</span>.applicationListeners);<br>		&#125;<br>		<span class="hljs-keyword">else</span> &#123;<br>			<span class="hljs-comment">// Reset IoCal application listeners to pre-refresh state.</span><br>			<span class="hljs-keyword">this</span>.applicationListeners.clear();<br>			<span class="hljs-keyword">this</span>.applicationListeners.addAll(<span class="hljs-keyword">this</span>.earlyApplicationListeners);<br>		&#125;<br><br>		<span class="hljs-comment">// Allow for the collection of early ApplicationEvents,</span><br>		<span class="hljs-comment">// to be published once the multicaster is available...</span><br>		<span class="hljs-keyword">this</span>.earlyApplicationEvents = <span class="hljs-keyword">new</span> LinkedHashSet&lt;&gt;();<br>	&#125;<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>obtainFreshBeanFactory：用于创建一个新的、空的 <code>BeanFactory</code>，要使用此方法必须先调用 <code>refresh()</code> 方法刷新应用程序上下文。该方法将创建一个基本的 <code>DefaultListableBeanFactory</code> 实例，如果需要可以自定义实现</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">protected</span> ConfigurableListableBeanFactory <span class="hljs-title">obtainFreshBeanFactory</span><span class="hljs-params">()</span> </span>&#123;<br>		refreshBeanFactory();<br>		<span class="hljs-keyword">return</span> getBeanFactory();<br>	&#125;<br></code></pre></td></tr></table></figure>
+
+<p>​    看下 <code>refreshBeanFactory</code> 方法，在 <code>AbstractRefreshableApplicationContext</code> 类中，创建了 <code>DefaultListableBeanFactory</code>对象</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Override</span><br><span class="hljs-function"><span class="hljs-keyword">protected</span> <span class="hljs-keyword">final</span> <span class="hljs-keyword">void</span> <span class="hljs-title">refreshBeanFactory</span><span class="hljs-params">()</span> <span class="hljs-keyword">throws</span> BeansException </span>&#123;<br>    <span class="hljs-keyword">if</span> (hasBeanFactory()) &#123;<br>        destroyBeans();<br>        closeBeanFactory();<br>    &#125;<br>    <span class="hljs-keyword">try</span> &#123;<br>        DefaultListableBeanFactory beanFactory = createBeanFactory();<br>        beanFactory.setSerializationId(getId());<br>        customizeBeanFactory(beanFactory);<br>        loadBeanDefinitions(beanFactory);<br>        <span class="hljs-keyword">synchronized</span> (<span class="hljs-keyword">this</span>.beanFactoryMonitor) &#123;<br>            <span class="hljs-keyword">this</span>.beanFactory = beanFactory;<br>        &#125;<br>    &#125;<br>    <span class="hljs-keyword">catch</span> (IOException ex) &#123;<br>        <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> ApplicationContextException(<span class="hljs-string">&quot;I/O error parsing bean definition source for &quot;</span> + getDisplayName(), ex);<br>    &#125;<br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+<ul>
+<li><code>prepareBeanFactory(beanFactory)</code> 方法，一大段操作</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">protected</span> <span class="hljs-keyword">void</span> <span class="hljs-title">prepareBeanFactory</span><span class="hljs-params">(ConfigurableListableBeanFactory beanFactory)</span> </span>&#123;<br>		<span class="hljs-comment">// Tell the internal bean factory to use the context&#x27;s class loader etc.</span><br>		beanFactory.setBeanClassLoader(getClassLoader());<br>		beanFactory.setBeanExpressionResolver(<span class="hljs-keyword">new</span> StandardBeanExpressionResolver(beanFactory.getBeanClassLoader()));<br>		beanFactory.addPropertyEditorRegistrar(<span class="hljs-keyword">new</span> ResourceEditorRegistrar(<span class="hljs-keyword">this</span>, getEnvironment()));<br><br>		<span class="hljs-comment">// Configure the bean factory with context callbacks.</span><br>		beanFactory.addBeanPostProcessor(<span class="hljs-keyword">new</span> ApplicationContextAwareProcessor(<span class="hljs-keyword">this</span>));<br>		beanFactory.ignoreDependencyInterface(EnvironmentAware.class);<br>		beanFactory.ignoreDependencyInterface(EmbeddedValueResolverAware.class);<br>		beanFactory.ignoreDependencyInterface(ResourceLoaderAware.class);<br>		beanFactory.ignoreDependencyInterface(ApplicationEventPublisherAware.class);<br>		beanFactory.ignoreDependencyInterface(MessageSourceAware.class);<br>		beanFactory.ignoreDependencyInterface(ApplicationContextAware.class);<br><br>		<span class="hljs-comment">// BeanFactory interface not registered as resolvable type in a plain factory.</span><br>		<span class="hljs-comment">// MessageSource registered (and found for autowiring) as a bean.</span><br>		beanFactory.registerResolvableDependency(BeanFactory.class, beanFactory);<br>		beanFactory.registerResolvableDependency(ResourceLoader.class, <span class="hljs-keyword">this</span>);<br>		beanFactory.registerResolvableDependency(ApplicationEventPublisher.class, <span class="hljs-keyword">this</span>);<br>		beanFactory.registerResolvableDependency(ApplicationContext.class, <span class="hljs-keyword">this</span>);<br><br>		<span class="hljs-comment">// Register early post-processor for detecting inner beans as ApplicationListeners.</span><br>		beanFactory.addBeanPostProcessor(<span class="hljs-keyword">new</span> ApplicationListenerDetector(<span class="hljs-keyword">this</span>));<br><br>		<span class="hljs-comment">// Detect a LoadTimeWeaver and prepare for weaving, if found.</span><br>		<span class="hljs-keyword">if</span> (beanFactory.containsBean(LOAD_TIME_WEAVER_BEAN_NAME)) &#123;<br>			beanFactory.addBeanPostProcessor(<span class="hljs-keyword">new</span> LoadTimeWeaverAwareProcessor(beanFactory));<br>			<span class="hljs-comment">// Set a temporary ClassLoader for type matching.</span><br>			beanFactory.setTempClassLoader(<span class="hljs-keyword">new</span> ContextTypeMatchClassLoader(beanFactory.getBeanClassLoader()));<br>		&#125;<br><br>		<span class="hljs-comment">// Register default environment beans.</span><br>		<span class="hljs-keyword">if</span> (!beanFactory.containsIoCalBean(ENVIRONMENT_BEAN_NAME)) &#123;<br>			beanFactory.registerSingleton(ENVIRONMENT_BEAN_NAME, getEnvironment());<br>		&#125;<br>		<span class="hljs-keyword">if</span> (!beanFactory.containsIoCalBean(SYSTEM_PROPERTIES_BEAN_NAME)) &#123;<br>			beanFactory.registerSingleton(SYSTEM_PROPERTIES_BEAN_NAME, getEnvironment().getSystemProperties());<br>		&#125;<br>		<span class="hljs-keyword">if</span> (!beanFactory.containsIoCalBean(SYSTEM_ENVIRONMENT_BEAN_NAME)) &#123;<br>			beanFactory.registerSingleton(SYSTEM_ENVIRONMENT_BEAN_NAME, getEnvironment().getSystemEnvironment());<br>		&#125;<br>	&#125;<br></code></pre></td></tr></table></figure>
+
+<p>我们说<code>Environment</code>对象为什么能够通过依赖查找的方式可以查得到，就是受到这段 registerSingleton 代码的注入进去，为什么我们可以得到<code>BeanFactory</code>这个对象，因为这里通过registerResolvableDependency 可以把 BeanFactory 作为一个非 Bean 的方式来进行注入</p>
+<ul>
+<li><p>postProcessBeanFactory、invokeBeanFactoryPostProcessors：进一步初始化动作，这里相当于交给你去做，相当于 BeanFactory 扩展点，制定你的 Factory 来实现</p>
+</li>
+<li><p>registerBeanPostProcessors：对 Bean 进行调整</p>
+</li>
+<li><p>initMessageSource：国际化</p>
+</li>
+<li><p>initApplicationEventMulticaster：事件广播</p>
+</li>
+<li><p>registerListeners：注册监听器</p>
+</li>
+<li><p>finishBeanFactoryInitialization：初始化完成 </p>
+</li>
+</ul>
+<p>总结一下 ApplicationContext 启动过程中的一些基本操作：</p>
+<p>第一个：创建 BeanFactory -&gt; 进行初步的初始化 -&gt; 加入一些内建的 Bean 对象或者 Bean 依赖以及加上一些内建的非 Bean 依赖</p>
+<p>第二个：BeanFactory的扩展点，通过执行 BeanFactoryPostProcessor，你可以定义成 Bean，可以添加到容器</p>
+<p>第三个：对 Bean 的一些修改或者扩展，通过执行 BeanPostProcessor，这里只是注册，具体的调用是在 BeanFactory 中进行操作的</p>
+<p>接下来就会进行国际化、事件注册，那资源操作在哪里呢，ResourceLoader</p>
+<h3 id="停止"><a href="#停止" class="headerlink" title="停止"></a>停止</h3><p>applicationContext.close() 方法</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Override</span><br><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">close</span><span class="hljs-params">()</span> </span>&#123;<br>    <span class="hljs-keyword">synchronized</span> (<span class="hljs-keyword">this</span>.startupShutdownMonitor) &#123;<br>        doClose();<br>        <span class="hljs-comment">// If we registered a JVM shutdown hook, we don&#x27;t need it anymore now:</span><br>        <span class="hljs-comment">// We&#x27;ve already explicitly closed the context.</span><br>        <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.shutdownHook != <span class="hljs-keyword">null</span>) &#123;<br>            <span class="hljs-keyword">try</span> &#123;<br>                Runtime.getRuntime().removeShutdownHook(<span class="hljs-keyword">this</span>.shutdownHook);<br>            &#125;<br>            <span class="hljs-keyword">catch</span> (IllegalStateException ex) &#123;<br>                <span class="hljs-comment">// ignore - VM is already shutting down</span><br>            &#125;<br>        &#125;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>再看 doClose 方法</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">protected</span> <span class="hljs-keyword">void</span> <span class="hljs-title">doClose</span><span class="hljs-params">()</span> </span>&#123;<br>    <span class="hljs-comment">// Check whether an actual close attempt is necessary...</span><br>    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.active.get() &amp;&amp; <span class="hljs-keyword">this</span>.closed.compareAndSet(<span class="hljs-keyword">false</span>, <span class="hljs-keyword">true</span>)) &#123;<br>        <span class="hljs-keyword">if</span> (logger.isDebugEnabled()) &#123;<br>            logger.debug(<span class="hljs-string">&quot;Closing &quot;</span> + <span class="hljs-keyword">this</span>);<br>        &#125;<br><br>        LiveBeansView.unregisterApplicationContext(<span class="hljs-keyword">this</span>);<br><br>        <span class="hljs-keyword">try</span> &#123;<br>            <span class="hljs-comment">// Publish shutdown event.</span><br>            publishEvent(<span class="hljs-keyword">new</span> ContextClosedEvent(<span class="hljs-keyword">this</span>));<br>        &#125;<br>        <span class="hljs-keyword">catch</span> (Throwable ex) &#123;<br>            logger.warn(<span class="hljs-string">&quot;Exception thrown from ApplicationListener handling ContextClosedEvent&quot;</span>, ex);<br>        &#125;<br><br>        <span class="hljs-comment">// Stop all Lifecycle beans, to avoid delays during individual destruction.</span><br>        <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.lifecycleProcessor != <span class="hljs-keyword">null</span>) &#123;<br>            <span class="hljs-keyword">try</span> &#123;<br>                <span class="hljs-keyword">this</span>.lifecycleProcessor.onClose();<br>            &#125;<br>            <span class="hljs-keyword">catch</span> (Throwable ex) &#123;<br>                logger.warn(<span class="hljs-string">&quot;Exception thrown from LifecycleProcessor on context close&quot;</span>, ex);<br>            &#125;<br>        &#125;<br><br>        <span class="hljs-comment">// Destroy all cached singletons in the context&#x27;s BeanFactory.</span><br>        destroyBeans();<br><br>        <span class="hljs-comment">// Close the state of this context itself.</span><br>        closeBeanFactory();<br><br>        <span class="hljs-comment">// Let subclasses do some final clean-up if they wish...</span><br>        onClose();<br><br>        <span class="hljs-comment">// Reset IoCal application listeners to pre-refresh state.</span><br>        <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.earlyApplicationListeners != <span class="hljs-keyword">null</span>) &#123;<br>            <span class="hljs-keyword">this</span>.applicationListeners.clear();<br>            <span class="hljs-keyword">this</span>.applicationListeners.addAll(<span class="hljs-keyword">this</span>.earlyApplicationListeners);<br>        &#125;<br><br>        <span class="hljs-comment">// Switch to inactive.</span><br>        <span class="hljs-keyword">this</span>.active.set(<span class="hljs-keyword">false</span>);<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>销毁 Bean，关闭 BeanFactory，还可以进一步的自定义操作 onClose() 做一些动作。</p>
+<h2 id="11-面试题"><a href="#11-面试题" class="headerlink" title="11. 面试题"></a>11. 面试题</h2><p><strong><font color="green" size="2">沙雕面试题</font></strong>-什么是 Spring IoC 容器？</p>
+<p>答：Spring Framework implementation of the Inversion of Control (IoC) principle. IoCis also known as dependency injection (DI). It is a process whereby </p>
+<p>objects define their dependencies (that is, the other objects they work with) only through constructor arguments, arguments to a factory imethod,or properties </p>
+<p>that are set on the object instance after it is constructed or returned from a factory method. The containerthen injects those dependencies when it creates </p>
+<p>the bean.</p>
+<p>Spring Framework 是一种实现控制反转（IoC）原则的框架，IoC 也被称为依赖注入（DI）。它是一种过程，其中对象通过构造函数参数、工厂方法的参数或在构造对象后或从工厂方法返回后设置在对象实例上</p>
+<p>的属性来定义其依赖项（即其与其他对象的配合工作）。容器然后在创建 Bean 时注入这些依赖项。</p>
+<p><strong><font color="orange" size="2">996面试题</font></strong>-BeanFactory 和 FactoryBean 的区别？</p>
+<p>答：BeanFactory是IoC底层容器 FactoryBean 是创建 Bean 的一种方式,帮助实现复杂的初始化逻辑，看下代码说明：</p>
+<p>Interface to be implemented by objects used within a BeanFactory which are themselves factories for individual objects. If a bean implements this interface,it</p>
+<p> is used as a factory for an object to expose, not directly as a bean instance that will be exposed itself.</p>
+<p>这是一个接口去实现一个 Object，然后这个 Object 中有几个特性，这个特性其实就是为了帮助你去暴露一个 Bean，他这个 Bean 呢通常来说不是一个正常的 Bean，或者说不是一个能够简单处理的 Bean。</p>
+<p>我们看下之前的 User 对象，他是非常简单的 POJO,他就是一个默认的构造器参数通过反射的方式进行调用。但是现实情况可能没这么简单，假设 User 这个对象是第三方来进行创建的，这个时候咋办呢，没办法</p>
+<p>通过反射的方式直接去获取这个对象进行初始化，因此你可以通过 BeanFactory 的方式来进行操作：</p>
+<p>getObject 是主要逻辑，这个方法会被容器调用，这个容器怎么知道这个方法要被调用呢，这个前提就是 getObjectType，这个 getObjectType 去决定哪个对象要去做，如果对象的类型相同怎么办，就通过</p>
+<p>是不是单例（isSingleton）的方式来进行区分，如果每次去获取的时候都是同一个对象的话，如果 isSingleton 是 true（默认），他返回的是同一个对象，否则的话呢就不是同一个对象。</p>
+<p>那 getObject 是不是每次都会被调用，答案是否定的。</p>
+<p>也就是说 FactoryBean 是解决复杂场景下 Bean 的初始化或者构造问题，那么创建的 Bean 是不是还会经过 Bean 的生命周期呢？后续揭秘</p>
+<p><strong><font color="red" size="2">劝退面试题</font></strong>-Spring IoC 容器启动时做了哪些准备?？</p>
+<p>答：IoC 配置元信息读取和解析、IoC 容器生命周期、Spring 事件发布、国际化等,更多答案将在后续专题章节逐一讨论</p>
+<p><strong>本节完</strong></p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E5%90%8E%E7%AB%AF/">后端</a>
+                    
+                      <a class="hover-with-bg" href="/categories/%E5%90%8E%E7%AB%AF/spring-%E6%A0%B8%E5%BF%83%E7%BC%96%E7%A8%8B%E6%80%9D%E6%83%B3/">spring 核心编程思想</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/spring/">spring</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2023/05/08/%E5%90%8E%E7%AB%AF/java/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BC%9A%E8%AF%9D/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">分布式会话</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2023/05/08/%E5%90%8E%E7%AB%AF/java/spring%E6%A0%B8%E5%BF%83%E7%BC%96%E7%A8%8B%E6%80%9D%E6%83%B3%EF%BC%88%E4%BA%8C%EF%BC%89/">
+                        <span class="hidden-mobile">Spring 核心编程思想（二）：重新认识 IoC</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <article class="comments" id="comments" lazyload>
+                
+                  
+                
+                
+  <div id="SOHUCS" sid='http://example.com/2023/05/08/%E5%90%8E%E7%AB%AF/java/spring%E6%A0%B8%E5%BF%83%E7%BC%96%E7%A8%8B%E6%80%9D%E6%83%B3%EF%BC%88%E4%B8%89%EF%BC%89/'></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#SOHUCS', function() {
+      Fluid.utils.createScript("https://changyan.sohu.com/upload/changyan.js", function() {
+        window.changyan.api.config({"appid":"cywjv2D9l","appkey":"2bf2f1231299e92b26393ba6fb2ad9d8"})
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+              </article>
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+    风间小栈出品
+  </div>
+  
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- 不蒜子统计PV -->
+        <span id="busuanzi_container_site_pv" style="display: none">
+            总访问量 
+            <span id="busuanzi_value_site_pv"></span>
+             次
+          </span>
+      
+      
+        <!-- 不蒜子统计UV -->
+        <span id="busuanzi_container_site_uv" style="display: none">
+            总访客数 
+            <span id="busuanzi_value_site_uv"></span>
+             人
+          </span>
+      
+    
+  </div>
+
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  
+    <script  src="https://cdn.jsdelivr.net/npm/tocbot@4/dist/tocbot.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4/anchor.min.js" ></script>
+  
+  
+    <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js" ></script>
+  
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+        typing(title);
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>

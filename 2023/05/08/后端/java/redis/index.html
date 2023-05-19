@@ -1,0 +1,788 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="风间">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="一、安装与配置 redis1. 下载安装包下载地址 2. 上传到 linux 服务器并解压缩1tar -zxvf redis-5.0.5.tar.gz   3. 安装依赖1yum install gcc-c++  4. 编译1make  编译成功：Hint: It’s a good idea to run ‘make test’ ;) 5. 安装1make install  6. 配置 进入 ut">
+<meta property="og:type" content="article">
+<meta property="og:title" content="redis">
+<meta property="og:url" content="http://example.com/2023/05/08/%E5%90%8E%E7%AB%AF/java/redis/index.html">
+<meta property="og:site_name" content="风间小栈">
+<meta property="og:description" content="一、安装与配置 redis1. 下载安装包下载地址 2. 上传到 linux 服务器并解压缩1tar -zxvf redis-5.0.5.tar.gz   3. 安装依赖1yum install gcc-c++  4. 编译1make  编译成功：Hint: It’s a good idea to run ‘make test’ ;) 5. 安装1make install  6. 配置 进入 ut">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://cdn-hw-static.shanhutech.cn/bizhi/staticwp/202303/6d0334b66e2084311d5387b199b6986f--782540629.jpg">
+<meta property="article:published_time" content="2023-05-08T01:46:03.863Z">
+<meta property="article:modified_time" content="2023-05-08T01:46:03.863Z">
+<meta property="article:author" content="风间">
+<meta property="article:tag" content="redis">
+<meta property="article:tag" content="缓存">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://cdn-hw-static.shanhutech.cn/bizhi/staticwp/202303/6d0334b66e2084311d5387b199b6986f--782540629.jpg">
+  
+  
+  <title>redis - 风间小栈</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4/github-markdown.min.css" />
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hint.css@2/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.css" />
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.8.13","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":"§"},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>风间小栈</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/%E6%96%87%E6%9C%AC.jpg') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="redis">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2023-05-08 09:46" pubdate>
+        2023年5月8日 上午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      7.8k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      66 分钟
+    </span>
+  
+
+  
+  
+    
+      <!-- 不蒜子统计文章PV -->
+      <span id="busuanzi_container_page_pv" style="display: none">
+        <i class="iconfont icon-eye" aria-hidden="true"></i>
+        <span id="busuanzi_value_page_pv"></span> 次
+      </span>
+    
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">redis</h1>
+            
+            <div class="markdown-body">
+              <h2 id="一、安装与配置-redis"><a href="#一、安装与配置-redis" class="headerlink" title="一、安装与配置 redis"></a>一、安装与配置 redis</h2><h3 id="1-下载安装包"><a href="#1-下载安装包" class="headerlink" title="1. 下载安装包"></a>1. 下载安装包</h3><p><a target="_blank" rel="noopener" href="https://redis.io/download/">下载地址</a></p>
+<h3 id="2-上传到-linux-服务器并解压缩"><a href="#2-上传到-linux-服务器并解压缩" class="headerlink" title="2. 上传到 linux 服务器并解压缩"></a>2. 上传到 linux 服务器并解压缩</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">tar -zxvf redis-5.0.5.tar.gz <br></code></pre></td></tr></table></figure>
+
+<h3 id="3-安装依赖"><a href="#3-安装依赖" class="headerlink" title="3. 安装依赖"></a>3. 安装依赖</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">yum install gcc-c++<br></code></pre></td></tr></table></figure>
+
+<h3 id="4-编译"><a href="#4-编译" class="headerlink" title="4. 编译"></a>4. 编译</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">make<br></code></pre></td></tr></table></figure>
+
+<p>编译成功：Hint: It’s a good idea to run ‘make test’ ;)</p>
+<h3 id="5-安装"><a href="#5-安装" class="headerlink" title="5. 安装"></a>5. 安装</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">make install<br></code></pre></td></tr></table></figure>
+
+<h3 id="6-配置"><a href="#6-配置" class="headerlink" title="6. 配置"></a>6. 配置</h3><ul>
+<li><p>进入 utils 目录，拷贝 redis 启动脚本</p>
+ <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">cp redis_init_script /etc/init.d/ <br></code></pre></td></tr></table></figure></li>
+<li><p>修改 redis 核心配置文件 <code>redis.conf</code></p>
+<ul>
+<li><p>拷贝配置文件</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs shell">mkdir /usr/local/redis<br><br>cp redis.conf /usr/local/redis/<br>  <br>cd /usr/local/redis<br>  <br>vim redis.conf<br></code></pre></td></tr></table></figure></li>
+<li><p>修改相关配置</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>默认值</th>
+<th>描述</th>
+<th>推荐设置</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>daemonize</td>
+<td>no</td>
+<td>是否后台启动</td>
+<td>yes</td>
+</tr>
+<tr>
+<td>dir</td>
+<td>./</td>
+<td>工作目录</td>
+<td>/usr/local/redis/working</td>
+</tr>
+<tr>
+<td>bind</td>
+<td>127.0.0.1</td>
+<td>绑定的ip</td>
+<td>0.0.0.0</td>
+</tr>
+<tr>
+<td>requirepass</td>
+<td>foobared</td>
+<td>访问密码</td>
+<td>自定义即可</td>
+</tr>
+<tr>
+<td>port</td>
+<td>6379</td>
+<td>端口号</td>
+<td>6379</td>
+</tr>
+</tbody></table>
+</li>
+<li><p>修改启动脚本 <code>redis_init_script</code></p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>默认值</th>
+<th>描述</th>
+<th>推荐设置</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>REDISPORT</td>
+<td>6379</td>
+<td>端口号</td>
+<td>若要修改去 redis.conf中修改即可</td>
+</tr>
+<tr>
+<td>CONF</td>
+<td>CONF=”/etc/redis/${REDISPORT}.conf”</td>
+<td>启动指定的配置文件</td>
+<td>/usr/local/redis/redis.conf</td>
+</tr>
+</tbody></table>
+</li>
+<li><p>赋权限</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">chmod 777 redis_init_script<br></code></pre></td></tr></table></figure></li>
+<li><p>启动</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">./redis_init_script start<br></code></pre></td></tr></table></figure></li>
+<li><p>停止</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">./redis_init_script stop<br></code></pre></td></tr></table></figure>
+<p>停止时会提示没有认证！<br>修改脚本文件如下：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta">$</span><span class="bash">CLIEXEC -a <span class="hljs-string">&quot;密码&quot;</span> -p <span class="hljs-variable">$REDISPORT</span> shutdown</span><br></code></pre></td></tr></table></figure></li>
+<li><p>设置 redis 开机自启动</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs shell">vim redis_init_script<br><span class="hljs-meta"></span><br><span class="hljs-meta">#</span><span class="bash"> 新增脚本</span> <br><span class="hljs-meta">#</span><span class="bash"> !/bin/bash</span><br><span class="hljs-meta">#</span><span class="bash"> chkconfig: 22345 10 90</span><br><span class="hljs-meta">#</span><span class="bash"> description: Start and Stop redis</span><br><span class="hljs-meta"></span><br><span class="hljs-meta">#</span><span class="bash"> 注册开机自启动</span><br>chkconfig redis_init_script on <br>        <br><span class="hljs-meta">#</span><span class="bash"> 重启测试</span><br>reboot<br></code></pre></td></tr></table></figure></li>
+</ul>
+</li>
+</ul>
+<h2 id="二、redis-持久化机制"><a href="#二、redis-持久化机制" class="headerlink" title="二、redis 持久化机制"></a>二、redis 持久化机制</h2><h3 id="1-RDB"><a href="#1-RDB" class="headerlink" title="1. RDB"></a>1. RDB</h3><blockquote>
+<p>Redis DataBase </p>
+</blockquote>
+<ol>
+<li><p>RDB 概念：每隔一段时间，把内存中的数据写入磁盘的临时文件，作为快照，恢复的时候把快照文件读进内存。如果宕机重启，那么内存里的数据肯定会没有的。</p>
+</li>
+<li><p>备份与恢复： 内存备份 –&gt; 磁盘临时文件 –&gt; 恢复到内存</p>
+</li>
+<li><p>RDB优劣势</p>
+<ul>
+<li>优势<ol>
+<li>每隔一段时间备份，全量备份</li>
+<li>灾备简单，可以远程传输</li>
+<li>子进程备份的时候，主进程不会有任何 io 操作（不会有写入修改或删除），保证备份数据的的完整性</li>
+<li>相对 AOF 来说，当有更大文件的时候可以快速重启恢复</li>
+</ol>
+</li>
+<li>劣势<ol>
+<li>发生故障时，有可能会丢失最后一次的备份数据</li>
+<li>子进程所占用的内存比会和父进程一模一样，如会造成 CPU 负担</li>
+<li>由于定时全量备份是重量级操作，所以对于实时备份，就无法处理了。</li>
+</ol>
+</li>
+</ul>
+</li>
+<li><p>RDB的配置</p>
+<ul>
+<li>保存位置，可以在redis.conf自定义：<br>dbfilename dump.rdb<br>dir /user/local/redis/working</li>
+<li>保存机制：<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs shell">save 900 1<br>save 300 10<br>save 60 10000<br>save 10 3<br></code></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs shell">* 如果 1 个缓存更新，则 15 分钟后备份<br>* 如果 10 个缓存更新，则 5 分钟后备份<br>* 如果 10000 个缓存更新，则 1 分钟后备份<br>* 演示：更新 3 个缓存，10 秒后备份<br>* 演示：备份 dump.rdb，删除重启<br></code></pre></td></tr></table></figure></li>
+<li>stop-writes-on-bgsave-error<br> yes：如果 save 过程出错，则停止写操作<br> no：可能造成数据不一致</li>
+<li>rdbcompression<br>yes：开启rdb压缩模式<br>no：关闭，会节约 cpu 损耗，但是文件会大，道理同 nginx</li>
+<li>rdbchecksum<br>yes：开启校验，性能损耗 10%<br>no：关闭，节约性能</li>
+</ul>
+</li>
+</ol>
+<h3 id="2-AOF"><a href="#2-AOF" class="headerlink" title="2.AOF"></a>2.AOF</h3><blockquote>
+<p>Append Only File</p>
+</blockquote>
+<ol>
+<li><p>引子：RDB 会丢失最后一次备份的 rdb 文件，但是其实也无所谓，其实也可以忽略不计，毕竟是缓存，丢了就丢了，但是如果追求数据的完整性，那就的考虑使用 AOF 了</p>
+</li>
+<li><p>AOF 特点</p>
+<ul>
+<li>以日志的形式来记录用户请求的写操作。读操作不会记录，因为写操作才会存存储。</li>
+<li>文件以追加的形式而不是修改的形式。</li>
+<li>redis 的 aof 恢复其实就是把追加的文件从开始到结尾读取执行写操作。</li>
+</ul>
+</li>
+<li><p>优势</p>
+<ul>
+<li>AOF 更加耐用，可以以秒级别为单位备份，如果发生问题，也只会丢失最后一秒的数据，大大增加了可靠性和数据完整性。所以 AOF 可每秒同步一次，使用 fsync 操作。</li>
+<li>以 log 日志形式追加，如果磁盘满了，会执行 redis-check-aof 工具</li>
+<li>当数据太大的时候，redis 可以在后台自动重写 aof。当 redis 继续把日志追加到老的文件中去时，重写也是非常安全的，不会影响客户端<br> 作。</li>
+<li>AOF 日志包含的所有写操作，会更加便于 redis 的解析恢复。</li>
+</ul>
+</li>
+<li><p>劣势</p>
+<ul>
+<li>相同的数据，同一份数据，AOF 比 RDB 大</li>
+<li>针对不同的同步机制，AOF 会比 RDB 慢，因为 AOF 每秒都会备份做写操作，这样相对于 RDB 来说就略低。 每秒备份 fsync 没毛病，但是如果每次写入就做一次备份 fsync 的话，那么 redis 的性能就会下降。</li>
+<li>AOF 发生过 bug，就是数据恢复的时候数据不完整，这样显得 AOF 会比较脆弱，容易出现 bug，因为 AOF 没有 RDB 那么简单，防止 bug 的产生，AOF 就不会根据旧的指令去重构，而是根据当时缓存中存在的数据指令去做重构，这样就更加健壮和可靠了。</li>
+</ul>
+</li>
+<li><p>AOF的配置</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta">#</span><span class="bash"> AOF 默认关闭，yes可以开启</span><br>appendonly no<br><span class="hljs-meta">#</span><span class="bash"> AOF 的文件名</span><br>appendfilename &quot;appendonly.aof&quot;<br><span class="hljs-meta">#</span><span class="bash"> no：不同步</span><br><span class="hljs-meta">#</span><span class="bash"> everysec：每秒备份，推荐使用</span><br><span class="hljs-meta">#</span><span class="bash"> always：每次操作都会备份，安全并且数据完整，但是慢性能差</span><br>appendfsync everysec<br><span class="hljs-meta">#</span><span class="bash"> 重写的时候是否要同步，no可以保证数据安全</span><br>no-appendfsync-on-rewrite no<br><span class="hljs-meta">#</span><span class="bash"> 重写机制：避免文件越来越大，自动优化压缩指令，会 fork 一个新的进程去完成重写动作，新进程里的内存数据会被重写，此时</span><br><span class="hljs-meta">#</span><span class="bash"> 当前 AOF 文件的大小是上次 AOF 大小的 100% 并且文件体积达到 64m，满足两者则触发重写</span><br>auto-aof-rewrite-percentage 100<br>auto-aof-rewrite-min-size 64mb<br></code></pre></td></tr></table></figure></li>
+</ol>
+<h3 id="3-到底采用-RDB-还是-AOF-呢？"><a href="#3-到底采用-RDB-还是-AOF-呢？" class="headerlink" title="3.到底采用 RDB 还是 AOF 呢？"></a>3.到底采用 RDB 还是 AOF 呢？</h3><ol>
+<li>如果你能接受一段时间的缓存丢失，那么可以使用 RDB，可能会丢失最后一次备份数据</li>
+<li>如果你对实时性的数据比较 care，那么就用 AOF，最多损失 2 秒的数据（每秒备份）</li>
+<li>先加载 AOF，然后加载 RDB，如果 AOF 损坏，则删除掉后使用 RDB 恢复即可</li>
+</ol>
+<h2 id="三、redis-主从复制"><a href="#三、redis-主从复制" class="headerlink" title="三、redis 主从复制"></a>三、redis 主从复制</h2><h3 id="1-查看-replication-信息"><a href="#1-查看-replication-信息" class="headerlink" title="1. 查看 replication 信息"></a>1. 查看 replication 信息</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">info replication<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta">#</span><span class="bash"> Replication</span><br>role:master<br>connected_slaves:0<br>master_replid:989dec5a359aed864bfd5c14223403c7ccb5db11<br>master_replid2:0000000000000000000000000000000000000000<br>master_repl_offset:0<br>second_repl_offset:-1<br>repl_backlog_active:0<br>repl_backlog_size:1048576<br>repl_backlog_first_byte_offset:0<br>repl_backlog_histlen:0<br></code></pre></td></tr></table></figure>
+
+<h3 id="2-修改配置，设置为从节点"><a href="#2-修改配置，设置为从节点" class="headerlink" title="2. 修改配置，设置为从节点"></a>2. 修改配置，设置为从节点</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta">#</span><span class="bash"> 设置主节点 ip port</span><br>replicaof 192.168.88.135 6379<br><span class="hljs-meta"></span><br><span class="hljs-meta">#</span><span class="bash"> 设置主节点密码</span><br>masterauth 123456<br><span class="hljs-meta"></span><br><span class="hljs-meta">#</span><span class="bash"> 设置从节点为只读（默认配置）</span><br>replica-read-only yes<br></code></pre></td></tr></table></figure>
+<p>重启 redis 使之生效!</p>
+<h3 id="3-无磁盘化复制"><a href="#3-无磁盘化复制" class="headerlink" title="3. 无磁盘化复制"></a>3. 无磁盘化复制</h3><blockquote>
+<p>定义：master 创建一个进程写入 rdb 文件到内存而不是磁盘<br>场景：网络好，硬盘读写差的情况</p>
+</blockquote>
+<p>开启配置：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta">#</span><span class="bash"> 开启无磁盘主从同步</span><br>repl-diskless-sync yes<br><span class="hljs-meta">#</span><span class="bash"> 同步延迟，默认 5 秒</span><br>repl-diskless-sync-delay 5<br></code></pre></td></tr></table></figure>
+
+<h2 id="四、哨兵机制-sentinel"><a href="#四、哨兵机制-sentinel" class="headerlink" title="四、哨兵机制 sentinel"></a>四、哨兵机制 sentinel</h2><blockquote>
+<p>作用：针对 redis 主从复制机器宕机处理</p>
+</blockquote>
+<ul>
+<li><p>拷贝配置文件</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs shell">cd /home/install/redis<br>cp sentinel.conf /usr/local/redis/sentinel.conf<br></code></pre></td></tr></table></figure></li>
+<li><p>进行相关配置</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta">#</span><span class="bash"> 关闭保护模式</span><br>  protected-mode no<br><span class="hljs-meta">#</span><span class="bash"> 后台启动</span><br>  daemonize yes<br><span class="hljs-meta">#</span><span class="bash"> 日志存放位置</span><br>  logfile /usr/local/redis/sentinel/redis-sentinel.log<br><span class="hljs-meta">#</span><span class="bash"> 工作目录</span><br>  dir /usr/local/redis/sentinel<br><span class="hljs-meta">#</span><span class="bash"> 监控的 master, 2 为 quorum：至少多少台哨兵发现 master 宕机</span><br>  sentinel monitor master-135 192.168.88.135 6379 2<br><span class="hljs-meta">#</span><span class="bash"> master 密码</span> <br>  sentinel auth-pass master-132 123456<br><span class="hljs-meta">#</span><span class="bash"> 判断 master down 时间（毫秒）， 10 秒，默认 30 秒</span><br>  sentinel down-after-milliseconds master-132 10000<br><span class="hljs-meta">#</span><span class="bash"> 并发同步数量，默认 1，某一个 slave 被选举为 master后，其他 slave 从新的 master 同步数据</span><br>  sentinel parallel-syncs master-132 1<br><span class="hljs-meta">#</span><span class="bash"> 故障转移超时时间（毫秒），默认 3 分钟</span><br>  sentinel failover-timeout master-132 180000<br></code></pre></td></tr></table></figure></li>
+<li><p>拷贝 sentinel.conf 到其他服务器</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">scp sentinel.conf root@192.168.88.135:/usr/local/redis/<br></code></pre></td></tr></table></figure></li>
+<li><p>启动</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">redis-sentinel sentinel.conf<br></code></pre></td></tr></table></figure></li>
+<li><p>SpringBoot 整合哨兵</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">spring:</span><br>   <span class="hljs-attr">redis:</span><br>     <span class="hljs-comment">#单机单实例</span><br>     <span class="hljs-comment">#database: 1</span><br>     <span class="hljs-comment">#host: 192.168.88.135</span><br>     <span class="hljs-comment">#password: 123456</span><br>     <span class="hljs-comment">#port: 6379</span><br>     <span class="hljs-comment">#哨兵机制</span><br>     <span class="hljs-attr">database:</span> <span class="hljs-number">1</span><br>     <span class="hljs-attr">password:</span> <span class="hljs-number">123456</span><br>     <span class="hljs-attr">sentinel:</span><br>       <span class="hljs-attr">master:</span> <span class="hljs-string">master-132</span><br>       <span class="hljs-attr">nodes:</span> <span class="hljs-number">192.168</span><span class="hljs-number">.88</span><span class="hljs-number">.135</span><span class="hljs-string">:26379,192.168.88.136:26379,192.168.88.137:26379</span><br></code></pre></td></tr></table></figure></li>
+</ul>
+<h2 id="五、redis-缓存过期机制-amp-内存淘汰机制"><a href="#五、redis-缓存过期机制-amp-内存淘汰机制" class="headerlink" title="五、redis 缓存过期机制 &amp; 内存淘汰机制"></a>五、redis 缓存过期机制 &amp; 内存淘汰机制</h2><h3 id="缓存过期机制：设置过-expire-的-key-过期后"><a href="#缓存过期机制：设置过-expire-的-key-过期后" class="headerlink" title="缓存过期机制：设置过 expire 的 key 过期后"></a>缓存过期机制：设置过 expire 的 key 过期后</h3><ol>
+<li><p>（主动）定期删除：定期定时检查</p>
+ <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta">#</span><span class="bash"> 每秒钟检查 10 次，1-500范围，过大对于 cpu 消耗大</span><br>  hz 10 <br></code></pre></td></tr></table></figure></li>
+<li><p>（被动）惰性删除：访问到的 key，若过期则会被删除</p>
+</li>
+</ol>
+<h3 id="内存淘汰管理"><a href="#内存淘汰管理" class="headerlink" title="内存淘汰管理"></a>内存淘汰管理</h3><ol>
+<li>最大内存配置，超出则使用淘汰策略 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">maxmemory &lt;bytes&gt;<br></code></pre></td></tr></table></figure></li>
+<li>策略<br>v 开头的都是针对设置过 expire 的 key。<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta">#</span><span class="bash"> volatile-lru -&gt; Evict using approximated LRU among the keys with an expire <span class="hljs-built_in">set</span>.（最近最少使用到的 key 被淘汰）</span><br><span class="hljs-meta">#</span><span class="bash"> allkeys-lru -&gt; Evict any key using approximated LRU.（最近最少使用到的 key 被淘汰）</span><br><span class="hljs-meta">#</span><span class="bash"> volatile-lfu -&gt; Evict using approximated LFU among the keys with an expire <span class="hljs-built_in">set</span>.（最少使用到的 key 被淘汰）</span><br><span class="hljs-meta">#</span><span class="bash"> allkeys-lfu -&gt; Evict any key using approximated LFU.（最少使用到的 key 被淘汰，推荐）</span><br><span class="hljs-meta">#</span><span class="bash"> volatile-random -&gt; Remove a random key among the ones with an expire <span class="hljs-built_in">set</span>.（随机的 key 被淘汰）</span><br><span class="hljs-meta">#</span><span class="bash"> allkeys-random -&gt; Remove a random key, any key.（随机的 key 被淘汰）</span><br><span class="hljs-meta">#</span><span class="bash"> volatile-ttl -&gt; Remove the key with the nearest expire time (minor TTL)（最接近过期时间的 key 被淘汰）</span><br><span class="hljs-meta">#</span><span class="bash"> noeviction -&gt; Don<span class="hljs-string">&#x27;t evict anything, just return an error on write operations.（不淘汰，返回错误，不推荐）</span></span><br></code></pre></td></tr></table></figure></li>
+</ol>
+<h2 id="六、redis-集群"><a href="#六、redis-集群" class="headerlink" title="六、redis 集群"></a>六、redis 集群</h2><h3 id="1-背景"><a href="#1-背景" class="headerlink" title="1. 背景"></a>1. 背景</h3><ul>
+<li>主从复制以及哨兵，他们可以提高读的并发，但是单个 master 容量有限，数据达到一定程度会有瓶颈，这个时候可以通过水平扩展为多 master 集群。  </li>
+<li>redis-cluster：他可以支撑多个 master-slave，支持海量数据，实现高可用与高并发。  </li>
+<li>哨兵模式其实也是一种集群，他能够提高读请求的并发，但是容错方面可能会有一些问题，比如 master 同步数据给 slave 的时候，这其实是异步复制吧，这个时候 master 宕机了，那么 slave上 的数据就没有 master 新，数据同步需要时间的，1-2 秒的数据会丢失。master 恢复并转换成 slave 后，新数据则丢失。</li>
+</ul>
+<h3 id="2-特点"><a href="#2-特点" class="headerlink" title="2. 特点"></a>2. 特点</h3><ul>
+<li>每个节点知道彼此之间的关系，也会知道自己的角色，当然他们也会知道自己存在与一个集群环境中，他们彼此之间可以交互和通信。那么这些关系都会保存到某个配置文件中，每个节点都有，这个我们在搭建的时候会做配置的。 </li>
+<li>客户端要和集群建立连接的话，只需要和其中一个建立关系就行。 </li>
+<li>某个节点挂了，也是通过超过半数的节点来进行的检测，客观下线后主从切换，和我们之前在哨兵模式中提到的是一个道理。 </li>
+<li>Redis 中存在很多的插槽，又可以称之为槽节点，用于存储数据，这个先不管，后面再说。</li>
+</ul>
+<h3 id="3-集群容错"><a href="#3-集群容错" class="headerlink" title="3. 集群容错"></a>3. 集群容错</h3><ul>
+<li>构建 Redis 集群，需要至少 3 个节点作为 master，以此组成一个高可用的集群，此外每个 master 都需要配备一个 slave，所以整个集群需要 6 个节点，这也是最经典的 redis 集群，也可以称之为三主三从，容错性更佳。所以在搭建的时候需要有 6 台虚拟机。请各自准备 6 台虚拟机，可以通过克隆去构建，使用单实例的Redis 去克隆即可  </li>
+<li>集群也可以在单服务器构建，称之为伪集群，但是生产环境肯定是真的，所以建议用 6 台。</li>
+<li>克隆后务必关闭Redis。</li>
+</ul>
+<h3 id="4-构建-Redis-集群"><a href="#4-构建-Redis-集群" class="headerlink" title="4. 构建 Redis 集群"></a>4. 构建 Redis 集群</h3><ul>
+<li><p>redis.conf 配置</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta">#</span><span class="bash"> 开启集群模式</span><br>cluster-enabled yes<br><span class="hljs-meta">#</span><span class="bash"> 每一个节点需要有一个配置文件，需要 6 份。每个节点处于集群的角色都需要告知其他所有节点，彼此知道，这个文件用于存储集</span><br>cluster-config-file nodes-201.conf<br><span class="hljs-meta">#</span><span class="bash"> 超时时间，超时则认为 master 宕机，随后主备切换</span><br>cluster-node-timeout 5000<br><span class="hljs-meta">#</span><span class="bash"> 开启 AOF</span><br>appendonly yes<br></code></pre></td></tr></table></figure></li>
+<li><p>启动 6 个 redis 实例</p>
+<ul>
+<li>启动 6 台 </li>
+<li>如果启动过程出错，把 rdb、aof 等文件删除清空</li>
+</ul>
+</li>
+<li><p>创建集群</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta">#</span><span class="bash"><span class="hljs-comment">####</span></span><br><span class="hljs-meta">#</span><span class="bash"> 注意1：如果你使用的是 redis3.x 版本，需要使用 redis-trib.rb 来构建集群，最新版使用 C 语言来构建了，这个要注意</span><br><span class="hljs-meta">#</span><span class="bash"> 注意2：以下为新版的 redis 构建方式</span><br><span class="hljs-meta">#</span><span class="bash"><span class="hljs-comment">####</span></span><br><span class="hljs-meta">#</span><span class="bash"> 创建集群，主节点和从节点比例为1，1-3 为主，4-6 为从，1 和 4，2 和 5，3 和 6 分别对应为主从关系，这也是最经典用的最多的集群模式</span><br>redis-cli --cluster create ip1:port1 ip2:port2 ip3:port3 ip4:port4 ip5:port5 ip6:port6 --cluster-replicas 1<br></code></pre></td></tr></table></figure>
+<p>slots：槽，用于装数据，主节点有，从节点没有</p>
+</li>
+<li><p>检查集群信息</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">redis-cli --cluster check 192.168.25.64:6380<br></code></pre></td></tr></table></figure></li>
+<li><p>SpringBoot 集成 redis 集群</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">spring:</span><br> <span class="hljs-attr">redis:</span><br>   <span class="hljs-attr">password:</span> <span class="hljs-number">123456</span><br>   <span class="hljs-attr">cluster:</span> <br>     <span class="hljs-attr">nodes:</span> <span class="hljs-string">ip1:port1</span> <span class="hljs-string">ip2:port2</span> <span class="hljs-string">ip3:port3</span> <span class="hljs-string">ip4:port4</span> <span class="hljs-string">ip5:port5</span> <span class="hljs-string">ip6:port6</span><br></code></pre></td></tr></table></figure></li>
+</ul>
+<h2 id="七、缓存穿透与雪崩"><a href="#七、缓存穿透与雪崩" class="headerlink" title="七、缓存穿透与雪崩"></a>七、缓存穿透与雪崩</h2><h3 id="1-缓存穿透"><a href="#1-缓存穿透" class="headerlink" title="1. 缓存穿透"></a>1. 缓存穿透</h3><ul>
+<li><p>定义：查询的 key 在 redis 中不存在，在数据库中也不存在，此时被非法用户攻击，大量请求被打到数据库上，造成宕机，从而影响整个系统，这种现象称之为缓存穿透</p>
+</li>
+<li><p>解决方案一：将空值也放入缓存，比如空字符串、空数组、空对象或空 list</p>
+</li>
+<li><p>解决方案二：布隆过滤器，可以快速的判断一个元素是否在一个集合中</p>
+</li>
+</ul>
+<h3 id="2-雪崩"><a href="#2-雪崩" class="headerlink" title="2. 雪崩"></a>2. 雪崩</h3><ul>
+<li><p>定义：大量的 key 同一时间过期，大量请求直接打到数据库，造成宕机</p>
+</li>
+<li><p>预防：</p>
+<ul>
+<li>永不过期</li>
+<li>过期时间错开</li>
+<li>多缓存结合：redis + memcache …</li>
+<li>采购第三方 redis：阿里云、腾讯云…</li>
+</ul>
+</li>
+</ul>
+<h2 id="八、批量查询优化"><a href="#八、批量查询优化" class="headerlink" title="八、批量查询优化"></a>八、批量查询优化</h2><p>常规做法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@GetMapping(&quot;/getALot&quot;)</span><br><span class="hljs-function"><span class="hljs-keyword">public</span> JSONResult <span class="hljs-title">getALot</span><span class="hljs-params">(String... keys)</span> </span>&#123;<br><br>	List&lt;String&gt; list = <span class="hljs-keyword">new</span> ArrayList&lt;&gt;();<br><br>    <span class="hljs-keyword">for</span> (String key : keys) &#123;<br>        String value = <span class="hljs-keyword">this</span>.get(key);<br>        list.add(value);<br>    &#125;<br>    <span class="hljs-keyword">return</span> JSONResult.ok(list);<br>&#125;<br>    <br><span class="hljs-meta">@Autowired</span><br><span class="hljs-keyword">private</span> StringRedisTemplate redisTemplate;<br><br><span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">get</span><span class="hljs-params">(String key)</span> </span>&#123;<br>    <span class="hljs-keyword">return</span> (String)redisTemplate.opsForValue().get(key);<br>&#125;<br></code></pre></td></tr></table></figure>
+<h3 id="1-multiGet"><a href="#1-multiGet" class="headerlink" title="1. multiGet"></a>1. multiGet</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> List&lt;String&gt; <span class="hljs-title">mget</span><span class="hljs-params">(List&lt;String&gt; keys)</span> </span>&#123;<br>		<span class="hljs-keyword">return</span> redisTemplate.opsForValue().multiGet(keys);<br>	&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="2-pipeline"><a href="#2-pipeline" class="headerlink" title="2. pipeline"></a>2. pipeline</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> List&lt;Object&gt; <span class="hljs-title">batchGet</span><span class="hljs-params">(List&lt;String&gt; keys)</span> </span>&#123;<br><br>    List&lt;Object&gt; result = redisTemplate.executePipelined(<span class="hljs-keyword">new</span> RedisCallback&lt;String&gt;() &#123;<br><br>        <span class="hljs-meta">@Override</span><br>        <span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">doInRedis</span><span class="hljs-params">(RedisConnection redisConnection)</span> <span class="hljs-keyword">throws</span> DataAccessException </span>&#123;<br><br>            StringRedisConnection stringRedisConnection = (StringRedisConnection) redisConnection;<br>            <span class="hljs-keyword">for</span> (String key : keys) &#123;<br>                stringRedisConnection.get(key);<br>            &#125;<br>            <span class="hljs-keyword">return</span> <span class="hljs-keyword">null</span>;<br>        &#125;<br>    &#125;);<br><br>    <span class="hljs-keyword">return</span> result;<br><br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E5%90%8E%E7%AB%AF/">后端</a>
+                    
+                      <a class="hover-with-bg" href="/categories/%E5%90%8E%E7%AB%AF/redis/">redis</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/redis/">redis</a>
+                    
+                      <a class="hover-with-bg" href="/tags/%E7%BC%93%E5%AD%98/">缓存</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2023/05/08/%E5%90%8E%E7%AB%AF/java/nginx/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Nginx</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2023/05/08/%E5%90%8E%E7%AB%AF/java/maven%E4%BD%BF%E7%94%A8%E6%89%8B%E5%86%8C/">
+                        <span class="hidden-mobile">maven 使用手册</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <article class="comments" id="comments" lazyload>
+                
+                  
+                
+                
+  <div id="SOHUCS" sid='http://example.com/2023/05/08/%E5%90%8E%E7%AB%AF/java/redis/'></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#SOHUCS', function() {
+      Fluid.utils.createScript("https://changyan.sohu.com/upload/changyan.js", function() {
+        window.changyan.api.config({"appid":"cywjv2D9l","appkey":"2bf2f1231299e92b26393ba6fb2ad9d8"})
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+              </article>
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+    风间小栈出品
+  </div>
+  
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- 不蒜子统计PV -->
+        <span id="busuanzi_container_site_pv" style="display: none">
+            总访问量 
+            <span id="busuanzi_value_site_pv"></span>
+             次
+          </span>
+      
+      
+        <!-- 不蒜子统计UV -->
+        <span id="busuanzi_container_site_uv" style="display: none">
+            总访客数 
+            <span id="busuanzi_value_site_uv"></span>
+             人
+          </span>
+      
+    
+  </div>
+
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  
+    <script  src="https://cdn.jsdelivr.net/npm/tocbot@4/dist/tocbot.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4/anchor.min.js" ></script>
+  
+  
+    <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js" ></script>
+  
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+        typing(title);
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>

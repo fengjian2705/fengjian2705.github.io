@@ -1,0 +1,843 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="风间">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="一、传统方式安装 去官网 http:&#x2F;&#x2F;nginx.org&#x2F; 下载对应的 nginx 包，推荐使用稳定版本  上传 nginx 到 linux 系统  安装依赖环境 (1) 安装 gcc 环境：   1yum install gcc-c++ (2) 安装 PCRE 库，用于解析正则表达式:  1yum install -y pcre pcre-devel (3) zlib 压缩和解压缩依赖  1y">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Nginx">
+<meta property="og:url" content="http://example.com/2023/05/08/%E5%90%8E%E7%AB%AF/java/nginx/index.html">
+<meta property="og:site_name" content="风间小栈">
+<meta property="og:description" content="一、传统方式安装 去官网 http:&#x2F;&#x2F;nginx.org&#x2F; 下载对应的 nginx 包，推荐使用稳定版本  上传 nginx 到 linux 系统  安装依赖环境 (1) 安装 gcc 环境：   1yum install gcc-c++ (2) 安装 PCRE 库，用于解析正则表达式:  1yum install -y pcre pcre-devel (3) zlib 压缩和解压缩依赖  1y">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://s3.bmp.ovh/imgs/2023/04/28/7ed8995499d02bfe.jpg">
+<meta property="article:published_time" content="2023-05-08T01:46:03.863Z">
+<meta property="article:modified_time" content="2023-05-08T01:46:03.863Z">
+<meta property="article:author" content="风间">
+<meta property="article:tag" content="nginx">
+<meta property="article:tag" content="服务器">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://s3.bmp.ovh/imgs/2023/04/28/7ed8995499d02bfe.jpg">
+  
+  
+  <title>Nginx - 风间小栈</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4/github-markdown.min.css" />
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hint.css@2/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.css" />
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.8.13","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":"§"},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>风间小栈</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/%E6%96%87%E6%9C%AC.jpg') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="Nginx">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2023-05-08 09:46" pubdate>
+        2023年5月8日 上午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      8.7k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      73 分钟
+    </span>
+  
+
+  
+  
+    
+      <!-- 不蒜子统计文章PV -->
+      <span id="busuanzi_container_page_pv" style="display: none">
+        <i class="iconfont icon-eye" aria-hidden="true"></i>
+        <span id="busuanzi_value_page_pv"></span> 次
+      </span>
+    
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">Nginx</h1>
+            
+            <div class="markdown-body">
+              <h2 id="一、传统方式安装"><a href="#一、传统方式安装" class="headerlink" title="一、传统方式安装"></a>一、传统方式安装</h2><ol>
+<li><p>去官网 <a target="_blank" rel="noopener" href="http://nginx.org/">http://nginx.org/</a> 下载对应的 nginx 包，推荐使用稳定版本</p>
+</li>
+<li><p>上传 nginx 到 linux 系统</p>
+</li>
+<li><p>安装依赖环境</p>
+<p>(1) 安装 gcc 环境：</p>
+  <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">yum install gcc-c++<br></code></pre></td></tr></table></figure>
+<p>(2) 安装 PCRE 库，用于解析正则表达式:</p>
+ <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">yum install -y pcre pcre-devel<br></code></pre></td></tr></table></figure>
+<p>(3) zlib 压缩和解压缩依赖</p>
+ <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">yum install -y zlib zlib-devel <br></code></pre></td></tr></table></figure>
+<p>(4) SSL 安全的加密的套接字协议层，用于 HTTP 安全传输，也就是 https</p>
+ <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">yum install -y openssl openssl-devel<br></code></pre></td></tr></table></figure></li>
+<li><p>解压，需要注意，解压后得到的是源码，源码需要编译后才能安装</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">tar -zxvf nginx-1.16.1.tar.gz<br></code></pre></td></tr></table></figure></li>
+<li><p>编译之前，先创建nginx临时目录，如果不创建，在启动nginx的过程中会报错</p>
+ <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">mkdir /var/temp/nginx -p<br></code></pre></td></tr></table></figure></li>
+<li><p>在nginx目录，输入如下命令进行配置，目的是为了创建makefile文件</p>
+ <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs shell">./configure --prefix=/usr/local/nginx \<br> --pid-path=/var/run/nginx/nginx.pid \<br> --lock-path=/var/lock/nginx.lock \<br> --error-log-path=/var/log/nginx/error.log \<br> --http-log-path=/var/log/nginx/access.log \<br> --with-http_gzip_static_module \<br> --http-client-body-temp-path=/var/temp/nginx/client \<br> --http-proxy-temp-path=/var/temp/nginx/proxy \<br> --http-fastcgi-temp-path=/var/temp/nginx/fastcgi \<br> --http-uwsgi-temp-path=/var/temp/nginx/uwsgi \<br> --http-scgi-temp-path=/var/temp/nginx/scgi<br></code></pre></td></tr></table></figure>
+<ul>
+<li>注： <code>\n</code> 代表在命令行中换行，用于提高可读性</li>
+<li>配置命令：  <table>
+<thead>
+<tr>
+<th>命令</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>-prefix</td>
+<td>指定 nginx 安装目录</td>
+</tr>
+<tr>
+<td>–pid-path</td>
+<td>指向nginx的pid</td>
+</tr>
+<tr>
+<td>–lock-path</td>
+<td>锁定安装文件，防止被恶意篡改或误操作</td>
+</tr>
+<tr>
+<td>–error-log</td>
+<td>错误日志</td>
+</tr>
+<tr>
+<td>–http-log-path</td>
+<td>http日志</td>
+</tr>
+<tr>
+<td>–with-http_gzip_static_module</td>
+<td>启用gzip模块，在线实时压缩输出数据流</td>
+</tr>
+<tr>
+<td>–http-client-body-temp-path</td>
+<td>设定客户端请求的临时目录</td>
+</tr>
+<tr>
+<td>–http-proxy-temp-path</td>
+<td>设定http代理临时目录</td>
+</tr>
+<tr>
+<td>–http-fastcgi-temp-path</td>
+<td>设定fastcgi临时目录</td>
+</tr>
+<tr>
+<td>–http-uwsgi-temp-path</td>
+<td>设定uwsgi临时目录</td>
+</tr>
+<tr>
+<td>–http-scgi-temp-path</td>
+<td>设定scgi临时目录</td>
+</tr>
+</tbody></table>
+</li>
+</ul>
+</li>
+<li><p>make编译: make</p>
+</li>
+<li><p>安装: make install</p>
+</li>
+<li><p>进入sbin目录启动 nginx:</p>
+ <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs shell">cd /usr/local/nginx<br>./nginx<br></code></pre></td></tr></table></figure>
+<p>停止：./nginx -s stop<br>重新加载：./nginx -s reload’</p>
+</li>
+<li><p>打开浏览器，访问虚拟机所处内网ip即可打开nginx默认页面，显示如下便表示安装成功：</p>
+<p>注意事项:</p>
+<ol>
+<li>如果在云服务器安装，需要开启默认的nginx端口：80</li>
+<li>如果在虚拟机安装，需要关闭防火墙</li>
+<li>本地win或mac需要关闭防火墙</li>
+</ol>
+</li>
+</ol>
+<h2 id="二、docker方式安装"><a href="#二、docker方式安装" class="headerlink" title="二、docker方式安装"></a>二、docker方式安装</h2><ol>
+<li><p>拉取镜像</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">docker pull nginx:1.19.3-alpine<br></code></pre></td></tr></table></figure></li>
+<li><p>备份镜像</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">docker save nginx:1.19.3-alpine -o nginx.1.19.3.alpine.tar<br></code></pre></td></tr></table></figure></li>
+<li><p>导入镜像</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">docker load -i nginx.1.19.3.alpine.tar<br></code></pre></td></tr></table></figure></li>
+<li><p>运行镜像</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs shell">docker run -itd --name nginx -p 80:80 nginx:1.19.3-alpine<br>进入容器<br>docker exec -it nginx sh<br>查看html目录<br>cd /usr/share/nginx/html<br>配置文件目录<br>cat /etc/nginx/nginx.conf<br></code></pre></td></tr></table></figure></li>
+<li><p>浏览器测试</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">http://机器IP<br></code></pre></td></tr></table></figure></li>
+</ol>
+<h2 id="三、核心配置文件-nginx-conf"><a href="#三、核心配置文件-nginx-conf" class="headerlink" title="三、核心配置文件 nginx.conf"></a>三、核心配置文件 nginx.conf</h2><ol>
+<li><p>设置worker进程的用户，指的linux中的用户，会涉及到nginx操作目录或文件的一些权限，默认为 nobody</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">user root;<br></code></pre></td></tr></table></figure></li>
+<li><p>worker进程工作数设置，一般来说CPU有几个，就设置几个，或者设置为N-1也行</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">worker_processes 1;<br></code></pre></td></tr></table></figure></li>
+<li><p>nginx 日志级别 debug | info | notice | warn | error | crit | alert | emerg ，错误级别从左到右越来越大</p>
+</li>
+<li><p>设置nginx进程 pid</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">pid logs/nginx.pid;<br></code></pre></td></tr></table></figure></li>
+<li><p>设置工作模式</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs shell">events &#123;<br><span class="hljs-meta">  #</span><span class="bash"> 默认使用epoll</span><br>  use epoll;<br><span class="hljs-meta">  #</span><span class="bash"> 每个worker允许连接的客户端最大连接数</span><br>  worker_connections 10240;<br>&#125;<br></code></pre></td></tr></table></figure></li>
+<li><p>http 是指令块，针对http网络传输的一些指令配置</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs shell">http &#123;<br>&#125;<br></code></pre></td></tr></table></figure></li>
+<li><p>include 引入外部配置，提高可读性，避免单个配置文件过大</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">include mime.types;<br></code></pre></td></tr></table></figure></li>
+<li><p>设定日志格式， main 为定义的格式名称，如此 access_log 就可以直接使用这个变量了</p>
+<table>
+<thead>
+<tr>
+<th>参数名</th>
+<th>参数意义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>$remote_addr</td>
+<td>客户端ip</td>
+</tr>
+<tr>
+<td>$remote_user</td>
+<td>远程客户端用户名，一般为：’-’</td>
+</tr>
+<tr>
+<td>$time_local</td>
+<td>时间和时区</td>
+</tr>
+<tr>
+<td>$request</td>
+<td>请求的url以及method</td>
+</tr>
+<tr>
+<td>$status</td>
+<td>响应状态码</td>
+</tr>
+<tr>
+<td>$body_bytes_send</td>
+<td>响应客户端内容字节数</td>
+</tr>
+<tr>
+<td>$http_referer</td>
+<td>记录用户从哪个链接跳转过来的</td>
+</tr>
+<tr>
+<td>$http_user_agent</td>
+<td>用户所使用的代理，一般来时都是浏览器</td>
+</tr>
+<tr>
+<td>$http_x_forwarded_for</td>
+<td>通过代理服务器来记录客户端的ip</td>
+</tr>
+</tbody></table>
+</li>
+<li><p>sendfile 使用高效文件传输，提升传输性能。启用后才能使用 tcp_nopush ，是指当数据表累积一定大小后才发送，提高了效率。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs shell">sendfile on;<br>tcp_nopush on;<br></code></pre></td></tr></table></figure></li>
+<li><p>keepalive_timeout 设置客户端与服务端请求的超时时间，保证客户端多次请求的时候不会重复建立新的连接，节约资源损耗。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta">#</span><span class="bash">keepalive_timeout 0;</span><br>keepalive_timeout 65<br></code></pre></td></tr></table></figure></li>
+</ol>
+<h2 id="四、nginx-日志切割"><a href="#四、nginx-日志切割" class="headerlink" title="四、nginx 日志切割"></a>四、nginx 日志切割</h2><ol>
+<li>手动切割<br>现有的日志都会存在 access.log 文件中，但是随着时间的推移，这个文件的内容会越来越多，体积会越来越大，不便于运维人员查看，所以我们可以通过把文件切割为多份不同的小文件作为日志，切割规则可以以 天 为单位，如果每天有几百G或者几个T的日志的话，则可以按需以<code>每半天</code>或者<code>每小时</code>对日志切割步骤如下：<ul>
+<li>创建一个shell可执行文件： cut_my_log.sh ，内容为： <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta">#</span><span class="bash">!/bin/bash</span><br>LOG_PATH=&quot;/var/log/nginx/&quot;<br>RECORD_TIME=$(date -d &quot;yesterday&quot; +%Y-%m-%d+%H:%M)<br>PID=/var/run/nginx/nginx.pid<br>mv $&#123;LOG_PATH&#125;/access.log $&#123;LOG_PATH&#125;/access.$&#123;RECORD_TIME&#125;.log<br>mv $&#123;LOG_PATH&#125;/error.log $&#123;LOG_PATH&#125;/error.$&#123;RECORD_TIME&#125;.log<br><span class="hljs-meta">#</span><span class="bash">向Nginx主进程发送信号，用于重新打开日志文件</span><br>kill -USR1 `cat $PID`<br></code></pre></td></tr></table></figure></li>
+<li>为<code>cut_my_log.sh</code>添加可执行的权限：<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">chmod +x cut_my_log.sh<br></code></pre></td></tr></table></figure></li>
+<li>测试日志切割后的结果:<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">./cut_my_log.sh<br></code></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li>定时切割<ul>
+<li><p>安装定时任务：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">yum install crontabs<br></code></pre></td></tr></table></figure></li>
+<li><p>crontab -e 编辑并且添加一行新的任务：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">*/1 * * * * /usr/local/nginx/sbin/cut_my_log.sh<br></code></pre></td></tr></table></figure></li>
+<li><p>重启定时任务：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">service crond restart<br></code></pre></td></tr></table></figure></li>
+<li><p>附：常用定时任务命令</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs shell">service crond start //启动服务<br>service crond stop //关闭服务<br>service crond restart //重启服务<br>service crond reload //重新载入配置<br>crontab -e // 编辑任务<br>crontab -l // 查看任务列表<br></code></pre></td></tr></table></figure></li>
+<li><p>定时任务表达式：<br>Cron表达式是，分为5或6个域，每个域代表一个含义，如下所示：</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>分</th>
+<th>时</th>
+<th>日</th>
+<th>月</th>
+<th>星期几</th>
+<th>年（可选）</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>取值范围</td>
+<td>0-59</td>
+<td>0-23</td>
+<td>1-31</td>
+<td>1-12</td>
+<td>1-7</td>
+<td>2022/2023…</td>
+</tr>
+</tbody></table>
+<p>常用表达式：</p>
+<ul>
+<li>每分钟执行： <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">*/1 * * * *<br></code></pre></td></tr></table></figure></li>
+<li>每日凌晨（每天晚上23:59）执行： <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">59 23 * * *<br></code></pre></td></tr></table></figure></li>
+<li>每日凌晨1点执行： <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">0 1 * * * <br></code></pre></td></tr></table></figure>
+ 参考文献：<br> 每天定时为数据库备份：<a target="_blank" rel="noopener" href="https://www.cnblogs.com/leechenxiang/p/7110382.html">https://www.cnblogs.com/leechenxiang/p/7110382.html</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<h2 id="五、虚拟主机-使用nginx为静态资源提供服务"><a href="#五、虚拟主机-使用nginx为静态资源提供服务" class="headerlink" title="五、虚拟主机-使用nginx为静态资源提供服务"></a>五、虚拟主机-使用nginx为静态资源提供服务</h2><ol>
+<li><p>将静态资源放置到服务器上（例如：图片拷贝到 /home/images 文件夹下）</p>
+</li>
+<li><p>配置 nginx location</p>
+<ul>
+<li>root方式<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs shell">server &#123;<br> listen       89;<br> server_name  localhost;<br>      <br> location /images &#123;<br>     root   /home;<br> &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+测试：<code>http://ip:89/images/001.jpg</code></li>
+<li>alias别名方式<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs shell">server &#123;<br> listen       89;<br> server_name  localhost;<br>      <br> location /static &#123;<br>     alias   /home/images;<br> &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+测试：<code>http://ip:89/static/001.jpg</code></li>
+</ul>
+</li>
+</ol>
+<h2 id="六、使用-Gzip-压缩提升请求效率"><a href="#六、使用-Gzip-压缩提升请求效率" class="headerlink" title="六、使用 Gzip 压缩提升请求效率"></a>六、使用 Gzip 压缩提升请求效率</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta">#</span><span class="bash"> 开启 gzip 压缩功能，目的：提高传输效率，节约带宽</span><br>  gzip  on;<br><span class="hljs-meta">#</span><span class="bash"> 限制最小压缩，小于 1 字节文件不会被压缩</span><br>  gzip_min_length 1;<br><span class="hljs-meta">#</span><span class="bash"> 定义压缩的级别 1-9（压缩比，文件越大，压缩越多，但是 cpu 使用就越多）</span><br>  gzip_comp_level 3;<br><span class="hljs-meta">#</span><span class="bash"> 定义压缩文件的类型</span><br>  gzip_types  text/plain application/javascript application/css text/css application/xml text/javascript application/x-httpd-php image/jpeg image/gif image/png;<br></code></pre></td></tr></table></figure>
+
+<h2 id="七、location-路径匹配规则"><a href="#七、location-路径匹配规则" class="headerlink" title="七、location 路径匹配规则"></a>七、location 路径匹配规则</h2><ol>
+<li><p>/ 默认匹配规则</p>
+<p> 访问根路径 / ，nginx 会去 root 对应的 html 文件夹下寻找 index 对应的 index.html 或 index.htm 文件</p>
+ <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs shell">server &#123;<br>    listen       89;<br>    server_name  localhost;<br>    location / &#123;<br>        root   html;<br>        index  index.html index.htm;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure></li>
+<li><p>= 精确匹配</p>
+ <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs shell">server &#123;<br>    listen       91;<br>    server_name  localhost;<br>    location =/ &#123;<br>        root   html;<br>        index  index.html index.htm;<br>    &#125;<br>    location =/images/001.jpg &#123;<br>        root   /home;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure></li>
+<li><p>~* 正则匹配，* 表示不区分大小写</p>
+ <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs shell">server &#123;<br>    listen       91;<br>    server_name  localhost;<br>    location ~* \.(GIF|png|bmp|jpg|jpeg) &#123;<br>        root   /home;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure></li>
+<li><p>~ 正则匹配，区分大小写</p>
+ <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs shell">server &#123;<br>    listen       91;<br>    server_name  localhost;<br>    location ~ \.(GIF|png|bmp|jpg|jpeg) &#123;<br>        root   /home;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure></li>
+<li><p>^~ 以某个字符路径开头请求</p>
+ <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs shell">server &#123;<br>    listen       91;<br>    server_name  localhost;<br>    location ^~ \images &#123;<br>        root   /home;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure></li>
+</ol>
+<h2 id="八、DNS-域名解析"><a href="#八、DNS-域名解析" class="headerlink" title="八、DNS 域名解析"></a>八、DNS 域名解析</h2><ol>
+<li>linux / mac 中 hosts 文件路径：/etc/hosts</li>
+<li>window 中 hosts 文件路径 C:\Windows\System32\drivers\etc\hosts</li>
+</ol>
+<p>可以借助 SwitchHosts 工具进行域名映射</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">127.0.0.1 www.fengjian.com<br></code></pre></td></tr></table></figure>
+
+<h2 id="九、nginx-中解决跨域问题"><a href="#九、nginx-中解决跨域问题" class="headerlink" title="九、nginx 中解决跨域问题"></a>九、nginx 中解决跨域问题</h2><p>在 server 中添加配置：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta">#</span><span class="bash">允许跨域请求的域，*代表所有</span><br>add_header &#x27;Access-Control-Allow-Origin&#x27; *;<br><span class="hljs-meta">#</span><span class="bash">允许带上cookie请求</span><br>add_header &#x27;Access-Control-Allow-Credentials&#x27; &#x27;true&#x27;;<br><span class="hljs-meta">#</span><span class="bash">允许请求的方法，比如 GET/POST/PUT/DELETE</span><br>add_header &#x27;Access-Control-Allow-Methods&#x27; *;<br><span class="hljs-meta">#</span><span class="bash">允许请求的header</span><br>add_header &#x27;Access-Control-Allow-Headers&#x27; *;<br></code></pre></td></tr></table></figure>
+
+<h2 id="十、nginx-中配置静态资源防盗链"><a href="#十、nginx-中配置静态资源防盗链" class="headerlink" title="十、nginx 中配置静态资源防盗链"></a>十、nginx 中配置静态资源防盗链</h2><p>html 代码引用我们 nginx 服务器中的一张图片：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs html"><span class="hljs-tag">&lt;<span class="hljs-name">img</span> <span class="hljs-attr">src</span>=<span class="hljs-string">&quot;http://www.fengjian.com:89/static/001.jpg&quot;</span>&gt;</span><br></code></pre></td></tr></table></figure>
+
+<p>加上防盗链配置：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta">#</span><span class="bash">对源站点验证</span><br>valid_referers *.fengjian.com;<br><span class="hljs-meta">#</span><span class="bash">非法引入会进入下方判断</span><br>if ($invalid_referer) &#123;<br>  return 404; # 状态码可自定义，403 500 ...<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>浏览器有缓存，强制刷新后（Ctrl+F5）图片禁止访问！</p>
+<h2 id="十一、nginx-模块化设计"><a href="#十一、nginx-模块化设计" class="headerlink" title="十一、nginx 模块化设计"></a>十一、nginx 模块化设计</h2><p><img src="https://s3.uuu.ovh/imgs/2022/12/08/93887f027792a715.png" srcset="/img/loading.gif" lazyload alt="nginx模块"></p>
+<h2 id="十二、nginx-构建-tomcat-集群"><a href="#十二、nginx-构建-tomcat-集群" class="headerlink" title="十二、nginx 构建 tomcat 集群"></a>十二、nginx 构建 tomcat 集群</h2><p><img src="https://s3.uuu.ovh/imgs/2022/12/08/25121837b1194142.png" srcset="/img/loading.gif" lazyload alt="nginx-tomcat集群"></p>
+<h3 id="搭建集群"><a href="#搭建集群" class="headerlink" title="搭建集群"></a>搭建集群</h3><ol>
+<li>环境搭建：1 台 nginx 服务器，3 台 tomcat 服务器；</li>
+<li>使用 SwitchHosts 修改本地 hosts 文件映射到 nginx 服务器；<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta">#</span><span class="bash"> nginx 服务器</span><br>192.168.147.129 www.tomcats.com<br></code></pre></td></tr></table></figure></li>
+<li>修改 nginx 配置文件:<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta">#</span><span class="bash"> 配置上游服务器</span><br>upstream tomcats &#123;<br>   server 192.168.88.136:8080;<br>   server 192.168.88.137:8080;<br>   server 192.168.88.138:8080;<br>&#125;<br><br>server &#123;<br> listen       80;<br> server_name  www.tomcats.com;<br>    location / &#123;<br>        proxy_pass http://tomcats;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure></li>
+</ol>
+<h3 id="负载均衡"><a href="#负载均衡" class="headerlink" title="负载均衡"></a>负载均衡</h3><ol>
+<li>轮询（默认策略）：请求依次发送到不同的 tomcat 机器</li>
+<li>加权轮询：根据服务器配置的高低设置不同权重,weight 默认为 1，值越大权重越高<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta">#</span><span class="bash"> 配置上游服务器</span><br>upstream tomcats &#123;<br>   server 192.168.88.136:8080 weight=1;<br>   server 192.168.88.137:8080 weight=2;<br>   server 192.168.88.138:8080 weight=5;<br>&#125;<br><br>server &#123;<br> listen       80;<br> server_name  www.tomcats.com;<br>    location / &#123;<br>        proxy_pass http://tomcats;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure></li>
+</ol>
+<h3 id="upstream-指令参数"><a href="#upstream-指令参数" class="headerlink" title="upstream 指令参数"></a>upstream 指令参数</h3><table>
+<thead>
+<tr>
+<th>指令</th>
+<th>默认值</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>max_conns</td>
+<td>0</td>
+<td>限制服务器最大连接数，0 不做任何限制</td>
+</tr>
+<tr>
+<td>slow_start</td>
+<td>0</td>
+<td>慢启动服务器加入集群，默认 0s</td>
+</tr>
+<tr>
+<td>down</td>
+<td>-</td>
+<td>服务器状态，down 代表不可用</td>
+</tr>
+<tr>
+<td>backup</td>
+<td>-</td>
+<td>表明当前服务器是备用机器，不会被访问到，当主机挂了，备用机器启用</td>
+</tr>
+<tr>
+<td>max_fails</td>
+<td>1</td>
+<td>表示失败几次，则标记server已宕机，剔出上游服务</td>
+</tr>
+<tr>
+<td>fail_timeout</td>
+<td>10</td>
+<td>表示失败的重试时间</td>
+</tr>
+</tbody></table>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs shell">   upstream tomcats &#123;<br>      server 192.168.88.136:8080 weight=6;<br>      server 192.168.88.137:8080 weight=2;<br>      server 192.168.88.138:8080 weight=2;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p><code>slow_start=60s max_fails=2 fail_timeout=15s</code>: 代表在15秒内请求某一server失败达到2次后，则认为该server已经挂了或者宕机了，随后再过15秒，这15秒内不会有新的请求到达刚刚挂掉的节点上，而是会运作的server，15秒后会再有新请求尝试连接挂掉的server，如果还是失败，重复上一过程，直到恢复。</p>
+<h4 id="Keepalived-提高吞吐量"><a href="#Keepalived-提高吞吐量" class="headerlink" title="Keepalived 提高吞吐量"></a>Keepalived 提高吞吐量</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs shell">   upstream tomcats &#123;<br>      server 192.168.88.136:8080 weight=6;<br>      server 192.168.88.137:8080 weight=2;<br>      server 192.168.88.138:8080 weight=2;<br>      <br>      keepalive 32;# 长连接处理数量<br>&#125;<br></code></pre></td></tr></table></figure>
+<h3 id="负载均衡之-ip-hash"><a href="#负载均衡之-ip-hash" class="headerlink" title="负载均衡之 ip_hash"></a>负载均衡之 ip_hash</h3><p>算法：hash(ip) % node_counts = index</p>
+<p>ip: 用户ip<br>node_counts: 服务器数量<br>index: 本次分配到的服务器（从 0 开始）</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs shell">   upstream tomcats &#123;<br>      ip_hash;<br>      <br>      server 192.168.88.136:8080 weight=6;<br>      server 192.168.88.137:8080 weight=2;<br>      server 192.168.88.138:8080 weight=2;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p><code>ip_hash</code>可以保证用户访问可以请求到上游服务中的固定的服务器，前提是用户ip没有发生更改。<br>使用ip_hash的注意点：<br>不能把后台服务器直接移除，只能标记 down .</p>
+<h3 id="一致性-hash-算法"><a href="#一致性-hash-算法" class="headerlink" title="一致性 hash 算法"></a>一致性 hash 算法</h3><p>hash 算法带来的问题：</p>
+<h3 id="负载均衡-url-hash-与-least-conn"><a href="#负载均衡-url-hash-与-least-conn" class="headerlink" title="负载均衡 url hash 与 least_conn"></a>负载均衡 url hash 与 least_conn</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs shell">   upstream tomcats &#123;<br>      hash $request_uri;<br>      # least_conn<br><br>      server 192.168.88.136:8080;<br>      server 192.168.88.137:8080;<br>      server 192.168.88.138:8080;<br>&#125;<br>server &#123;<br>    listen       80;<br>    server_name  www.tomcats.com;<br>       location / &#123;<br>           proxy_pass http://tomcats;<br>       &#125;<br>   &#125;<br></code></pre></td></tr></table></figure>
+
+<h2 id="十三、缓存"><a href="#十三、缓存" class="headerlink" title="十三、缓存"></a>十三、缓存</h2><h3 id="nginx-控制浏览器缓存-expires"><a href="#nginx-控制浏览器缓存-expires" class="headerlink" title="nginx 控制浏览器缓存 expires"></a>nginx 控制浏览器缓存 expires</h3><ol>
+<li>浏览器缓存：<br>加速用户访问，提升单个用户（浏览器访问者）体验，缓存在本地</li>
+<li>Nginx缓存<br>缓存在nginx端，提升所有访问到nginx这一端的用户<br>提升访问上游（upstream）服务器的速度<br>用户访问仍然会产生请求流量</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs shell">location /files &#123;<br>  alias /home/imooc;<br><span class="hljs-meta">  #</span><span class="bash"> 10s 后过期</span><br><span class="hljs-meta">  #</span><span class="bash"> expires 10s;</span><br><span class="hljs-meta">  #</span><span class="bash"> 22h30m后过期</span><br><span class="hljs-meta">  #</span><span class="bash"> expires @22h30m;</span><br><span class="hljs-meta">  #</span><span class="bash"> 1h 前过期</span><br><span class="hljs-meta">  #</span><span class="bash"> expires -1h;</span><br><span class="hljs-meta">  #</span><span class="bash"> 过期一个纪元</span><br><span class="hljs-meta">  #</span><span class="bash"> expires epoch;</span><br><span class="hljs-meta">  #</span><span class="bash"> 永不过期（默认）</span><br><span class="hljs-meta">  #</span><span class="bash"> expires off;</span><br>expires max;<br>&#125;<br><br></code></pre></td></tr></table></figure>
+<h3 id="nginx-的反向代理缓存"><a href="#nginx-的反向代理缓存" class="headerlink" title="nginx 的反向代理缓存"></a>nginx 的反向代理缓存</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><code class="hljs shell">   upstream tomcats &#123;<br>      server 192.168.88.136:8080;<br>      server 192.168.88.137:8080;<br>      server 192.168.88.138:8080;<br>   &#125;<br><span class="hljs-meta"></span><br><span class="hljs-meta">#</span><span class="bash"> proxy_cache_path 设置缓存的保存目录</span><br><span class="hljs-meta">#</span><span class="bash"> keys_zone 设置共享库存以及占用的空间</span><br><span class="hljs-meta">#</span><span class="bash"> max_size 设置缓存大小</span><br><span class="hljs-meta">#</span><span class="bash"> inactive 超过此时间，则缓存自动清理</span><br><span class="hljs-meta">#</span><span class="bash"> use_temp_path 关闭临时目录</span><br>proxy_cache_path /usr/local/nginx/upstream_cache keys_zone=mycache:5m max_size=1g inactive=30s use_temp_path=off;<br><br>server &#123;<br>    listen       80;<br>    server_name  www.tomcats.com;<br>    # 开启并且使用缓存<br>    proxy_cache mycache;<br>    # 针对 200 和 304 设置缓存过期时间<br>    proxy_cache_valid 200 304 8h;<br>    location / &#123;<br>           proxy_pass http://tomcats;<br>       &#125;<br>   &#125;<br></code></pre></td></tr></table></figure>
+
+
+
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E8%BF%90%E7%BB%B4/">运维</a>
+                    
+                      <a class="hover-with-bg" href="/categories/%E8%BF%90%E7%BB%B4/Nginx/">Nginx</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/nginx/">nginx</a>
+                    
+                      <a class="hover-with-bg" href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8/">服务器</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2023/05/08/%E5%90%8E%E7%AB%AF/java/spring%E6%A0%B8%E5%BF%83%E7%BC%96%E7%A8%8B%E6%80%9D%E6%83%B3%EF%BC%88%E4%B8%80%EF%BC%89/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Spring 核心编程思想（一）：Spring Framework 总览</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2023/05/08/%E5%90%8E%E7%AB%AF/java/redis/">
+                        <span class="hidden-mobile">redis</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <article class="comments" id="comments" lazyload>
+                
+                  
+                
+                
+  <div id="SOHUCS" sid='http://example.com/2023/05/08/%E5%90%8E%E7%AB%AF/java/nginx/'></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#SOHUCS', function() {
+      Fluid.utils.createScript("https://changyan.sohu.com/upload/changyan.js", function() {
+        window.changyan.api.config({"appid":"cywjv2D9l","appkey":"2bf2f1231299e92b26393ba6fb2ad9d8"})
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+              </article>
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+    风间小栈出品
+  </div>
+  
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- 不蒜子统计PV -->
+        <span id="busuanzi_container_site_pv" style="display: none">
+            总访问量 
+            <span id="busuanzi_value_site_pv"></span>
+             次
+          </span>
+      
+      
+        <!-- 不蒜子统计UV -->
+        <span id="busuanzi_container_site_uv" style="display: none">
+            总访客数 
+            <span id="busuanzi_value_site_uv"></span>
+             人
+          </span>
+      
+    
+  </div>
+
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  
+    <script  src="https://cdn.jsdelivr.net/npm/tocbot@4/dist/tocbot.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4/anchor.min.js" ></script>
+  
+  
+    <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js" ></script>
+  
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+        typing(title);
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>

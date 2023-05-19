@@ -1,0 +1,626 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="风间">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="一、JDBC 的使用与存在的问题1. 编码流程 加载驱动 -&gt; 获取连接 -&gt; 定义 sql -&gt; 获取预处理 statement并设置参数 -&gt; 执行 sql -&gt; 封装结果集 -&gt; 释放资源  2. 引入 mysql 驱动依赖12345&lt;dependency&gt;    &lt;groupId&gt;mysql&lt;&#x2F;groupId&gt;">
+<meta property="og:type" content="article">
+<meta property="og:title" content="自定义持久层框架">
+<meta property="og:url" content="http://example.com/2023/05/08/%E5%90%8E%E7%AB%AF/java/%E8%87%AA%E5%AE%9A%E4%B9%89%E6%8C%81%E4%B9%85%E5%B1%82%E6%A1%86%E6%9E%B6/index.html">
+<meta property="og:site_name" content="风间小栈">
+<meta property="og:description" content="一、JDBC 的使用与存在的问题1. 编码流程 加载驱动 -&gt; 获取连接 -&gt; 定义 sql -&gt; 获取预处理 statement并设置参数 -&gt; 执行 sql -&gt; 封装结果集 -&gt; 释放资源  2. 引入 mysql 驱动依赖12345&lt;dependency&gt;    &lt;groupId&gt;mysql&lt;&#x2F;groupId&gt;">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://cdn-hw-static.shanhutech.cn/bizhi/staticwp/202212/13746e6880e009d49378a81f0dec5474--569975149.jpg">
+<meta property="article:published_time" content="2023-05-08T01:46:03.868Z">
+<meta property="article:modified_time" content="2023-05-08T01:46:03.868Z">
+<meta property="article:author" content="风间">
+<meta property="article:tag" content="mybatis">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://cdn-hw-static.shanhutech.cn/bizhi/staticwp/202212/13746e6880e009d49378a81f0dec5474--569975149.jpg">
+  
+  
+  <title>自定义持久层框架 - 风间小栈</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4/github-markdown.min.css" />
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hint.css@2/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.css" />
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.8.13","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":"§"},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>风间小栈</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/%E6%96%87%E6%9C%AC.jpg') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="自定义持久层框架">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2023-05-08 09:46" pubdate>
+        2023年5月8日 上午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      24k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      197 分钟
+    </span>
+  
+
+  
+  
+    
+      <!-- 不蒜子统计文章PV -->
+      <span id="busuanzi_container_page_pv" style="display: none">
+        <i class="iconfont icon-eye" aria-hidden="true"></i>
+        <span id="busuanzi_value_page_pv"></span> 次
+      </span>
+    
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">自定义持久层框架</h1>
+            
+            <div class="markdown-body">
+              <h2 id="一、JDBC-的使用与存在的问题"><a href="#一、JDBC-的使用与存在的问题" class="headerlink" title="一、JDBC 的使用与存在的问题"></a>一、JDBC 的使用与存在的问题</h2><h3 id="1-编码流程"><a href="#1-编码流程" class="headerlink" title="1. 编码流程"></a>1. 编码流程</h3><blockquote>
+<p>加载驱动 -&gt; 获取连接 -&gt; 定义 sql -&gt; 获取预处理 statement并设置参数 -&gt; 执行 sql -&gt; 封装结果集 -&gt; 释放资源</p>
+</blockquote>
+<h3 id="2-引入-mysql-驱动依赖"><a href="#2-引入-mysql-驱动依赖" class="headerlink" title="2. 引入 mysql 驱动依赖"></a>2. 引入 mysql 驱动依赖</h3><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>mysql<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>mysql-connector-java<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>8.0.25<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="3-代码实现"><a href="#3-代码实现" class="headerlink" title="3. 代码实现"></a>3. 代码实现</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">package</span> server;<br><br><span class="hljs-keyword">import</span> pojo.User;<br><br><span class="hljs-keyword">import</span> java.sql.*;<br><br><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">JDBCUtil</span> </span>&#123;<br><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> </span>&#123;<br><br>        <span class="hljs-comment">// 数据库连接</span><br>        Connection connection = <span class="hljs-keyword">null</span>;<br><br>        <span class="hljs-comment">// 预处理 statement</span><br>        PreparedStatement preparedStatement = <span class="hljs-keyword">null</span>;<br><br>        <span class="hljs-comment">// 结果集</span><br>        ResultSet resultSet = <span class="hljs-keyword">null</span>;<br><br>        <span class="hljs-keyword">try</span> &#123;<br>            <span class="hljs-comment">// 加载驱动</span><br>            Class.forName(<span class="hljs-string">&quot;com.mysql.cj.jdbc.Driver&quot;</span>);<br><br>            <span class="hljs-comment">// 获取连接</span><br>            String url = <span class="hljs-string">&quot;jdbc:mysql://127.0.0.1:3306/test?serverTimezone=GMT%2B8&amp;characterEncoding=UTF-8&quot;</span>;<br>            String username = <span class="hljs-string">&quot;root&quot;</span>;<br>            String password = <span class="hljs-string">&quot;123456&quot;</span>;<br>            connection = DriverManager.getConnection(url, username, password);<br><br>            <span class="hljs-comment">// 获取预处理 statement</span><br>            String sql = <span class="hljs-string">&quot;select * from user where id = ?&quot;</span>;<br>            preparedStatement = connection.prepareStatement(sql);<br>            preparedStatement.setInt(<span class="hljs-number">1</span>, <span class="hljs-number">1</span>);<br><br>            <span class="hljs-comment">// 执行 sql</span><br>            resultSet = preparedStatement.executeQuery();<br><br>            <span class="hljs-comment">// 遍历结果集封装到 User</span><br>            User user = <span class="hljs-keyword">null</span>;<br>            <span class="hljs-keyword">while</span> (resultSet.next()) &#123;<br>                <span class="hljs-keyword">int</span> id = resultSet.getInt(<span class="hljs-string">&quot;id&quot;</span>);<br>                String uname = resultSet.getString(<span class="hljs-string">&quot;username&quot;</span>);<br>                user = User.builder()<br>                        .id(id)<br>                        .username(uname).build();<br>            &#125;<br>            System.out.println(user);<br>        &#125; <span class="hljs-keyword">catch</span> (Exception e) &#123;<br>            e.printStackTrace();<br>        &#125;<span class="hljs-keyword">finally</span> &#123;<br>            <span class="hljs-comment">// 释放资源</span><br>            <span class="hljs-keyword">if</span> (resultSet !=<span class="hljs-keyword">null</span>) &#123;<br>                <span class="hljs-keyword">try</span> &#123;<br>                    resultSet.close();<br>                &#125; <span class="hljs-keyword">catch</span> (SQLException e) &#123;<br>                    e.printStackTrace();<br>                &#125;<br>            &#125;<br>            <span class="hljs-keyword">if</span> (preparedStatement !=<span class="hljs-keyword">null</span>) &#123;<br>                <span class="hljs-keyword">try</span> &#123;<br>                    preparedStatement.close();<br>                &#125; <span class="hljs-keyword">catch</span> (SQLException e) &#123;<br>                    e.printStackTrace();<br>                &#125;<br>            &#125;<br>            <span class="hljs-keyword">if</span> (connection!=<span class="hljs-keyword">null</span>) &#123;<br>                <span class="hljs-keyword">try</span> &#123;<br>                    connection.close();<br>                &#125; <span class="hljs-keyword">catch</span> (SQLException e) &#123;<br>                    e.printStackTrace();<br>                &#125;<br>            &#125;<br>        &#125;<br>    &#125;<br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+<p><font color="red">Tips</font>: mysql5 以上的 Driver 使用 <code>com.mysql.cj.jdbc.Driver</code> 而非 <code>com.mysql.jdbc.Driver</code></p>
+<h3 id="4-JDBC-方式存在的问题"><a href="#4-JDBC-方式存在的问题" class="headerlink" title="4. JDBC 方式存在的问题"></a>4. JDBC 方式存在的问题</h3><ol>
+<li><p>硬编码问题：（解决思路：配置文件）</p>
+<ul>
+<li>数据库配置信息</li>
+<li>sql 语句、设置参数、获取结果集</li>
+</ul>
+</li>
+<li><p>多次操作会频繁创建、释放数据库连接（解决思路：连接池）</p>
+</li>
+<li><p>手动封装结果集较为繁琐（解决思路：反射、内省）</p>
+</li>
+</ol>
+<h2 id="二、-自定义持久层框架"><a href="#二、-自定义持久层框架" class="headerlink" title="二、 自定义持久层框架"></a>二、 自定义持久层框架</h2><blockquote>
+<p>框架端 + 使用端</p>
+</blockquote>
+<h3 id="1-思路分析"><a href="#1-思路分析" class="headerlink" title="1. 思路分析"></a>1. 思路分析</h3><p><strong>使用端（项目）的工作：</strong></p>
+<pre><code>1. 引入自定义持久层框架的 jar 包
+
+2. 编写两部分配置文件：
+
+    - sqlMapConfig.xml: 设置数据源并引入 mapper.xml 文件
+  
+    - mapper.xml: sql 语句的编写
+</code></pre>
+<p><strong>框架端的工作：</strong></p>
+<pre><code>本质就是对 JDBC 代码进行了封装:
+
+    1. 加载配置文件：根据配置文件的路径，加载配置文件成字节输入流保存储在内存中
+
+      创建 Resources 类，方法：InputStrem getResourceAsStream(String path)
+
+    2. 创建两个 JavaBean（容器对象），存放的就是配置文件解析出来的内容：
+
+        Configuration: 核心配置类，存放 sqlMapConfig.xml 解析出来的内容
+        MappedStatement: 映射配置类，存放 mapper.xml 解析出来的内容
+
+    3. 解析配置文件：dom4j 类
+
+        创建类：SqlSessionFactoryBuilder 方法：build(InputStream in)
+        第一：使用 dom4j 解析配置文件，将解析出来的内容封装到容器对象
+        第二：创建 SqlSessionFactory 对象 -&gt; 生产 SqlSession（会话对象）：工厂模式
+
+    4. 创建 SqlSessionFactory 接口及实现类 DefaultSqlSessionFactory
+
+        第一：openSession()：生产 SqlSession
+    
+    5. 创建 SqlSession 接口及 DefaultSqlSession
+
+        定义数据库的 crud 操作：selectList() selectOne() update() delete()
+
+    6. 创建 Executor 接口及实现类 SimpleExecutor 实现类
+
+        query(Configuration conf, MappedStatement ms, Object... params)：执行的就是 JDBC 代码
+</code></pre>
+<h3 id="2-新建使用端项目"><a href="#2-新建使用端项目" class="headerlink" title="2. 新建使用端项目"></a>2. 新建使用端项目</h3><h4 id="2-1-创建-sqlMapConfig-xml"><a href="#2-1-创建-sqlMapConfig-xml" class="headerlink" title="2.1 创建 sqlMapConfig.xml"></a>2.1 创建 sqlMapConfig.xml</h4><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">configuration</span>&gt;</span><br><br>    <span class="hljs-comment">&lt;!--配置数据源--&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">property</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;driverClass&quot;</span> <span class="hljs-attr">value</span>=<span class="hljs-string">&quot;com.mysql.cj.jdbc.Driver&quot;</span>/&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">property</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;jdbcUrl&quot;</span> <span class="hljs-attr">value</span>=<span class="hljs-string">&quot;jdbc:mysql://127.0.0.1:3306/test?characterEncoding=utf-8<span class="hljs-symbol">&amp;amp;</span>serverTimezone=GMT%2B8&quot;</span>/&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">property</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;user&quot;</span> <span class="hljs-attr">value</span>=<span class="hljs-string">&quot;root&quot;</span>/&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">property</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;password&quot;</span> <span class="hljs-attr">value</span>=<span class="hljs-string">&quot;123456&quot;</span>/&gt;</span><br><br><br>    <span class="hljs-comment">&lt;!--引入mapper文件--&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">mapper</span> <span class="hljs-attr">resource</span>=<span class="hljs-string">&quot;mapper.xml&quot;</span>/&gt;</span><br><br><span class="hljs-tag">&lt;/<span class="hljs-name">configuration</span>&gt;</span><br><br></code></pre></td></tr></table></figure>
+
+<h4 id="2-2-创建-mapper-xml"><a href="#2-2-创建-mapper-xml" class="headerlink" title="2.2 创建 mapper.xml"></a>2.2 创建 mapper.xml</h4><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">mapper</span> <span class="hljs-attr">namespace</span>=<span class="hljs-string">&quot;User&quot;</span>&gt;</span><br><br>    <span class="hljs-tag">&lt;<span class="hljs-name">select</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;selectOne&quot;</span> <span class="hljs-attr">parameterType</span>=<span class="hljs-string">&quot;pro.fengjian.pojo.User&quot;</span> <span class="hljs-attr">resultType</span>=<span class="hljs-string">&quot;pro.fengjian.pojo.User&quot;</span>&gt;</span><br>        select * from user where id = #&#123;id&#125; and username=#&#123;username&#125;<br>    <span class="hljs-tag">&lt;/<span class="hljs-name">select</span>&gt;</span><br><br>    <span class="hljs-tag">&lt;<span class="hljs-name">select</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;selectList&quot;</span> <span class="hljs-attr">resultType</span>=<span class="hljs-string">&quot;pro.fengjian.pojo.User&quot;</span>&gt;</span><br>        select * from user<br>    <span class="hljs-tag">&lt;/<span class="hljs-name">select</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">mapper</span>&gt;</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="3-新建框架端项目"><a href="#3-新建框架端项目" class="headerlink" title="3. 新建框架端项目"></a>3. 新建框架端项目</h3><h4 id="3-1-引入依赖"><a href="#3-1-引入依赖" class="headerlink" title="3.1 引入依赖"></a>3.1 引入依赖</h4><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">dependencies</span>&gt;</span><br><br>    <span class="hljs-comment">&lt;!-- mysql 驱动 --&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>mysql<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>mysql-connector-java<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>8.0.25<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span><br>    <span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span><br><br>    <span class="hljs-comment">&lt;!-- 数据库连接池 --&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>c3p0<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>c3p0<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>0.9.1.1<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span><br>    <span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span><br><br>    <span class="hljs-comment">&lt;!-- 日志相关 --&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>log4j<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>log4j<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>1.2.17<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span><br>    <span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span><br><br>    <span class="hljs-comment">&lt;!-- 单元测试 --&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>junit<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>junit<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>4.13.2<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">scope</span>&gt;</span>test<span class="hljs-tag">&lt;/<span class="hljs-name">scope</span>&gt;</span><br>    <span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span><br><br>    <span class="hljs-comment">&lt;!-- 解析 xml --&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>dom4j<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>dom4j<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>1.6.1<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span><br>    <span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span><br><br>    <span class="hljs-comment">&lt;!-- xpath 语法 --&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>jaxen<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>jaxen<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>1.1.6<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span><br>    <span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span><br><br>    <span class="hljs-comment">&lt;!-- 代码简略 --&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.projectlombok<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>lombok<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>1.18.22<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span><br>    <span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">dependencies</span>&gt;</span><br></code></pre></td></tr></table></figure>
+
+<h4 id="3-2-新建相关类来保存从使用端读取的配置文件信息"><a href="#3-2-新建相关类来保存从使用端读取的配置文件信息" class="headerlink" title="3.2 新建相关类来保存从使用端读取的配置文件信息"></a>3.2 新建相关类来保存从使用端读取的配置文件信息</h4><p>配置信息类：Configuration</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">package</span> config;<br><br><span class="hljs-keyword">import</span> lombok.Data;<br><br><span class="hljs-keyword">import</span> java.util.HashMap;<br><span class="hljs-keyword">import</span> java.util.Map;<br><br><span class="hljs-meta">@Data</span><br><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Configuration</span> </span>&#123;<br><br>    <span class="hljs-comment">// 数据源</span><br>    <span class="hljs-keyword">private</span> DataSource dataSource;<br><br>    <span class="hljs-comment">// map 集合</span><br>    <span class="hljs-keyword">private</span> Map&lt;String, MappedStatement&gt; mappedStatementMap = <span class="hljs-keyword">new</span> HashMap&lt;&gt;();<br><br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+<p>sql 映射类：MappedStatement</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">package</span> config;<br><br><span class="hljs-keyword">import</span> lombok.Data;<br><br><span class="hljs-meta">@Data</span><br><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MappedStatement</span> </span>&#123;<br><br>    <span class="hljs-comment">// id</span><br>    <span class="hljs-keyword">private</span> Integer id;<br>    <br>    <span class="hljs-comment">// sql 语句</span><br>    <span class="hljs-keyword">private</span> String sql;<br><br>    <span class="hljs-comment">// 参数类型</span><br>    <span class="hljs-keyword">private</span> Class&lt;?&gt; parameterType;<br><br>    <span class="hljs-comment">// 返回值类型</span><br>    <span class="hljs-keyword">private</span> Class&lt;?&gt; resultType;<br><br><br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+<h4 id="3-3-读取配置文件到流："><a href="#3-3-读取配置文件到流：" class="headerlink" title="3.3 读取配置文件到流："></a>3.3 读取配置文件到流：</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">package</span> config;<br><br><span class="hljs-keyword">import</span> java.io.InputStream;<br><br><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Resources</span> </span>&#123;<br><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> InputStream <span class="hljs-title">getResourcesAsStream</span><span class="hljs-params">(String path)</span> </span>&#123;<br><br>        InputStream resourceAsStream = Resources.class.getClassLoader().getResourceAsStream(path);<br><br>        <span class="hljs-keyword">return</span> resourceAsStream;<br>    &#125;<br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+<h4 id="3-4-解析-sqlMapConfig-xml-文件封装到-Configuration-类"><a href="#3-4-解析-sqlMapConfig-xml-文件封装到-Configuration-类" class="headerlink" title="3.4 解析 sqlMapConfig.xml 文件封装到 Configuration 类"></a>3.4 解析 sqlMapConfig.xml 文件封装到 Configuration 类</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">package</span> config;<br><br><span class="hljs-keyword">import</span> com.mchange.v2.c3p0.ComboPooledDataSource;<br><span class="hljs-keyword">import</span> io.Resources;<br><span class="hljs-keyword">import</span> org.dom4j.Document;<br><span class="hljs-keyword">import</span> org.dom4j.DocumentException;<br><span class="hljs-keyword">import</span> org.dom4j.Element;<br><span class="hljs-keyword">import</span> org.dom4j.io.SAXReader;<br><span class="hljs-keyword">import</span> pojo.Configuration;<br><br><span class="hljs-keyword">import</span> java.beans.PropertyVetoException;<br><span class="hljs-keyword">import</span> java.io.InputStream;<br><span class="hljs-keyword">import</span> java.util.List;<br><span class="hljs-keyword">import</span> java.util.Properties;<br><br><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">XMLConfigureBuilder</span> </span>&#123;<br><br>    <span class="hljs-keyword">private</span> Configuration configuration;<br><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">XMLConfigureBuilder</span><span class="hljs-params">(Configuration configuration)</span> </span>&#123;<br>        <span class="hljs-keyword">this</span>.configuration = configuration;<br><br>    &#125;<br><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> Configuration <span class="hljs-title">parseConfiguration</span><span class="hljs-params">(InputStream inputStream)</span> <span class="hljs-keyword">throws</span> DocumentException, PropertyVetoException </span>&#123;<br><br>        Document document = <span class="hljs-keyword">new</span> SAXReader().read(inputStream);<br><br>        <span class="hljs-comment">// &lt;configuration&gt;</span><br>        Element rootElement = document.getRootElement();<br>        List&lt;Element&gt; propertyElements = rootElement.selectNodes(<span class="hljs-string">&quot;//property&quot;</span>);<br><br>        Properties properties = <span class="hljs-keyword">new</span> Properties();<br>        <span class="hljs-keyword">for</span> (Element propertyElement : propertyElements) &#123;<br>            String name = propertyElement.attributeValue(<span class="hljs-string">&quot;name&quot;</span>);<br>            String value = propertyElement.attributeValue(<span class="hljs-string">&quot;value&quot;</span>);<br>            properties.put(name, value);<br>        &#125;<br><br>        <span class="hljs-comment">// 连接池</span><br>        ComboPooledDataSource comboPooledDataSource = <span class="hljs-keyword">new</span> ComboPooledDataSource();<br>        comboPooledDataSource.setDriverClass(properties.getProperty(<span class="hljs-string">&quot;driverClass&quot;</span>));<br>        comboPooledDataSource.setJdbcUrl(properties.getProperty(<span class="hljs-string">&quot;jdbcUrl&quot;</span>));<br>        comboPooledDataSource.setUser(properties.getProperty(<span class="hljs-string">&quot;user&quot;</span>));<br>        comboPooledDataSource.setPassword(properties.getProperty(<span class="hljs-string">&quot;password&quot;</span>));<br><br>        <span class="hljs-comment">// 填充 Configuration</span><br>        configuration.setDataSource(comboPooledDataSource);<br><br>        <span class="hljs-comment">// mapper 部分</span><br>        List&lt;Element&gt; mapperElements = rootElement.selectNodes(<span class="hljs-string">&quot;//mapper&quot;</span>);<br>        XMLMapperBuilder xmlMapperBuilder = <span class="hljs-keyword">new</span> XMLMapperBuilder(configuration);<br>        <span class="hljs-keyword">for</span> (Element mapperElement : mapperElements) &#123;<br>            String mapperPath = mapperElement.attributeValue(<span class="hljs-string">&quot;resource&quot;</span>);<br>            InputStream resourcesAsStream = Resources.getResourcesAsStream(mapperPath);<br>            xmlMapperBuilder.parse(resourcesAsStream);<br>        &#125;<br>        <span class="hljs-keyword">return</span> configuration;<br><br>    &#125;<br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+<h4 id="3-5-解析-mapper-xml-文件-封装到-MappedStatement-和-Configuration"><a href="#3-5-解析-mapper-xml-文件-封装到-MappedStatement-和-Configuration" class="headerlink" title="3.5 解析 mapper.xml 文件 封装到 MappedStatement 和 Configuration"></a>3.5 解析 mapper.xml 文件 封装到 MappedStatement 和 Configuration</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">package</span> config;<br><br><span class="hljs-keyword">import</span> org.dom4j.Document;<br><span class="hljs-keyword">import</span> org.dom4j.DocumentException;<br><span class="hljs-keyword">import</span> org.dom4j.Element;<br><span class="hljs-keyword">import</span> org.dom4j.io.SAXReader;<br><span class="hljs-keyword">import</span> pojo.Configuration;<br><span class="hljs-keyword">import</span> pojo.MappedStatement;<br><br><span class="hljs-keyword">import</span> java.io.InputStream;<br><span class="hljs-keyword">import</span> java.util.List;<br><br><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">XMLMapperBuilder</span> </span>&#123;<br><br>    <span class="hljs-keyword">private</span> Configuration configuration;<br><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">XMLMapperBuilder</span><span class="hljs-params">(Configuration configuration)</span> </span>&#123;<br>        <span class="hljs-keyword">this</span>.configuration = configuration;<br>    &#125;<br><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">parse</span><span class="hljs-params">(InputStream inputStream)</span> <span class="hljs-keyword">throws</span> DocumentException, ClassNotFoundException </span>&#123;<br><br>        Document document = <span class="hljs-keyword">new</span> SAXReader().read(inputStream);<br><br>        <span class="hljs-comment">// &lt;mapper&gt;</span><br>        Element rootElement = document.getRootElement();<br><br>        String namespace = rootElement.attributeValue(<span class="hljs-string">&quot;namespace&quot;</span>);<br><br>        List&lt;Element&gt; selectNodes = document.selectNodes(<span class="hljs-string">&quot;//select&quot;</span>);<br>        <span class="hljs-keyword">for</span> (Element element : selectNodes) &#123;<br>            String id = element.attributeValue(<span class="hljs-string">&quot;id&quot;</span>);<span class="hljs-comment">// id 值</span><br>            String parameterType = element.attributeValue(<span class="hljs-string">&quot;parameterType&quot;</span>);<span class="hljs-comment">// 参数类型</span><br>            String resultType = element.attributeValue(<span class="hljs-string">&quot;resultType&quot;</span>);<span class="hljs-comment">// 返回值类型</span><br><br>            <span class="hljs-comment">// 获取参数和返回值类型</span><br>            Class&lt;?&gt; parameterTypeClass = <span class="hljs-keyword">this</span>.getClassType(parameterType);<br>            Class&lt;?&gt; resultTypeClass = <span class="hljs-keyword">this</span>.getClassType(resultType);<br><br>            <span class="hljs-comment">// statementId</span><br>            String statementId = namespace + <span class="hljs-string">&quot;.&quot;</span> + id;<br>            <span class="hljs-comment">// sql</span><br>            String sql = element.getTextTrim();<br>            <span class="hljs-comment">// 封装到 MappedStatement</span><br>            MappedStatement mappedStatement = <span class="hljs-keyword">new</span> MappedStatement();<br>            mappedStatement.setId(id);<br>            mappedStatement.setParameterType(parameterTypeClass);<br>            mappedStatement.setResultType(resultTypeClass);<br>            mappedStatement.setSql(sql);<br>            <span class="hljs-comment">// 填充 Configuration</span><br>            configuration.getMappedStatementMap().put(statementId,mappedStatement);<br>        &#125;<br><br>    &#125;<br><br>    <span class="hljs-keyword">private</span> Class&lt;?&gt; getClassType(String className) <span class="hljs-keyword">throws</span> ClassNotFoundException &#123;<br>        <span class="hljs-keyword">return</span> Class.forName(className);<br>    &#125;<br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+<h4 id="3-6-构建者模式构建-SqlSessionFactory"><a href="#3-6-构建者模式构建-SqlSessionFactory" class="headerlink" title="3.6 构建者模式构建 SqlSessionFactory"></a>3.6 构建者模式构建 SqlSessionFactory</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">package</span> sqlSession;<br><br><span class="hljs-keyword">import</span> config.XMLConfigureBuilder;<br><span class="hljs-keyword">import</span> org.dom4j.DocumentException;<br><span class="hljs-keyword">import</span> pojo.Configuration;<br><br><span class="hljs-keyword">import</span> java.beans.PropertyVetoException;<br><span class="hljs-keyword">import</span> java.io.InputStream;<br><br><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">SqlSessionFactoryBuilder</span> </span>&#123;<br><br>    <span class="hljs-keyword">private</span> Configuration configuration;<br><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">SqlSessionFactoryBuilder</span><span class="hljs-params">()</span> </span>&#123;<br>        <span class="hljs-keyword">this</span>.configuration = <span class="hljs-keyword">new</span> Configuration();<br>    &#125;<br><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> SqlSessionFactory <span class="hljs-title">build</span><span class="hljs-params">(InputStream inputStream)</span> <span class="hljs-keyword">throws</span> DocumentException, PropertyVetoException, ClassNotFoundException </span>&#123;<br><br>        <span class="hljs-comment">// 1. 解析配置文件，封装到 Configuration</span><br>        XMLConfigureBuilder xmlConfigureBuilder = <span class="hljs-keyword">new</span> XMLConfigureBuilder(configuration);<br>        Configuration configuration = xmlConfigureBuilder.parseConfiguration(inputStream);<br><br>        <span class="hljs-comment">// 2. 创建 SqlSessionFactory</span><br>        SqlSessionFactory sqlSessionFactory = <span class="hljs-keyword">new</span> DefaultSqlSessionFactory(configuration);<br>        <span class="hljs-keyword">return</span> sqlSessionFactory;<br>    &#125;<br>&#125;<br><br><br></code></pre></td></tr></table></figure>
+
+<h4 id="3-7-sqlSessionFactory-开启-sqlSession"><a href="#3-7-sqlSessionFactory-开启-sqlSession" class="headerlink" title="3.7 sqlSessionFactory 开启 sqlSession"></a>3.7 sqlSessionFactory 开启 sqlSession</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs java"><br><span class="hljs-keyword">package</span> sqlSession;<br><br><span class="hljs-keyword">import</span> pojo.Configuration;<br><br><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">DefaultSqlSessionFactory</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">SqlSessionFactory</span></span>&#123;<br><br>    <span class="hljs-keyword">private</span> Configuration configuration;<br><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">DefaultSqlSessionFactory</span><span class="hljs-params">(Configuration configuration)</span> </span>&#123;<br>    &#125;<br><br><br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> SqlSession <span class="hljs-title">openSession</span><span class="hljs-params">()</span> </span>&#123;<br>        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> DefaultSqlSession(configuration);<br>    &#125;<br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+<h4 id="3-8-sqlSession-编写-sql-方法"><a href="#3-8-sqlSession-编写-sql-方法" class="headerlink" title="3.8 sqlSession 编写 sql 方法"></a>3.8 sqlSession 编写 sql 方法</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">package</span> sqlSession;<br><br><span class="hljs-keyword">import</span> java.util.List;<br><br><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">interface</span> <span class="hljs-title">SqlSession</span> </span>&#123;<br><br>    &lt;E&gt; <span class="hljs-function">List&lt;E&gt; <span class="hljs-title">selectList</span><span class="hljs-params">(String statementId, Object... param)</span></span>;<br><br>    &lt;T&gt; <span class="hljs-function">T <span class="hljs-title">selectOne</span><span class="hljs-params">(String statementId, Object... param)</span></span>;<br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+<h4 id="3-9-defaultSqlSession"><a href="#3-9-defaultSqlSession" class="headerlink" title="3.9 defaultSqlSession"></a>3.9 defaultSqlSession</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">package</span> sqlSession;<br><br><span class="hljs-keyword">import</span> pojo.Configuration;<br><span class="hljs-keyword">import</span> pojo.MappedStatement;<br><br><span class="hljs-keyword">import</span> java.util.List;<br><br><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">DefaultSqlSession</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">SqlSession</span> </span>&#123;<br><br>    <span class="hljs-keyword">private</span> Configuration configuration;<br><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">DefaultSqlSession</span><span class="hljs-params">(Configuration configuration)</span> </span>&#123;<br>        <span class="hljs-keyword">this</span>.configuration = configuration;<br>    &#125;<br><br>    <span class="hljs-comment">// 执行器对象</span><br>    <span class="hljs-keyword">private</span> Executor simpleExecutor = <span class="hljs-keyword">new</span> SimpleExecutor();<br><br><br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">public</span> &lt;E&gt; <span class="hljs-function">List&lt;E&gt; <span class="hljs-title">selectList</span><span class="hljs-params">(String statementId, Object... param)</span> </span>&#123;<br>        MappedStatement mappedStatement = configuration.getMappedStatementMap().get(statementId);<br>        <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.simpleExecutor.query(configuration, mappedStatement, param);<br>    &#125;<br><br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">public</span> &lt;T&gt; <span class="hljs-function">T <span class="hljs-title">selectOne</span><span class="hljs-params">(String statementId, Object... param)</span> </span>&#123;<br>        <span class="hljs-comment">// 调用 selectList</span><br>        List&lt;Object&gt; objects = <span class="hljs-keyword">this</span>.selectList(statementId, param);<br>        <span class="hljs-keyword">if</span> (objects.size() == <span class="hljs-number">1</span>) &#123;<br>            <span class="hljs-keyword">return</span> (T) objects.get(<span class="hljs-number">0</span>);<br>        &#125; <span class="hljs-keyword">else</span> &#123;<br>            <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> RuntimeException(<span class="hljs-string">&quot;期望查询条数 1 条，但返回多条!&quot;</span>);<br>        &#125;<br>    &#125;<br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+<h4 id="3-10-Executor-执行器，实际-sql-操作类"><a href="#3-10-Executor-执行器，实际-sql-操作类" class="headerlink" title="3.10 Executor 执行器，实际 sql 操作类"></a>3.10 Executor 执行器，实际 sql 操作类</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">package</span> sqlSession;<br><br><span class="hljs-keyword">import</span> pojo.BoundSql;<br><span class="hljs-keyword">import</span> pojo.Configuration;<br><span class="hljs-keyword">import</span> pojo.MappedStatement;<br><span class="hljs-keyword">import</span> utils.GenericTokenParser;<br><span class="hljs-keyword">import</span> utils.ParameterMapping;<br><span class="hljs-keyword">import</span> utils.ParameterMappingTokenHandler;<br><br><span class="hljs-keyword">import</span> java.beans.IntrospectionException;<br><span class="hljs-keyword">import</span> java.beans.PropertyDescriptor;<br><span class="hljs-keyword">import</span> java.lang.reflect.Field;<br><span class="hljs-keyword">import</span> java.lang.reflect.InvocationTargetException;<br><span class="hljs-keyword">import</span> java.lang.reflect.Method;<br><span class="hljs-keyword">import</span> java.sql.*;<br><span class="hljs-keyword">import</span> java.util.ArrayList;<br><span class="hljs-keyword">import</span> java.util.List;<br><br><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">SimpleExecutor</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">Executor</span> </span>&#123;<br><br>    <span class="hljs-keyword">private</span> Connection connection;<br><br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">public</span> &lt;E&gt; <span class="hljs-function">List&lt;E&gt; <span class="hljs-title">query</span><span class="hljs-params">(Configuration configuration, MappedStatement mappedStatement, Object[] param)</span> <span class="hljs-keyword">throws</span> SQLException, NoSuchFieldException, IllegalAccessException, InstantiationException, IntrospectionException, InvocationTargetException </span>&#123;<br><br>        <span class="hljs-comment">// 获取连接</span><br>        connection = configuration.getDataSource().getConnection();<br><br>        <span class="hljs-comment">// 对 mapper 中的 sql 进行解析</span><br>        <span class="hljs-comment">// 1. 将 #&#123;xx&#125; -&gt; ?</span><br>        <span class="hljs-comment">// 2. 封装参数列表 #&#123;id&#125; #&#123;username&#125; 中的 id username 等</span><br>        BoundSql boundSql = <span class="hljs-keyword">this</span>.getBoundSql(mappedStatement.getSql());<br>        String finalSql = boundSql.getSqlText();<br><br>        <span class="hljs-comment">// 设置 sql 参数，获取 preparedStatement</span><br>        PreparedStatement preparedStatement = connection.prepareStatement(finalSql);<br>        List&lt;ParameterMapping&gt; parameterMappingList = boundSql.getParameterMappingList();<br>        <span class="hljs-comment">// 参数类型</span><br>        Class&lt;?&gt; parameterType = mappedStatement.getParameterType();<br>        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; parameterMappingList.size(); i++) &#123;<br>            String name = parameterMappingList.get(i).getContent();<br>            Field declaredField = parameterType.getDeclaredField(name);<br>            declaredField.setAccessible(<span class="hljs-keyword">true</span>);<br>            Object o = declaredField.get(param[<span class="hljs-number">0</span>]);<span class="hljs-comment">// 参数 user</span><br>            preparedStatement.setObject(i + <span class="hljs-number">1</span>, o);<br>        &#125;<br><br>        <span class="hljs-comment">// 执行 sql，封装结果集</span><br>        ResultSet resultSet = preparedStatement.executeQuery();<br>        Class&lt;?&gt; resultType = mappedStatement.getResultType();<br>        List&lt;E&gt; result = <span class="hljs-keyword">new</span> ArrayList&lt;&gt;();<br><br>        <span class="hljs-keyword">while</span> (resultSet.next()) &#123;<br>            E e = (E) resultType.newInstance();<br>            ResultSetMetaData metaData = resultSet.getMetaData();<br>            <span class="hljs-keyword">int</span> columnCount = metaData.getColumnCount();<br>            <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">1</span>; i &lt;= columnCount; i++) &#123;<br>                <span class="hljs-comment">// 属性名</span><br>                String columnName = metaData.getColumnName(i);<br>                <span class="hljs-comment">// 属性值</span><br>                Object value = resultSet.getObject(columnName);<br>                <span class="hljs-comment">// 创建属性描述器，为属性增加写读方法</span><br>                PropertyDescriptor propertyDescriptor = <span class="hljs-keyword">new</span> PropertyDescriptor(columnName, resultType);<br>                <span class="hljs-comment">// 获取写方法</span><br>                Method writeMethod = propertyDescriptor.getWriteMethod();<br>                <span class="hljs-comment">// 写入值</span><br>                writeMethod.invoke(e, value);<br>            &#125;<br>            result.add(e);<br>        &#125;<br>        <span class="hljs-keyword">return</span> result;<br>    &#125;<br><br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">close</span><span class="hljs-params">()</span> </span>&#123;<br><br>    &#125;<br><br>    <span class="hljs-function"><span class="hljs-keyword">private</span> BoundSql <span class="hljs-title">getBoundSql</span><span class="hljs-params">(String sql)</span> </span>&#123;<br>        <span class="hljs-comment">// 标记处理类：主要配合通用标记解析器 GenericTokenParser 类完成对配置文件等的</span><br>        <span class="hljs-comment">// 解析工作，其中 TokenHandler 主要完成处理</span><br>        ParameterMappingTokenHandler parameterMappingTokenHandler = <span class="hljs-keyword">new</span> ParameterMappingTokenHandler();<br><br>        <span class="hljs-comment">// GenericTokenParser：通用的标记解析器，完成了代码片段中占位符的解析，然后再根据</span><br>        <span class="hljs-comment">// 给定的标记解析器（TokenHandler）进行表达式的处理</span><br>        <span class="hljs-comment">// openToken closeToken handler</span><br>        GenericTokenParser genericTokenParser = <span class="hljs-keyword">new</span> GenericTokenParser(<span class="hljs-string">&quot;#&#123;&quot;</span>, <span class="hljs-string">&quot;&#125;&quot;</span>, parameterMappingTokenHandler);<br>        String parse = genericTokenParser.parse(sql);<br><br>        List&lt;utils.ParameterMapping&gt; parameterMappings = parameterMappingTokenHandler.getParameterMappings();<br>        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> BoundSql(parse,parameterMappings);<br>    &#125;<br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+<p><font color="red">Tips:</font><br>getDeclaredFiled 仅能获取类本身的属性成员（包括私有、共有、保护）<br>getField 仅能获取类(及其父类可以自己测试) public属性成员</p>
+<h4 id="3-11-解析类"><a href="#3-11-解析类" class="headerlink" title="3.11 解析类"></a>3.11 解析类</h4><p>GenericTokenParser:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-comment">/**</span><br><span class="hljs-comment"> *    Copyright 2009-2017 the original author or authors.</span><br><span class="hljs-comment"> *</span><br><span class="hljs-comment"> *    Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);</span><br><span class="hljs-comment"> *    you may not use this file except in compliance with the License.</span><br><span class="hljs-comment"> *    You may obtain a copy of the License at</span><br><span class="hljs-comment"> *</span><br><span class="hljs-comment"> *       http://www.apache.org/licenses/LICENSE-2.0</span><br><span class="hljs-comment"> *</span><br><span class="hljs-comment"> *    Unless required by applicable law or agreed to in writing, software</span><br><span class="hljs-comment"> *    distributed under the License is distributed on an &quot;AS IS&quot; BASIS,</span><br><span class="hljs-comment"> *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</span><br><span class="hljs-comment"> *    See the License for the specific language governing permissions and</span><br><span class="hljs-comment"> *    limitations under the License.</span><br><span class="hljs-comment"> */</span><br><span class="hljs-keyword">package</span> utils;<br><br><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@author</span> Clinton Begin</span><br><span class="hljs-comment"> */</span><br><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">GenericTokenParser</span> </span>&#123;<br><br>  <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> String openToken; <span class="hljs-comment">//开始标记</span><br>  <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> String closeToken; <span class="hljs-comment">//结束标记</span><br>  <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> TokenHandler handler; <span class="hljs-comment">//标记处理器</span><br><br>  <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">GenericTokenParser</span><span class="hljs-params">(String openToken, String closeToken, TokenHandler handler)</span> </span>&#123;<br>    <span class="hljs-keyword">this</span>.openToken = openToken;<br>    <span class="hljs-keyword">this</span>.closeToken = closeToken;<br>    <span class="hljs-keyword">this</span>.handler = handler;<br>  &#125;<br><br>  <span class="hljs-comment">/**</span><br><span class="hljs-comment">   * 解析$&#123;&#125;和#&#123;&#125;</span><br><span class="hljs-comment">   * <span class="hljs-doctag">@param</span> text</span><br><span class="hljs-comment">   * <span class="hljs-doctag">@return</span></span><br><span class="hljs-comment">   * 该方法主要实现了配置文件、脚本等片段中占位符的解析、处理工作，并返回最终需要的数据。</span><br><span class="hljs-comment">   * 其中，解析工作由该方法完成，处理工作是由处理器handler的handleToken()方法来实现</span><br><span class="hljs-comment">   */</span><br>  <span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">parse</span><span class="hljs-params">(String text)</span> </span>&#123;<br>    <span class="hljs-comment">// 验证参数问题，如果是null，就返回空字符串。</span><br>    <span class="hljs-keyword">if</span> (text == <span class="hljs-keyword">null</span> || text.isEmpty()) &#123;<br>      <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;&quot;</span>;<br>    &#125;<br><br>    <span class="hljs-comment">// 下面继续验证是否包含开始标签，如果不包含，默认不是占位符，直接原样返回即可，否则继续执行。</span><br>    <span class="hljs-keyword">int</span> start = text.indexOf(openToken, <span class="hljs-number">0</span>);<br>    <span class="hljs-keyword">if</span> (start == -<span class="hljs-number">1</span>) &#123;<br>      <span class="hljs-keyword">return</span> text;<br>    &#125;<br><br>   <span class="hljs-comment">// 把text转成字符数组src，并且定义默认偏移量offset=0、存储最终需要返回字符串的变量builder，</span><br>    <span class="hljs-comment">// text变量中占位符对应的变量名expression。判断start是否大于-1(即text中是否存在openToken)，如果存在就执行下面代码</span><br>    <span class="hljs-keyword">char</span>[] src = text.toCharArray();<br>    <span class="hljs-keyword">int</span> offset = <span class="hljs-number">0</span>;<br>    <span class="hljs-keyword">final</span> StringBuilder builder = <span class="hljs-keyword">new</span> StringBuilder();<br>    StringBuilder expression = <span class="hljs-keyword">null</span>;<br>    <span class="hljs-keyword">while</span> (start &gt; -<span class="hljs-number">1</span>) &#123;<br>     <span class="hljs-comment">// 判断如果开始标记前如果有转义字符，就不作为openToken进行处理，否则继续处理</span><br>      <span class="hljs-keyword">if</span> (start &gt; <span class="hljs-number">0</span> &amp;&amp; src[start - <span class="hljs-number">1</span>] == <span class="hljs-string">&#x27;\\&#x27;</span>) &#123;<br>        builder.append(src, offset, start - offset - <span class="hljs-number">1</span>).append(openToken);<br>        offset = start + openToken.length();<br>      &#125; <span class="hljs-keyword">else</span> &#123;<br>        <span class="hljs-comment">//重置expression变量，避免空指针或者老数据干扰。</span><br>        <span class="hljs-keyword">if</span> (expression == <span class="hljs-keyword">null</span>) &#123;<br>          expression = <span class="hljs-keyword">new</span> StringBuilder();<br>        &#125; <span class="hljs-keyword">else</span> &#123;<br>          expression.setLength(<span class="hljs-number">0</span>);<br>        &#125;<br>        builder.append(src, offset, start - offset);<br>        offset = start + openToken.length();<br>        <span class="hljs-keyword">int</span> end = text.indexOf(closeToken, offset);<br>        <span class="hljs-keyword">while</span> (end &gt; -<span class="hljs-number">1</span>) &#123;<span class="hljs-comment">////存在结束标记时</span><br>          <span class="hljs-keyword">if</span> (end &gt; offset &amp;&amp; src[end - <span class="hljs-number">1</span>] == <span class="hljs-string">&#x27;\\&#x27;</span>) &#123;<span class="hljs-comment">//如果结束标记前面有转义字符时</span><br>            <span class="hljs-comment">// this close token is escaped. remove the backslash and continue.</span><br>            expression.append(src, offset, end - offset - <span class="hljs-number">1</span>).append(closeToken);<br>            offset = end + closeToken.length();<br>            end = text.indexOf(closeToken, offset);<br>          &#125; <span class="hljs-keyword">else</span> &#123;<span class="hljs-comment">//不存在转义字符，即需要作为参数进行处理</span><br>            expression.append(src, offset, end - offset);<br>            offset = end + closeToken.length();<br>            <span class="hljs-keyword">break</span>;<br>          &#125;<br>        &#125;<br>        <span class="hljs-keyword">if</span> (end == -<span class="hljs-number">1</span>) &#123;<br>          <span class="hljs-comment">// close token was not found.</span><br>          builder.append(src, start, src.length - start);<br>          offset = src.length;<br>        &#125; <span class="hljs-keyword">else</span> &#123;<br>          <span class="hljs-comment">//首先根据参数的key（即expression）进行参数处理，返回?作为占位符</span><br>          builder.append(handler.handleToken(expression.toString()));<br>          offset = end + closeToken.length();<br>        &#125;<br>      &#125;<br>      start = text.indexOf(openToken, offset);<br>    &#125;<br>    <span class="hljs-keyword">if</span> (offset &lt; src.length) &#123;<br>      builder.append(src, offset, src.length - offset);<br>    &#125;<br>    <span class="hljs-keyword">return</span> builder.toString();<br>  &#125;<br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+<p>ParameterMapping:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">package</span> utils;<br><br><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ParameterMapping</span> </span>&#123;<br><br>    <span class="hljs-keyword">private</span> String content;<br><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">ParameterMapping</span><span class="hljs-params">(String content)</span> </span>&#123;<br>        <span class="hljs-keyword">this</span>.content = content;<br>    &#125;<br><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">getContent</span><span class="hljs-params">()</span> </span>&#123;<br>        <span class="hljs-keyword">return</span> content;<br>    &#125;<br><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">setContent</span><span class="hljs-params">(String content)</span> </span>&#123;<br>        <span class="hljs-keyword">this</span>.content = content;<br>    &#125;<br>&#125;<br><br>```java<br><span class="hljs-keyword">package</span> utils;<br><br><span class="hljs-keyword">import</span> java.util.ArrayList;<br><span class="hljs-keyword">import</span> java.util.List;<br><br><br><br><br><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ParameterMappingTokenHandler</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">TokenHandler</span> </span>&#123;<br>	<span class="hljs-keyword">private</span> List&lt;ParameterMapping&gt; parameterMappings = <span class="hljs-keyword">new</span> ArrayList&lt;ParameterMapping&gt;();<br><br>	<span class="hljs-comment">// context是参数名称 #&#123;id&#125; #&#123;username&#125;</span><br><br>	<span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">handleToken</span><span class="hljs-params">(String content)</span> </span>&#123;<br>		parameterMappings.add(buildParameterMapping(content));<br>		<span class="hljs-keyword">return</span> <span class="hljs-string">&quot;?&quot;</span>;<br>	&#125;<br><br>	<span class="hljs-function"><span class="hljs-keyword">private</span> ParameterMapping <span class="hljs-title">buildParameterMapping</span><span class="hljs-params">(String content)</span> </span>&#123;<br>		ParameterMapping parameterMapping = <span class="hljs-keyword">new</span> ParameterMapping(content);<br>		<span class="hljs-keyword">return</span> parameterMapping;<br>	&#125;<br><br>	<span class="hljs-function"><span class="hljs-keyword">public</span> List&lt;ParameterMapping&gt; <span class="hljs-title">getParameterMappings</span><span class="hljs-params">()</span> </span>&#123;<br>		<span class="hljs-keyword">return</span> parameterMappings;<br>	&#125;<br><br>	<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">setParameterMappings</span><span class="hljs-params">(List&lt;ParameterMapping&gt; parameterMappings)</span> </span>&#123;<br>		<span class="hljs-keyword">this</span>.parameterMappings = parameterMappings;<br>	&#125;<br><br>&#125;<br><br><br></code></pre></td></tr></table></figure>
+
+<p>TokenHandler: </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-comment">/**</span><br><span class="hljs-comment"> *    Copyright 2009-2015 the original author or authors.</span><br><span class="hljs-comment"> *</span><br><span class="hljs-comment"> *    Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);</span><br><span class="hljs-comment"> *    you may not use this file except in compliance with the License.</span><br><span class="hljs-comment"> *    You may obtain a copy of the License at</span><br><span class="hljs-comment"> *</span><br><span class="hljs-comment"> *       http://www.apache.org/licenses/LICENSE-2.0</span><br><span class="hljs-comment"> *</span><br><span class="hljs-comment"> *    Unless required by applicable law or agreed to in writing, software</span><br><span class="hljs-comment"> *    distributed under the License is distributed on an &quot;AS IS&quot; BASIS,</span><br><span class="hljs-comment"> *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</span><br><span class="hljs-comment"> *    See the License for the specific language governing permissions and</span><br><span class="hljs-comment"> *    limitations under the License.</span><br><span class="hljs-comment"> */</span><br><span class="hljs-keyword">package</span> utils;<br><br><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@author</span> Clinton Begin</span><br><span class="hljs-comment"> */</span><br><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">interface</span> <span class="hljs-title">TokenHandler</span> </span>&#123;<br>  <span class="hljs-function">String <span class="hljs-title">handleToken</span><span class="hljs-params">(String content)</span></span>;<br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+<h3 id="4-测试"><a href="#4-测试" class="headerlink" title="4. 测试"></a>4. 测试</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">import</span> io.Resources;<br><span class="hljs-keyword">import</span> org.dom4j.DocumentException;<br><span class="hljs-keyword">import</span> org.junit.Test;<br><span class="hljs-keyword">import</span> pro.fengjian.User;<br><span class="hljs-keyword">import</span> sqlSession.SqlSession;<br><span class="hljs-keyword">import</span> sqlSession.SqlSessionFactory;<br><span class="hljs-keyword">import</span> sqlSession.SqlSessionFactoryBuilder;<br><br><span class="hljs-keyword">import</span> java.beans.IntrospectionException;<br><span class="hljs-keyword">import</span> java.beans.PropertyVetoException;<br><span class="hljs-keyword">import</span> java.io.InputStream;<br><span class="hljs-keyword">import</span> java.lang.reflect.InvocationTargetException;<br><span class="hljs-keyword">import</span> java.sql.SQLException;<br><br><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">IPersistenceTest</span> </span>&#123;<br><br>    <span class="hljs-meta">@Test</span><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">testIPersistence</span><span class="hljs-params">()</span> <span class="hljs-keyword">throws</span> DocumentException, PropertyVetoException, ClassNotFoundException, IllegalAccessException, IntrospectionException, InstantiationException, SQLException, InvocationTargetException, NoSuchFieldException </span>&#123;<br><br>        InputStream inputStream = Resources.getResourcesAsStream(<span class="hljs-string">&quot;sqlMapConfig.xml&quot;</span>);<br>        SqlSessionFactory sqlSessionFactory = <span class="hljs-keyword">new</span> SqlSessionFactoryBuilder().build(inputStream);<br>        SqlSession sqlSession = sqlSessionFactory.openSession();<br><br>        User user = User.builder().id(<span class="hljs-number">1</span>).username(<span class="hljs-string">&quot;jack&quot;</span>).build();<br>        user = sqlSession.selectOne(<span class="hljs-string">&quot;UserMapper.selectOne&quot;</span>,user);<br>        System.out.println(user);<br>    &#125;<br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+<h3 id="5-使用代理模式进行优化"><a href="#5-使用代理模式进行优化" class="headerlink" title="5. 使用代理模式进行优化"></a>5. 使用代理模式进行优化</h3><p>自定义持久层框架存在的问题：</p>
+<pre><code>1. Dao 层使用自定义持久层框架，代码重复，整个操作过程模板重复（加载配置文件、创建 SqlSessionFactory、生产 sqlSession）
+
+2. satementId 存在硬编码，每次查询时还需要重复编写 statementId,比如 `UserMapper.selectOne`
+</code></pre>
+<p>解决思路：</p>
+<pre><code>1. 使用代理模式生成 Dao 层接口的代理实现类，代理对象调用接口中的任意方法，都会执行 invoke 方法
+
+2. 约定 statementId = 接口全路径 + 方法名
+</code></pre>
+<p>SqlSession 接口</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> &lt;T&gt; <span class="hljs-function">T <span class="hljs-title">getMappper</span><span class="hljs-params">(Class&lt;?&gt; mapperClass)</span></span>;<br></code></pre></td></tr></table></figure>
+
+<p>DefaultSqlSession 类</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Override</span><br><span class="hljs-keyword">public</span> &lt;T&gt; <span class="hljs-function">T <span class="hljs-title">getMapper</span><span class="hljs-params">(Class&lt;?&gt; mapperClass)</span> </span>&#123;<br>    <span class="hljs-comment">// 使用 jdk 动态代理为 Dao 接口生成代理对象并返回，使用代理对象调用接口中的任意方法，都是执行 invoke 方法</span><br>    Object proxyInstance = Proxy.newProxyInstance(DefaultSqlSession.class.getClassLoader(), <span class="hljs-keyword">new</span> Class[]&#123;mapperClass&#125;, <span class="hljs-keyword">new</span> InvocationHandler() &#123;<br>        <span class="hljs-meta">@Override</span><br>        <span class="hljs-function"><span class="hljs-keyword">public</span> Object <span class="hljs-title">invoke</span><span class="hljs-params">(Object proxy, Method method, Object[] args)</span> <span class="hljs-keyword">throws</span> Throwable </span>&#123;<br>            <span class="hljs-comment">// 底层都是执行 jdbc 代码 // 根据不同情况调用 selectOne 或 selectList 方法</span><br>            <span class="hljs-comment">// 准备参数 1: statementId：sql 语句唯一标识：namespace.id</span><br>            <span class="hljs-comment">// 约定：namespace 为接口全路径，id 为方法名</span><br>            String methodName = method.getName();<br>            String className = method.getDeclaringClass().getName();<br>            String statementId = className + <span class="hljs-string">&quot;.&quot;</span> + methodName;<br><br>            <span class="hljs-comment">// 准备参数 2： params ： args</span><br>            <span class="hljs-comment">// 根据方法返回值判断是调用 selectList 还是 selectOne，selectList 返回值包含泛型化符号：&lt;&gt;</span><br>            <span class="hljs-comment">// 获取被调用方法返回值类型</span><br>            Type genericReturnType = method.getGenericReturnType();<br>            <span class="hljs-comment">// 判断是否进行了泛型类型参数化</span><br>            <span class="hljs-keyword">if</span> (genericReturnType <span class="hljs-keyword">instanceof</span> ParameterizedType) &#123;<br>                List&lt;Object&gt; objects = selectList(statementId, args);<br>                <span class="hljs-keyword">return</span> objects;<br>            &#125;<br>            <span class="hljs-keyword">return</span> selectOne(statementId, args);<br>        &#125;<br>    &#125;);<br><br><br>    <span class="hljs-keyword">return</span> (T) proxyInstance;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>测试</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Test</span><br><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">testIPersistence</span><span class="hljs-params">()</span> <span class="hljs-keyword">throws</span> DocumentException, PropertyVetoException, ClassNotFoundException, IllegalAccessException, IntrospectionException, InstantiationException, SQLException, InvocationTargetException, NoSuchFieldException </span>&#123;<br><br>    InputStream inputStream = Resources.getResourcesAsStream(<span class="hljs-string">&quot;sqlMapConfig.xml&quot;</span>);<br>    SqlSessionFactory sqlSessionFactory = <span class="hljs-keyword">new</span> SqlSessionFactoryBuilder().build(inputStream);<br>    SqlSession sqlSession = sqlSessionFactory.openSession();<br><br>    User user = User.builder()<br>            .id(<span class="hljs-number">1</span>)<br>            .username(<span class="hljs-string">&quot;jack&quot;</span>)<br>            .build();<br>    UserMapper userMapper = sqlSession.getMapper(UserMapper.class);<br>    user = userMapper.selectOne(user);<br>    System.out.println(user);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p><font color="red">Tips:</font> 本节源码地址 <a target="_blank" rel="noopener" href="https://github.com/fengjian2705/ipersistence-test">ipersistence-test</a> | <a target="_blank" rel="noopener" href="https://github.com/fengjian2705/ipersistence">ipersistence</a></p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E5%90%8E%E7%AB%AF/">后端</a>
+                    
+                      <a class="hover-with-bg" href="/categories/%E5%90%8E%E7%AB%AF/java/">java</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/mybatis/">mybatis</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2023/05/08/%E5%90%8E%E7%AB%AF/java/%E7%BC%96%E7%A0%81/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">文件编码</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2023/05/08/%E5%90%8E%E7%AB%AF/java/%E5%90%8C%E6%AD%A5%E4%B8%8E%E5%BC%82%E6%AD%A5%E9%98%BB%E5%A1%9E%E4%B8%8E%E9%9D%9E%E9%98%BB%E5%A1%9E/">
+                        <span class="hidden-mobile">同步与异步、阻塞与非阻塞</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <article class="comments" id="comments" lazyload>
+                
+                  
+                
+                
+  <div id="SOHUCS" sid='http://example.com/2023/05/08/%E5%90%8E%E7%AB%AF/java/%E8%87%AA%E5%AE%9A%E4%B9%89%E6%8C%81%E4%B9%85%E5%B1%82%E6%A1%86%E6%9E%B6/'></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#SOHUCS', function() {
+      Fluid.utils.createScript("https://changyan.sohu.com/upload/changyan.js", function() {
+        window.changyan.api.config({"appid":"cywjv2D9l","appkey":"2bf2f1231299e92b26393ba6fb2ad9d8"})
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+              </article>
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+    风间小栈出品
+  </div>
+  
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- 不蒜子统计PV -->
+        <span id="busuanzi_container_site_pv" style="display: none">
+            总访问量 
+            <span id="busuanzi_value_site_pv"></span>
+             次
+          </span>
+      
+      
+        <!-- 不蒜子统计UV -->
+        <span id="busuanzi_container_site_uv" style="display: none">
+            总访客数 
+            <span id="busuanzi_value_site_uv"></span>
+             人
+          </span>
+      
+    
+  </div>
+
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  
+    <script  src="https://cdn.jsdelivr.net/npm/tocbot@4/dist/tocbot.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4/anchor.min.js" ></script>
+  
+  
+    <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js" ></script>
+  
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+        typing(title);
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>

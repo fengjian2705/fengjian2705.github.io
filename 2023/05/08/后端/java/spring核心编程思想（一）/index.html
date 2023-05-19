@@ -1,0 +1,1215 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="风间">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="1. Spring Framework 总览   内容 说明    准备工作 学习 Spring Framework 需要哪些前期铺垫   特性总览 了解 Spring Framework 提供了哪些功能特性   版本特性 关于版本分布与特性之间的关系   模块化设计 Spring 如何从单一的模块划分成不同的模块   对 Java 语言特性的运用 Spring 每个版本的语言支持   对 JDK">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Spring 核心编程思想（一）：Spring Framework 总览">
+<meta property="og:url" content="http://example.com/2023/05/08/%E5%90%8E%E7%AB%AF/java/spring%E6%A0%B8%E5%BF%83%E7%BC%96%E7%A8%8B%E6%80%9D%E6%83%B3%EF%BC%88%E4%B8%80%EF%BC%89/index.html">
+<meta property="og:site_name" content="风间小栈">
+<meta property="og:description" content="1. Spring Framework 总览   内容 说明    准备工作 学习 Spring Framework 需要哪些前期铺垫   特性总览 了解 Spring Framework 提供了哪些功能特性   版本特性 关于版本分布与特性之间的关系   模块化设计 Spring 如何从单一的模块划分成不同的模块   对 Java 语言特性的运用 Spring 每个版本的语言支持   对 JDK">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://s3.bmp.ovh/imgs/2023/05/05/55a1ab8e31eb229d.jpg">
+<meta property="article:published_time" content="2023-05-08T01:46:03.864Z">
+<meta property="article:modified_time" content="2023-05-08T01:46:03.864Z">
+<meta property="article:author" content="风间">
+<meta property="article:tag" content="spring">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://s3.bmp.ovh/imgs/2023/05/05/55a1ab8e31eb229d.jpg">
+  
+  
+  <title>Spring 核心编程思想（一）：Spring Framework 总览 - 风间小栈</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4/github-markdown.min.css" />
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hint.css@2/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.css" />
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.8.13","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":"§"},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>风间小栈</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/%E6%96%87%E6%9C%AC.jpg') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="Spring 核心编程思想（一）：Spring Framework 总览">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2023-05-08 09:46" pubdate>
+        2023年5月8日 上午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      15k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      127 分钟
+    </span>
+  
+
+  
+  
+    
+      <!-- 不蒜子统计文章PV -->
+      <span id="busuanzi_container_page_pv" style="display: none">
+        <i class="iconfont icon-eye" aria-hidden="true"></i>
+        <span id="busuanzi_value_page_pv"></span> 次
+      </span>
+    
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">Spring 核心编程思想（一）：Spring Framework 总览</h1>
+            
+            <div class="markdown-body">
+              <h2 id="1-Spring-Framework-总览"><a href="#1-Spring-Framework-总览" class="headerlink" title="1. Spring Framework 总览"></a>1. Spring Framework 总览</h2><table>
+<thead>
+<tr>
+<th>内容</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>准备工作</td>
+<td>学习 Spring Framework 需要哪些前期铺垫</td>
+</tr>
+<tr>
+<td>特性总览</td>
+<td>了解 Spring Framework 提供了哪些功能特性</td>
+</tr>
+<tr>
+<td>版本特性</td>
+<td>关于版本分布与特性之间的关系</td>
+</tr>
+<tr>
+<td>模块化设计</td>
+<td>Spring 如何从单一的模块划分成不同的模块</td>
+</tr>
+<tr>
+<td>对 Java 语言特性的运用</td>
+<td>Spring 每个版本的语言支持</td>
+</tr>
+<tr>
+<td>对 JDK API 实践</td>
+<td>Spring 对 Java API 的整合和实践</td>
+</tr>
+<tr>
+<td>对 Java EE API 的整合</td>
+<td>Spring 对 Java EE 的整合，比如 Servlet 规范、JPA 规范等等</td>
+</tr>
+<tr>
+<td>编程模型</td>
+<td>Spring 是如何实践和实现 Java 编程模型的一个示范</td>
+</tr>
+<tr>
+<td>核心价值</td>
+<td>Spring 对我们日常开发和一些架构学习中带来哪些重要特性</td>
+</tr>
+<tr>
+<td>面试题精选</td>
+<td>-</td>
+</tr>
+</tbody></table>
+<h2 id="2-准备工作"><a href="#2-准备工作" class="headerlink" title="2. 准备工作"></a>2. 准备工作</h2><ul>
+<li><strong>心态</strong></li>
+</ul>
+<p>​    戒骄戒躁 谨慎豁达 如履薄冰</p>
+<ul>
+<li><strong>方法</strong></li>
+</ul>
+<p>​    基础：夯实基础，了解动态</p>
+<p>​    思考：保持怀疑，验证一切</p>
+<p>​    分析：不拘小节，观其大意</p>
+<p>​    实践：思辨结合，学以致用</p>
+<ul>
+<li><strong>工具</strong></li>
+</ul>
+<p>​    JDK: Oracle JDK 8</p>
+<p>​    Spring Framwork：5.2.2.RELEASE</p>
+<p>​    IDE: InteliJ IDEA 2022</p>
+<p>​    MAVEN: 3.2+</p>
+<h2 id="3-特性总览"><a href="#3-特性总览" class="headerlink" title="3. 特性总览"></a>3. 特性总览</h2><h3 id="3-1-核心特性（Core）"><a href="#3-1-核心特性（Core）" class="headerlink" title="3.1 核心特性（Core）"></a>3.1 核心特性（Core）</h3><ul>
+<li><p>IoC 容器(loCContainer)</p>
+</li>
+<li><p>Spring 事件(Events)</p>
+</li>
+<li><p>资源管理(Resources)</p>
+</li>
+<li><p>国际化(i18n)</p>
+</li>
+<li><p>校验(Validation)</p>
+</li>
+<li><p>数据绑定(DataBinding)</p>
+</li>
+<li><p>类型转换(TypeConversion)</p>
+</li>
+<li><p>Spring 表达式(Spring Express Language)</p>
+</li>
+<li><p>面向切面编程(AOP)</p>
+</li>
+</ul>
+<h3 id="3-2-数据存储（Data-Access）"><a href="#3-2-数据存储（Data-Access）" class="headerlink" title="3.2 数据存储（Data Access）"></a>3.2 数据存储（Data Access）</h3><ul>
+<li><p>JDBC</p>
+</li>
+<li><p>事务抽象(Transactions)</p>
+</li>
+<li><p>DAO 支持(DAOSupport)</p>
+</li>
+<li><p>O/R 映射 (O/R Mapping)</p>
+</li>
+<li><p>XML编列(XML Marshalling) </p>
+</li>
+</ul>
+<h3 id="3-3-Web技术-Web"><a href="#3-3-Web技术-Web" class="headerlink" title="3.3 Web技术(Web)"></a>3.3 Web技术(Web)</h3><ul>
+<li>Web Servlet 技术栈</li>
+</ul>
+<p>​    Spring MVC</p>
+<p>​    WebSocket</p>
+<p>​    SockJS</p>
+<ul>
+<li>Web Reactive 技术栈</li>
+</ul>
+<p>​    Spring WebFlux</p>
+<p>​    WebClient</p>
+<p>​    WebSocket</p>
+<h3 id="3-4-技术整合-Integration"><a href="#3-4-技术整合-Integration" class="headerlink" title="3.4 技术整合(Integration)"></a>3.4 技术整合(Integration)</h3><ul>
+<li><p>远程调用(Remoting)</p>
+</li>
+<li><p>Java 消息服务(JMS)</p>
+</li>
+<li><p>Java 连接架构(JCA)</p>
+</li>
+<li><p>Java 管理扩展(JMX)</p>
+</li>
+<li><p>Java 邮件客户端(Email)</p>
+</li>
+<li><p>本地任务(Tasks)</p>
+</li>
+<li><p>本地调度(Scheduling)</p>
+</li>
+<li><p>缓存抽象(Caching)</p>
+</li>
+<li><p>Spring 测试(Testing)</p>
+<p>模拟对象(Mock Objects)</p>
+<p>TestContext 框架(TestContext Framework)</p>
+<p>SpringMVC 测试(SpringMVCTest)</p>
+<p>Web 测试客户端(WebTestClient)</p>
+</li>
+</ul>
+<h2 id="4-版本特性"><a href="#4-版本特性" class="headerlink" title="4. 版本特性"></a>4. 版本特性</h2><p>Java 版本依赖与支持</p>
+<table>
+<thead>
+<tr>
+<th>Spring Framework 版本</th>
+<th>Java 标准版</th>
+<th>Java 企业版</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1.x</td>
+<td>1.3+</td>
+<td>J2EE 1.3 +</td>
+</tr>
+<tr>
+<td>2.x</td>
+<td>1.4.2+</td>
+<td>J2EE 1.3 +</td>
+</tr>
+<tr>
+<td>3.x</td>
+<td>5+</td>
+<td>J2EE 1.4 和 Java EE 5</td>
+</tr>
+<tr>
+<td>4.x</td>
+<td>6+</td>
+<td>Java EE 6 和 7</td>
+</tr>
+<tr>
+<td>5.x</td>
+<td>8+</td>
+<td>Java EE 7</td>
+</tr>
+</tbody></table>
+<p><strong>tips：</strong></p>
+<ul>
+<li>Java5 之前的 Java 的标准版叫 J2SE，就是 Java2 然后 Standard E这个版本。</li>
+<li>Java5 之前的 Java 的企业版叫 J2EE。</li>
+</ul>
+<h3 id="1-x-版本"><a href="#1-x-版本" class="headerlink" title="1.x 版本"></a>1.x 版本</h3><ol>
+<li><p>为什么从 1.3 开始？</p>
+<p>因为Spring Framework的早期的版本叫什么，interface21，那么这个版本其实就依赖于 Java1.3，Java1.3 引入了一个非常重要的特性是什么，就是动态代理。</p>
+<p>从 Java1.3 开始就会针对接口的方式来进行动态代理，那么这是实现 AOP 的一个很重要的环节，因此 Spring 的第 1 个版本就必须依赖 Java1.3。</p>
+</li>
+<li><p>那么与此同时它支持的 JavaEE 版本是 1.3，这个版本一个简单特性就是 Servlet 的 API 对应的 JavaEE 的版本是 1.3，Servlet 的版本是 2.3 这个版本，2.3 这个版本它在里面会支持 Servlet 事件，那么因此它可以和我们的 Spring的事件来进行一个呼应，他们都是 Java 标准事件的实现。</p>
+</li>
+</ol>
+<h3 id="2-x-版本"><a href="#2-x-版本" class="headerlink" title="2.x 版本"></a>2.x 版本</h3><p>这个版本里面主要是支持了一些包括我们常见的比如说NIO的支持，那么这时候JavaEE的企业版本并没有做太多的更新，它还是支持到了JavaEEJ2EE的1.3这个版本</p>
+<h3 id="3-x-版本"><a href="#3-x-版本" class="headerlink" title="3.x 版本"></a>3.x 版本</h3><p>3.x 其实是比较重大的版本，Spring 从 3 这个版本开始引入到大量的注解，所以它需要的支持的版本是 Java5，因为我们知道 Java5 里面会提升到一些注解，包括注解、枚举这样的东西，所以在 3 里面会引入它大量的注解和枚举。所以这个时候版本的要求最低的Java标准版的要求是Java5。</p>
+<p>那么对应的 JavaEE 的版本，这里是指的是支持的版本，从 J2EE 1.4到 Java EE 5，那么这个版本就这么一个过渡过程。</p>
+<p>那么 3 为什么非常重要，因为3基本上确定了 Spring Framework 的一个内核，这个内核是比较多的，包括比如说注解驱动、事件驱动，包括一些AOP的支持，它都是这个版本做的比较完善。</p>
+<h3 id="4-x-版本和-5-x-版本"><a href="#4-x-版本和-5-x-版本" class="headerlink" title="4.x 版本和 5.x 版本"></a>4.x 版本和 5.x 版本</h3><p>那么4这个版本基本上在3的版本上面增加了一些新的东西，那么主要是一些细节性的东西，包括注解上面的提升，包括利用 Java8 里面的API来进行提升，那么当然它这个4版本并不要求一定是 Java8，那么它最低要求是 Java6 就可以了。那么这是为了照顾到更多的人去使用到 Spring Framework 4这个版本。</p>
+<p>那么与此同时从 SpringFramework 4 开始也是对于 Spring Boot 1.x的一个支持，那么1.x就是说 Spring Boot 的 1 版本，也就说 Spring Boot的 1.x 版本它是基于Spring4来进行开发的，那么 SpringBoot2 是基于 Spring Framework 5 来开发的。所以你会看到它的一个区别点，那么从5开始对应的是Java EE 7。</p>
+<p>其实这个时候从 Spring4 开始，其实 Spring 的翅膀就非常硬了，它对 JavaEE 的支持其实是一种若即若离的那种感觉，所以因此基本上从 4 开始形成了自己的体系，尤其 Spring Boot 起来之后，包括Spring Cloud 出现之后，基本上它的完整的体系就已经生成了。</p>
+<h2 id="5-模块化设计"><a href="#5-模块化设计" class="headerlink" title="5. 模块化设计"></a>5. 模块化设计</h2><p>Spring 大概分了 20 个模块：</p>
+<p>spring-aop：面向接口编程</p>
+<p>spring-aspects：Spring 对 aspects 的支持</p>
+<p>spring-jms：JMS 其实是 Java Message Service 的一个缩写，比如说Java的一个消息服务，那么这里可以对应的比如说 Apache 的 ActiveMQ 或者其他传统的 JavaEE 的消息中间件，那么这部分内容只针对于说我们的 JMS 规范来进行实施的，那么因此它会利用到大量的 JMS 的 API 来进行实现    </p>
+<p>spring-context-indexer</p>
+<p>spring-context-support</p>
+<p>spring-context:</p>
+<p>spring-beans：spring-beans和spring-context合成起来就是Spring IoC的一个重要的核心的实现，无论是 spring-beans 还是 spring-context，都是通过 spring-core 来进行支持的</p>
+<p>spring-core：spring-core就包含了一些关于 Java 语法的特性的支持以及林林总总</p>
+<p>spring-messaging：Spring想统一一下消息服务的一个实现，那么包括了我们说的JMS包括了Kafka，包括 RocketMQ 或者是 RabbitMQ，它都会有一个统一的实现的一个标准，那么这个东西也和JMS也是一样的，JMS 过去是希望通过一套标准的 API 来统一比如说 MQ 或者是比如说 WebLogicMQ 或者是 WebSphereMQ 的一个实现，那么 Spring 它的野心更大，它希望通过它自己 API 来帮助大家实现最简单或者是最好用的一个API的体验</p>
+<p>spring-orm：就是我们比如说 Hibernate、JPA 这种东西的一个进行整合</p>
+<p>spring-oxm：就是我们前面讲的XML编列，就是 marshal 和 unmarshal 这么一个东西，也就说这是XML里面的序列化和反序列化，这个东西是一个新的模块，Spring进行单独的一个维护</p>
+<p>spring-test：这个测试包含了我们前面讲的 Mock 对象，包括我们说的 TestContext，比如说测试上下文，还包括 Spring 的 MVC 的测试，以及WebClient的测试，Web客户端的测试</p>
+<p>spring-tx：tx其实是transaction的缩写，就是我们常讲的就是我们说Spring的事务抽象，这部分其实对于大家来说是非常重点，它是基本上借鉴了 JDBC 的一部分一个事务实现以及 Java EE 尤其是 EJB的一个事务实现，做一个统一的封装</p>
+<p>spring-web：</p>
+<p>spring-webflux：</p>
+<p>spring-webmvc：</p>
+<p>spring-websocket：</p>
+<p>spring-expression：Spring的表达式语言，从 Spring 3 开始进行引入的，那么它类似于像 JSP 里面的 EL 语言</p>
+<p>spring-instrument：这是 Spring 2开始之时对我们的Java的装配，简单讲就是 Java 的 agent 的一个支持</p>
+<p>spring-jcl：那么这个模块是从 Spring 5开始支持的，因为我们知道我们过去运用过另外一个模块，就是关于 commons-logging，commons-logging 是统一了 Java 的 logging，就是 Java 的日志和Log4j 这个日志，那么 Java logging 之后又出现了一个 Loqback，Logback它是个新型的一个日志框架，那么又用到了 SLF4J，SLF4j 就相当于说又把 Java logging、我们的Log4j和我们的 Logback 来进行统一，那么Spring为了解决这个情况,它自己用一套新型的日志框架,那么就是我们说的JCL这个框架,那么这个框架会帮助Spring来统一它的日志管理。</p>
+<p>spring-jdbc：是Spring对JDBC的一个整合</p>
+<h2 id="6-对-Java-语言特性的运用"><a href="#6-对-Java-语言特性的运用" class="headerlink" title="6. 对 Java 语言特性的运用"></a>6. 对 Java 语言特性的运用</h2><p><img src="https://s3.bmp.ovh/imgs/2023/05/05/46524e0cf73a3fbe.png" srcset="/img/loading.gif" lazyload></p>
+<ul>
+<li><p>2004 是 Spring Framework 发布的年份，所以 Spring 在支持的时候，他在支持第一个版本的时候，他只要支持到 Java 的 1.3，不需要到 1.5，但他要考虑到 1.5 的支持，比如后面我们讲的 Spring 1.2 的版本的时候就开始支持了，比如我们常说的 Java 管理扩展，就是 Java Management Extensions，那么这个版本里面的分布就包括这么一些特性，包括枚举、泛型、注解、封箱或拆箱这么一些特性</p>
+</li>
+<li><p>那么 Java6 其实没有在 Java5 的基础上面做很多支持，只允许在接口上面增加 @Override，这个注解其实是强制要求子类或者子接口要覆盖父类或者父接口里面那个方法，那么过去在类里面是可以打的，那么@Override我们也知道它是新的一个注解的方式，在Java 5里面被引用到了，但是在接口上面是从Java6开始支持的。这部分特性其实在Spring里面体现的并不是非常的多，同时我们用的时候基本上也感知不到</p>
+</li>
+<li><p>对 Java7 主要有两大特点，第1个是 Diamond 语法，Diamond 语法简单是这么个意思，就是在我们用集合的时候我们要用到泛型类型，比如说一个 List，它的集合的元素类型的是 String，那么在newArrayList 的时候。就 new 数组的实现的时候，String 括号里面的东西可写可不写。不写的时候就是Diamond语法，写的时候就非Diamond语法。</p>
+<p>还有一个就是多 Catch，多 Catch 新语法特性就是当你的一个 Exception 就是一个代码在执行的时候可能会遇到多个异常，那么这时候可以用一句话把多个异常来重新捕获那么这个东西在Spring的实现里面也有体现。</p>
+<p>再来就是关于 Try resource，那么我们前面提到的东西一个专业术语叫 ARM（Automatic Resource Management），比如说我们在关闭 IO 的时候我们要调用一个 close 方法，那么通过try-with-resources 语法之后，可以不用强制去调 IO，其实这只是个语法层面的一个变化，底层还是会动态字节码生成一个close方法来调用</p>
+</li>
+<li><p>Java8一个非常显著的特点是支持在Lambda语法以及可重复注解，我们通常来说一个注解只能在一个类或一个方法上面标注一次，那么从 Java8 开始可以一个类或一个方法上面可以标注多个注解，那么这就是所谓的可重复注解。</p>
+<p>还有一个就是类型注解，类型注解是个新的一个注解的方式，那么在Spring里面体现的并不是太多，从Java 9和Java 10开始，Spring Framework 5里面并没有提供Java 9和Java10之后的语法的或者API的支持，因为他考虑到Java9由于模块化的实现之后，其实Java社区产生了一定的分裂，就是说还是保留在Java8版本的可能是一个常态，那么或许Java9或者Java10它这种短期支持版本不太会长存，那么可能会寻找更长支持的版本。</p>
+</li>
+</ul>
+<h3 id="Java5-语法特性"><a href="#Java5-语法特性" class="headerlink" title="Java5 语法特性"></a>Java5 语法特性</h3><table>
+<thead>
+<tr>
+<th>语法特性</th>
+<th>Spring支持版本</th>
+<th>代表实现</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>注解(Annotation)</td>
+<td>1.2 +</td>
+<td>@Transactional</td>
+</tr>
+<tr>
+<td>枚举(Enumeration)</td>
+<td>1.2 +</td>
+<td>Propagation</td>
+</tr>
+<tr>
+<td>for-each语法</td>
+<td>3.0+</td>
+<td>AbstractApplicationContext</td>
+</tr>
+<tr>
+<td>自动装箱(AutoBoxing)</td>
+<td>3.0+</td>
+<td></td>
+</tr>
+<tr>
+<td>泛型(Generic)</td>
+<td>3.0+</td>
+<td>ApplicationListener</td>
+</tr>
+</tbody></table>
+<ul>
+<li>注解(Annotation)：</li>
+</ul>
+<h3 id="Java6-语法特性"><a href="#Java6-语法特性" class="headerlink" title="Java6 语法特性"></a>Java6 语法特性</h3><table>
+<thead>
+<tr>
+<th>语法特性</th>
+<th>Spring支持版本</th>
+<th>代表实现</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>接口 @Override</td>
+<td>4.0 +</td>
+<td></td>
+</tr>
+</tbody></table>
+<h3 id="Java7-语法特性"><a href="#Java7-语法特性" class="headerlink" title="Java7 语法特性"></a>Java7 语法特性</h3><table>
+<thead>
+<tr>
+<th>语法特性</th>
+<th>Spring支持版本</th>
+<th>代表实现</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Diamond 语法</td>
+<td>5.0 +</td>
+<td>DefaultListableBeanFactory</td>
+</tr>
+<tr>
+<td>try-with-resources 语法</td>
+<td>5.0 +</td>
+<td>ResourceBundleMessageSource</td>
+</tr>
+</tbody></table>
+<h3 id="Java8-语法特性"><a href="#Java8-语法特性" class="headerlink" title="Java8 语法特性"></a>Java8 语法特性</h3><table>
+<thead>
+<tr>
+<th>语法特性</th>
+<th>Spring支持版本</th>
+<th>代表实现</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Lambda语法</td>
+<td>5.0 +</td>
+<td>PropertyEditorRegistrySupport</td>
+</tr>
+</tbody></table>
+<h2 id="7-对-JDK-API-实践"><a href="#7-对-JDK-API-实践" class="headerlink" title="7. 对 JDK API 实践"></a>7. 对 JDK API 实践</h2><h3 id="7-1-JDK-核心-API"><a href="#7-1-JDK-核心-API" class="headerlink" title="7.1 JDK 核心 API"></a>7.1 JDK 核心 API</h3><table>
+<thead>
+<tr>
+<th>JDK 版本</th>
+<th>核心 API</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>&lt; Java5</td>
+<td>反射(Reflection)<br/>Java Beans<br/>动态代理(Dynamic Proxy)</td>
+</tr>
+<tr>
+<td>Java5</td>
+<td>并发框架(J.U.C)<br/>格式化(Formatter)<br/>Java管理扩展(JMX)<br/>Instrumentation<br/>XML处理(DOM、SAX、XPath、<br/>XSTL)</td>
+</tr>
+<tr>
+<td>Java6</td>
+<td>JDBC 4.0 (JSR 221)<br/>JAXB 2.0 (JSR 222)<br/>可插拔注解处理API(JSR269)<br/>Common Annotations (JSR 250)<br/>Java Compiler API (JSR 199)<br/>Scripting in JVM (JSR 223)</td>
+</tr>
+<tr>
+<td>Java7</td>
+<td>NIO 2 (JSR 203)<br/>Fork/Join框架(JSR 166)<br/>invokedynamic字节码(JSR 292)</td>
+</tr>
+<tr>
+<td>Java8</td>
+<td>Stream API (JSR 335)<br/>CompletableFuture (J.U.C)<br/>Annotation on Java Types (JSR 308)<br/>Date and Time API (JSR 310)<br/>可重复Annotations(JSR 337)<br/>JavaScript运行时(JSR 223)</td>
+</tr>
+<tr>
+<td>Java9</td>
+<td>Reactive Streams Flow API (J.U.C)<br/>Process API Updates (JEP 102)<br/>Variable Handles (JEP 193)<br/>Method Handles (JEP 277)<br/>Spin-Wait Hints (JEP 285)<br/>Stack-Walking API (JEP 259)</td>
+</tr>
+</tbody></table>
+<p>**tips: **JSR 是 Java Specification Request 的缩写，是 Java 规范请求</p>
+<h3 id="7-2-Spring-对-JDK-API-实践"><a href="#7-2-Spring-对-JDK-API-实践" class="headerlink" title="7.2 Spring 对 JDK API 实践"></a>7.2 Spring 对 JDK API 实践</h3><h3 id="lt-Java-5-API"><a href="#lt-Java-5-API" class="headerlink" title="&lt; Java 5 API"></a>&lt; Java 5 API</h3><table>
+<thead>
+<tr>
+<th>API类型</th>
+<th>Spring支持版本</th>
+<th>代表实现</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>反射(Reflection)</td>
+<td>1.0 +</td>
+<td>MethodMatcher</td>
+</tr>
+<tr>
+<td>Java Beans</td>
+<td>1.0 +</td>
+<td>Cachedlntrospection Results</td>
+</tr>
+<tr>
+<td>动态代理(Dynamic Proxy)</td>
+<td>1.0 +</td>
+<td>JdkDynamicAopProxy</td>
+</tr>
+<tr>
+<td>XML 处理(DOM,SAX…)</td>
+<td>1.0 +</td>
+<td>XmlBeanDefinition Reader</td>
+</tr>
+<tr>
+<td>Java管理扩展(JMX)</td>
+<td>1.2 +</td>
+<td>@ManagedResource</td>
+</tr>
+<tr>
+<td>Instrumentation</td>
+<td>2.0 +</td>
+<td>InstrumentationSavingAgent</td>
+</tr>
+<tr>
+<td>并发框架(J.U.C)</td>
+<td>3.0+</td>
+<td>ThreadPoolTaskScheduler</td>
+</tr>
+<tr>
+<td>格式化(Formatter)</td>
+<td>3.0+</td>
+<td>DateFormatter</td>
+</tr>
+</tbody></table>
+<p><strong>tips:</strong> J.U.C 是 java.util.cocurrent 的缩写</p>
+<h3 id="Java-6-API"><a href="#Java-6-API" class="headerlink" title="Java 6 API"></a>Java 6 API</h3><table>
+<thead>
+<tr>
+<th>API类型</th>
+<th>Spring支持版本</th>
+<th>代表实现</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>JDBC 4.0 (JSR 221)</td>
+<td>1.0+</td>
+<td>JdbcTemplate</td>
+</tr>
+<tr>
+<td>Common Annotations (JSR 250)</td>
+<td>2.5+</td>
+<td>CommonAnnotationBeanPostProcessor</td>
+</tr>
+<tr>
+<td>JAXB 2.0 (JSR 222)</td>
+<td>3.0+</td>
+<td>Jaxb2Marshaller</td>
+</tr>
+<tr>
+<td>Scripting in JVM (JSR 223)</td>
+<td>4.2+</td>
+<td>StandardScriptFactory</td>
+</tr>
+<tr>
+<td>可插拔注解处理API(JSR 269)</td>
+<td>5.0+</td>
+<td>@Indexed</td>
+</tr>
+<tr>
+<td>Java Compiler API (JSR 199)</td>
+<td>5.0+</td>
+<td>TestCompiler(单元测试)</td>
+</tr>
+</tbody></table>
+<ul>
+<li><p>JAXB 是 Java API for XML Binding 的缩写，就是说 JavaAPI 去绑定 XML 的实现，里面就会有个 marshal、unmarshal 的操作。</p>
+</li>
+<li><p>由于Spring Boot 大量的支持之后，注解的使用需求出现了急剧性的膨胀，这个事情出现一个问题，注解的实现就来自于两个方面，一个是 ASM，一个是属于标准的 Java 反射，那么无论哪种方式都是在运行时的时候来进行实现的，那么有没有一种方法通过编译时来进行实现，那么方法是有的，那么我们说的 @Indexed 就是在我们传统的 Component 的基础上面，编译时把我的API去做一个相当于说建立索引能够帮助我快速的定位到到底哪个类建了 Component 索引，那么这时候我就可以定位到类而不需要逐一的将所有类进行逐一扫描。我们知道比如说我们说 Spring Framework里面有个标准的注解@ComponentScan，那么 scan 里面会指定一个 basePackages，那么你可以指定一个或多个这样的一个标准路径来进行扫描。那么这个注解打完之后，在编译时的时候它不需要扫描只要读取一个归位的路径得到了一个索引文件然后得到相应的类那么相当于说就减少了一个 scanning，一个运行时时间上操作</p>
+</li>
+</ul>
+<h3 id="Java-7-API"><a href="#Java-7-API" class="headerlink" title="Java 7 API"></a>Java 7 API</h3><p>可以使用Markdown表格来整理这些内容，如下所示：</p>
+<table>
+<thead>
+<tr>
+<th>API类型</th>
+<th>Spring支持版本</th>
+<th>代表实现</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Fork/Join框架(JSR 166)</td>
+<td>3.1+</td>
+<td>ForkJoinPoolFactoryBean</td>
+</tr>
+<tr>
+<td>NIO 2 (JSR 203)</td>
+<td>4.0+</td>
+<td>Path Resource</td>
+</tr>
+</tbody></table>
+<h3 id="Java-8-API"><a href="#Java-8-API" class="headerlink" title="Java 8 API"></a>Java 8 API</h3><p>可以使用Markdown表格来整理这些内容，如下所示：</p>
+<table>
+<thead>
+<tr>
+<th>API类型</th>
+<th>Spring支持版本</th>
+<th>代表实现</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Date and Time API (JSR 310)</td>
+<td>4.0+</td>
+<td>DateTimeContext</td>
+</tr>
+<tr>
+<td>可重复Annotations(JSR 337)</td>
+<td>4.0+</td>
+<td>@PropertySources</td>
+</tr>
+<tr>
+<td>Stream API (JSR 335)</td>
+<td>4.2+</td>
+<td>StreamConverter</td>
+</tr>
+<tr>
+<td>CompletableFuture (J.U.C)</td>
+<td>4.2+</td>
+<td>CompletableToListenableFutureAdapter</td>
+</tr>
+</tbody></table>
+<h2 id="8-对-Java-EE-API-的整合"><a href="#8-对-Java-EE-API-的整合" class="headerlink" title="8. 对 Java EE API 的整合"></a>8. 对 Java EE API 的整合</h2><h3 id="8-1-Java-EE-Web-技术相关"><a href="#8-1-Java-EE-Web-技术相关" class="headerlink" title="8.1 Java EE Web 技术相关"></a>8.1 Java EE Web 技术相关</h3><table>
+<thead>
+<tr>
+<th>JSR 规范</th>
+<th>Spring支持版本</th>
+<th>代表实现</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Servlet + JSP(JSR 035)</td>
+<td>1.0+</td>
+<td>DispatcherServlet, JstlView</td>
+</tr>
+<tr>
+<td>JSTL(JSR 052)</td>
+<td>1.0+</td>
+<td>JstlView</td>
+</tr>
+<tr>
+<td>JavaServer Faces(JSR 127)</td>
+<td>2.0-4.2</td>
+<td>FacesContextUtils</td>
+</tr>
+<tr>
+<td>Portlet(JSR 168)</td>
+<td>2.0-4.2</td>
+<td>DispatcherPortlet</td>
+</tr>
+<tr>
+<td>SOAP(JSR 067)</td>
+<td>2.5+</td>
+<td>SoapFaultException</td>
+</tr>
+<tr>
+<td>WebServices(JSR 109)</td>
+<td>2.5+</td>
+<td>CommonAnnotationBeanPostProcessor</td>
+</tr>
+<tr>
+<td>WebSocket(JSR 356)</td>
+<td>4.0+</td>
+<td>WebSocketHandler</td>
+</tr>
+</tbody></table>
+<ul>
+<li><p>Servlet + JSP(JSR 035)：是 Spring MVC 的一个核心实现标准，那么 Servlet 有 API，JSP 也有 API,这就会涉及两部分内容，通常来说我们最熟悉的就是 DispatcherServlet，他最核心的还是 Servlet API 的一个运用，包括他有很多 FrameworkServlet 的一个知识的扩展。除此之外 DispatcherSerlet 还负责一个事情，就是视图的渲染，包括 JSP 的视图</p>
+</li>
+<li><p>JSTL(JSR 052)：在 JSP 基础上做一些标签的扩展，比如说我们熟悉的 Struts 标签也是个方面</p>
+</li>
+<li><p>JavaServer Faces(JSR 127)：视图渲染技术，通过服务端的方式来保存一些状态</p>
+</li>
+<li><p>Portlet(JSR 168)：和 Servlet 是对应的，Servlet 主要关注 Web 方面，Portlet 主要关注于我们的门户，那么门户其实之前有个单独的实现，就是 JSR168 实现</p>
+</li>
+<li><p>SOAP(JSR 067)：SOAP 协议是 WebService 的一个通讯协议，全称是 Simple Object Access Protocol（简单对象访问协议）</p>
+</li>
+</ul>
+<h3 id="8-2-Java-EE-数据存储相关"><a href="#8-2-Java-EE-数据存储相关" class="headerlink" title="8.2 Java EE 数据存储相关"></a>8.2 Java EE 数据存储相关</h3><table>
+<thead>
+<tr>
+<th>JSR 规范</th>
+<th>Spring支持版本</th>
+<th>代表实现</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>JDO(JSR 12)</td>
+<td>1.0-4.2</td>
+<td>JdoTemplate</td>
+</tr>
+<tr>
+<td>JTA(JSR 907)</td>
+<td>1.0+</td>
+<td>JtaTransactionManager</td>
+</tr>
+<tr>
+<td>JPA(EJB 3.0 JSR 220的成员)</td>
+<td>2.0+</td>
+<td>JpaTransactionManager</td>
+</tr>
+<tr>
+<td>Java Caching API(JSR 107)</td>
+<td>3.2+</td>
+<td>JCacheCache</td>
+</tr>
+</tbody></table>
+<ul>
+<li><p>JDO(JSR 12)：JDO其实是JPA早期的一个或者说一个半成品，它在Spring框架里面从1.0到4.2予以支持，那么对应的代表作就是 JdoTemplate，它和 JdbcTemplate 是类似的，都是那种模板的方式来进行回调，那么这个东西在5.0之后不支持了，这里我们看出来这里从1.0到4.2，4.2其实就4X最后一个版本</p>
+</li>
+<li><p>JTA(JSR 907)：JTA的全称是Java Transaction API，就是 Java 的一个事务API那么它也是个标准，那么这个标准其实早在1.0就已经支持了，其实 Spring 的我们说的事务的抽象其实并不是它自己发明的，而是在前人基础上面来做了一些封装，那么第二个就是我们的JTA这个情况</p>
+</li>
+<li><p>JPA(EJB 3.0 JSR 220的成员)：它是作为 EJB3.0 的一个子成员，比如说EJBJSR220的一个子成员，那么它最新的版本已经到了2.1这个版本，那么JPA我们这里最开始支持的是 JPA1.0 版本，1.0 版本其实是注解驱动的方式进行存储，我们的一个 POJO 就是相当于类似于 Hibernate 的方式进行存储,对应的代表作就是 JpaTransactionManager,一个比较有意思的是在 JTA 里面也是叫 Transaction Manager，在JPA里面也有Transaction Manager，那么就说明什么，它们在事务上面Spring做了统一的封装</p>
+</li>
+<li><p>Java Caching API(JSR 107)：那么就是JSR 107这个API其实是一个NoSQL的一个实现，就说它就是 Key-Value 存储，那么这个版本也是较晚支持的，也就是说在 Spring3.2 开始支持的，那么这里有一个实现，就是说Spring自己有个 Cache 的一个实现，那么结合它的实现来进行统一的实现</p>
+</li>
+</ul>
+<h3 id="8-3-Java-EE-Bean-技术相关"><a href="#8-3-Java-EE-Bean-技术相关" class="headerlink" title="8.3 Java EE Bean 技术相关"></a>8.3 Java EE Bean 技术相关</h3><table>
+<thead>
+<tr>
+<th>JSR 规范</th>
+<th>Spring支持版本</th>
+<th>代表实现</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>JMS(JSR 914)</td>
+<td>1.1+</td>
+<td>JmsTemplate</td>
+</tr>
+<tr>
+<td>EJB 2.0 (JSR 19)</td>
+<td>1.0+</td>
+<td>AbstractStatefulSessionBean</td>
+</tr>
+<tr>
+<td>Dependency Injection for Java(JSR 330)</td>
+<td>2.5+</td>
+<td>AutowiredAnnotationBeanPostProcessor</td>
+</tr>
+<tr>
+<td>Bean Validation(JSR 303)</td>
+<td>3.0+</td>
+<td>LocalValidatorFactoryBean</td>
+</tr>
+</tbody></table>
+<ul>
+<li><p>JMS(JSR 914)：看起来和我们的 Java Bean 没有太大关系，JMS 其实在 EJB 里面有另外一个类似的称呼，叫做消息驱动 Bean，就是 Message Driven 然后 Bean 的一个方式。</p>
+<p>那么JMS它的JSR规范是914，同时它在1.1的时候就开始予以支持了，那么Spring它也支持到JMS的一个1.2的规范。那么我们可以看出来它也是这种Template的方式来进行操作，就是JmsTemplate。那么和我们Jdbc它们俩也是类似的</p>
+</li>
+<li><p>EJB 2.0 (JSR 19)：我们说JMS早期是用到 EJB 里面的，所以 EJB2.0 的时候就已经开始支持了，那么也包括了 EJB 里面主要的有三种，有代表性的一个 Bean，一种是有状态 Bean，就是我们后面看到一个代表实现，这里是AbstractStatefulSession，那么就是有状态 Bean。有一种是无状态 Bean 就是 Stateless，就是说它这种无状态的 Bean。第三种 Bean 就是我们说的消息驱动 Bean，还有第四种，就是说我们把无状态 Bean和有状态 Bean 都分为会话 Bean 就是 SessionBean，那么第三种就是我们的JPA里面的存储的 Bean，就是我们持久化那个 Bean，这是我们前面所提到的事情</p>
+</li>
+<li><p>Dependency Injection for Java(JSR 330)：依赖注入 for API，那么依赖注入for API 其实这个东西也要感谢 Spring，这个地方是 Rod Johnson 来 Leader 这个 JSR 来进行支持的，也就是说他把以往的 Spring 里面的 Autowired 注解变成了 Injected 的注解提交给了JSR官方也是提交给Java的官方，然后他们来进行讨论。那么就成功地引用去了，那么这个实现就说在Spring里面的Autowired实现和Injected实现都放在了AutowiredAnnotationBeanPostProcessor代码里来实现</p>
+</li>
+<li><p>Bean Validation(JSR 303)：它其实也是由Hibernate团队里面的人来进行维护和进行引导的，那么在Spring 3.0版本开始就已经开始支持了，那么这个版本里面就会有一个非常有意思情况，就是说其实它是一个适配情况，就是说它把Spring校验和Bean的校验的规范做了融合，就形成了 LocalValidatorFactoryBean</p>
+</li>
+</ul>
+<p><strong>tips：</strong></p>
+<p>JSR官方网址:<a target="_blank" rel="noopener" href="https://jcp.org/">https://jcp.org/</a><br>小马哥JSR收藏:<a target="_blank" rel="noopener" href="https://github.com/mercyblitz/jsr">https://github.com/mercyblitz/jsr</a><br>Spring官方文档根路径:<a target="_blank" rel="noopener" href="https://docs.spring.io/spring/docs/">https://docs.spring.io/spring/docs/</a></p>
+<h2 id="9-编程模型"><a href="#9-编程模型" class="headerlink" title="9. 编程模型"></a>9. 编程模型</h2><h3 id="9-1-面向对象编程"><a href="#9-1-面向对象编程" class="headerlink" title="9.1 面向对象编程"></a>9.1 面向对象编程</h3><p>面向对象编程</p>
+<p>契约接口:Aware、BeanPostProcessor…</p>
+<p>设计模式:观察者模式、组合模式、模板模式…</p>
+<p>对象继承:Abstract*类</p>
+<ul>
+<li><p>Aware 接口</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">package</span> org.springframework.beans.factory;<br><br><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">interface</span> <span class="hljs-title">Aware</span> </span>&#123;<br><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>Aware 接口其实是 Spring3.1 提供的一个新的接口，那么它比较核心的一个接口是什么，就是 ApplicationContextAware</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">package</span> org.springframework.context;<br><br><span class="hljs-keyword">import</span> org.springframework.beans.BeansException;<br><span class="hljs-keyword">import</span> org.springframework.beans.factory.Aware;<br><br><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">interface</span> <span class="hljs-title">ApplicationContextAware</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Aware</span> </span>&#123;<br><br>	<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">setApplicationContext</span><span class="hljs-params">(ApplicationContext applicationContext)</span> <span class="hljs-keyword">throws</span> BeansException</span>;<br><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>Aware 它就是一个模式，就是说它每一种前面是它的一个类型，那么它要 Aware 什么东西，就会显示 ApplicationContextAware，这种方式会有一个 Set 的方法，那么会把对应的类型传递过来。</p>
+<p>那么同理可得 BeanFactory，那么这里会把BeanFactory给做回来，那么当然还有其他几种，那么这种方式就是一个接口的方式，那么这个也称为 Aware 接口回调。</p>
+<p>那么每当我的 Bean 去实现接口的时候，回调这么一个对象给我，就是传个对象给我们来进行使用</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">package</span> org.springframework.beans.factory;<br><br><span class="hljs-keyword">import</span> org.springframework.beans.BeansException;<br><br><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">interface</span> <span class="hljs-title">BeanFactoryAware</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Aware</span> </span>&#123;<br><br>	<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">setBeanFactory</span><span class="hljs-params">(BeanFactory beanFactory)</span> <span class="hljs-keyword">throws</span> BeansException</span>;<br><br>&#125;<br></code></pre></td></tr></table></figure></li>
+<li><p>BeanPostProcessor 接口</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">package</span> org.springframework.beans.factory.config;<br><br><span class="hljs-keyword">import</span> org.springframework.beans.BeansException;<br><span class="hljs-keyword">import</span> org.springframework.lang.Nullable;<br><br><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">interface</span> <span class="hljs-title">BeanPostProcessor</span> </span>&#123;<br><br>	<span class="hljs-meta">@Nullable</span><br>	<span class="hljs-function"><span class="hljs-keyword">default</span> Object <span class="hljs-title">postProcessBeforeInitialization</span><span class="hljs-params">(Object bean, String beanName)</span> <span class="hljs-keyword">throws</span> BeansException </span>&#123;<br>		<span class="hljs-keyword">return</span> bean;<br>	&#125;<br><br>	<span class="hljs-meta">@Nullable</span><br>	<span class="hljs-function"><span class="hljs-keyword">default</span> Object <span class="hljs-title">postProcessAfterInitialization</span><span class="hljs-params">(Object bean, String beanName)</span> <span class="hljs-keyword">throws</span> BeansException </span>&#123;<br>		<span class="hljs-keyword">return</span> bean;<br>	&#125;<br><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>那么这个接口也是我们经常用到的，就是关于 Bean 的一个生命周期的后置处理，那么包括 Beforelnitialization</p>
+</li>
+<li><p>观察者模式</p>
+<p>ApplicationEvent 就是一个观察者模式的扩展，那么它是基于Java的标准事件</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">package</span> org.springframework.context;<br><br><span class="hljs-keyword">import</span> java.util.EventObject;<br><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">abstract</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ApplicationEvent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">EventObject</span> </span>&#123;<br><br>	<span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> <span class="hljs-keyword">long</span> serialVersionUID = <span class="hljs-number">7099057708183571937L</span>;<br><br>	<span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> <span class="hljs-keyword">long</span> timestamp;<br><br><br>	<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">ApplicationEvent</span><span class="hljs-params">(Object source)</span> </span>&#123;<br>		<span class="hljs-keyword">super</span>(source);<br>		<span class="hljs-keyword">this</span>.timestamp = System.currentTimeMillis();<br>	&#125;<br><br><br>	<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">final</span> <span class="hljs-keyword">long</span> <span class="hljs-title">getTimestamp</span><span class="hljs-params">()</span> </span>&#123;<br>		<span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.timestamp;<br>	&#125;<br><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>EventObject</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">EventObject</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">java</span>.<span class="hljs-title">io</span>.<span class="hljs-title">Serializable</span> </span>&#123;<br><br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> <span class="hljs-keyword">long</span> serialVersionUID = <span class="hljs-number">5516075349620653480L</span>;<br><br>    <span class="hljs-keyword">protected</span> <span class="hljs-keyword">transient</span> Object  source;<br><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">EventObject</span><span class="hljs-params">(Object source)</span> </span>&#123;<br>        <span class="hljs-keyword">if</span> (source == <span class="hljs-keyword">null</span>)<br>            <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> IllegalArgumentException(<span class="hljs-string">&quot;null source&quot;</span>);<br><br>        <span class="hljs-keyword">this</span>.source = source;<br>    &#125;<br><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> Object <span class="hljs-title">getSource</span><span class="hljs-params">()</span> </span>&#123;<br>        <span class="hljs-keyword">return</span> source;<br>    &#125;<br><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">toString</span><span class="hljs-params">()</span> </span>&#123;<br>        <span class="hljs-keyword">return</span> getClass().getName() + <span class="hljs-string">&quot;[source=&quot;</span> + source + <span class="hljs-string">&quot;]&quot;</span>;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>他有一个简单的实现：SimpleApplicationEventMulticaster，multicastEvent 方法就是一个观察者模式，通过事件的方式让我的监听器进行状态的回调或者说一个事件的处理。</p>
+</li>
+<li><p>组合模式</p>
+<p>CompositeCacheManager 多个缓存进行合并</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">CompositeCacheManager</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">CacheManager</span>, <span class="hljs-title">InitializingBean</span> </span>&#123;<br></code></pre></td></tr></table></figure></li>
+<li><p>模板模式</p>
+</li>
+</ul>
+<p>​    JdbcTemplate</p>
+<ul>
+<li><p>对象继承</p>
+<p>AbstractApplicationContext、AbstractBeanFactory</p>
+</li>
+</ul>
+<h3 id="9-2-面向切面编程"><a href="#9-2-面向切面编程" class="headerlink" title="9.2 面向切面编程"></a>9.2 面向切面编程</h3><p>动态代理:JdkDynamicAopProxy</p>
+<p>字节码提升:ASM、CGLib、AspectJ…</p>
+<h3 id="9-3-面向元编程"><a href="#9-3-面向元编程" class="headerlink" title="9.3 面向元编程"></a>9.3 面向元编程</h3><p>注解:模式注解(@Component、@Service、@Respository…)</p>
+<p>配置:Environment抽象、PropertySources、BeanDefinition…</p>
+<p>泛型:GenericTypeResolver、ResolvableType…</p>
+<h3 id="9-4-函数驱动"><a href="#9-4-函数驱动" class="headerlink" title="9.4 函数驱动"></a>9.4 函数驱动</h3><p>函数接口:ApplicationEventPublisher<br>Reactive: Spring WebFlux</p>
+<h3 id="9-5-模块驱动"><a href="#9-5-模块驱动" class="headerlink" title="9.5 模块驱动"></a>9.5 模块驱动</h3><p>Maven Artifacts<br>OSGI Bundles<br>Java 9 Automatic Modules<br>Spring @Enable*</p>
+<h2 id="10-Spring-核心价值"><a href="#10-Spring-核心价值" class="headerlink" title="10. Spring 核心价值"></a>10. Spring 核心价值</h2><img src="https://s3.bmp.ovh/imgs/2023/05/06/2d88c4e345076d6a.png" srcset="/img/loading.gif" lazyload  />
+
+<h2 id="11-面试题"><a href="#11-面试题" class="headerlink" title="11. 面试题"></a>11. 面试题</h2><p><strong><font color="green" size="2">沙雕面试题</font></strong>-什么是 Spring Framework？</p>
+<ul>
+<li><p>官方介绍</p>
+<p>The Spring Framework provides a comprehensive programmingand configuration model for modern Java-based</p>
+<p>enterprise applications - on any kind of deployment platforrm.</p>
+<p>Spring 框架提供现代基于 Java 的企业应用程序的全面编程和配置模型，适用于任何类型的部署平台。</p>
+<p>A key element of Spring is infrastructural support at the appplication level: Spring focuses on the “plumbing” of enterprisse</p>
+<p>applications so that teams can focus on application-level buusiness logic, without unnecessary ties to specific deployment</p>
+<p>environments.</p>
+<p>Spring 的一个关键要素是应用程序级别的基础设施支持：Spring 专注于企业应用程序的“管道”，使团队可以专注于应用程序级别的业务逻辑，而不必与特定的部署环境产生不必要的联系。</p>
+</li>
+<li><p><strong>官方文档描述</strong></p>
+<p>Spring makes it easy to create Java enterprise applicattions</p>
+<p>It provides everything you need to embrace the Java language iin</p>
+<p>an enterprise environment, with support for Groovy and Koflin as</p>
+<p>alternative languages on the JVM, and with the flexibility to</p>
+<p>create many kinds of architectures depending on an</p>
+<p>application’s needs.</p>
+<p>Spring 使创建 Java 企业应用程序变得简单。它提供了您在企业环境中使用 Java 语言所需的一切支持，同时还支持在 JVM 上使用 Groovy 和 Kotlin 等备选语言，并具有根据应用程序需求创建多种架</p>
+<p>构的灵活性。</p>
+</li>
+</ul>
+<p><strong><font color="orange" size="2">996面试题</font></strong>-Spring Framework有哪些核心模块？</p>
+<ul>
+<li><p>spring-core:Spring 基础 API 模块,如资源管理,泛型处理</p>
+</li>
+<li><p>spring-beans:Spring Bean 相关,如依赖查找,依赖注入</p>
+</li>
+<li><p>spring-aop:SpringAOP 处理,如动态代理,AOP 字节码提升</p>
+</li>
+<li><p>spring-context:事件驱动、注解驱动,模块驱动等</p>
+</li>
+<li><p>spring-expression:Spring 表达式语言模块</p>
+</li>
+</ul>
+<p><strong><font color="red" size="2">劝退面试题</font></strong>-Spring Framework 的优势和不足是什么？</p>
+<p><strong>本节完</strong></p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E5%90%8E%E7%AB%AF/">后端</a>
+                    
+                      <a class="hover-with-bg" href="/categories/%E5%90%8E%E7%AB%AF/spring-%E6%A0%B8%E5%BF%83%E7%BC%96%E7%A8%8B%E6%80%9D%E6%83%B3/">spring 核心编程思想</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/spring/">spring</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2023/05/08/%E5%90%8E%E7%AB%AF/java/spring%E6%8B%BE%E9%81%97/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">spring拾遗</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2023/05/08/%E5%90%8E%E7%AB%AF/java/nginx/">
+                        <span class="hidden-mobile">Nginx</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <article class="comments" id="comments" lazyload>
+                
+                  
+                
+                
+  <div id="SOHUCS" sid='http://example.com/2023/05/08/%E5%90%8E%E7%AB%AF/java/spring%E6%A0%B8%E5%BF%83%E7%BC%96%E7%A8%8B%E6%80%9D%E6%83%B3%EF%BC%88%E4%B8%80%EF%BC%89/'></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#SOHUCS', function() {
+      Fluid.utils.createScript("https://changyan.sohu.com/upload/changyan.js", function() {
+        window.changyan.api.config({"appid":"cywjv2D9l","appkey":"2bf2f1231299e92b26393ba6fb2ad9d8"})
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+              </article>
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+    风间小栈出品
+  </div>
+  
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- 不蒜子统计PV -->
+        <span id="busuanzi_container_site_pv" style="display: none">
+            总访问量 
+            <span id="busuanzi_value_site_pv"></span>
+             次
+          </span>
+      
+      
+        <!-- 不蒜子统计UV -->
+        <span id="busuanzi_container_site_uv" style="display: none">
+            总访客数 
+            <span id="busuanzi_value_site_uv"></span>
+             人
+          </span>
+      
+    
+  </div>
+
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  
+    <script  src="https://cdn.jsdelivr.net/npm/tocbot@4/dist/tocbot.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4/anchor.min.js" ></script>
+  
+  
+    <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js" ></script>
+  
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+        typing(title);
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>

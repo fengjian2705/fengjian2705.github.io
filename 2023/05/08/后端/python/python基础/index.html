@@ -1,0 +1,908 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="风间">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="1. Python多版本问题1.1 环境搭建概览 1.2 python下载安装 下载最新稳定版本 官网地址  执行安装程序，选择自定义安装Customize installation，并勾选Add python 3.11 to PATH，下一步   Optional Features 保持默认勾选即可，至少保证pip勾选上，下一步   Advanced Options 保持默认勾选即可，可以更改安">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Python 基础语法">
+<meta property="og:url" content="http://example.com/2023/05/08/%E5%90%8E%E7%AB%AF/python/python%E5%9F%BA%E7%A1%80/index.html">
+<meta property="og:site_name" content="风间小栈">
+<meta property="og:description" content="1. Python多版本问题1.1 环境搭建概览 1.2 python下载安装 下载最新稳定版本 官网地址  执行安装程序，选择自定义安装Customize installation，并勾选Add python 3.11 to PATH，下一步   Optional Features 保持默认勾选即可，至少保证pip勾选上，下一步   Advanced Options 保持默认勾选即可，可以更改安">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://s3.bmp.ovh/imgs/2023/02/01/499c2245fc8100dc.png">
+<meta property="article:published_time" content="2023-05-08T01:46:03.870Z">
+<meta property="article:modified_time" content="2023-05-08T01:46:03.870Z">
+<meta property="article:author" content="风间">
+<meta property="article:tag" content="python">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://s3.bmp.ovh/imgs/2023/02/01/499c2245fc8100dc.png">
+  
+  
+  <title>Python 基础语法 - 风间小栈</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4/github-markdown.min.css" />
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hint.css@2/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.css" />
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.8.13","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":"§"},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>风间小栈</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/%E6%96%87%E6%9C%AC.jpg') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="Python 基础语法">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2023-05-08 09:46" pubdate>
+        2023年5月8日 上午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      9k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      76 分钟
+    </span>
+  
+
+  
+  
+    
+      <!-- 不蒜子统计文章PV -->
+      <span id="busuanzi_container_page_pv" style="display: none">
+        <i class="iconfont icon-eye" aria-hidden="true"></i>
+        <span id="busuanzi_value_page_pv"></span> 次
+      </span>
+    
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">Python 基础语法</h1>
+            
+            <div class="markdown-body">
+              <h2 id="1-Python多版本问题"><a href="#1-Python多版本问题" class="headerlink" title="1. Python多版本问题"></a>1. Python多版本问题</h2><h3 id="1-1-环境搭建概览"><a href="#1-1-环境搭建概览" class="headerlink" title="1.1 环境搭建概览"></a>1.1 环境搭建概览</h3><p><img src="https://s3.bmp.ovh/imgs/2023/01/13/8b2a906664642955.png" srcset="/img/loading.gif" lazyload></p>
+<h3 id="1-2-python下载安装"><a href="#1-2-python下载安装" class="headerlink" title="1.2 python下载安装"></a>1.2 python下载安装</h3><ol>
+<li><p>下载最新稳定版本 <a target="_blank" rel="noopener" href="https://www.python.org/">官网地址</a></p>
+</li>
+<li><p>执行安装程序，选择自定义安装<code>Customize installation</code>，并勾选<code>Add python 3.11 to PATH</code>，下一步</p>
+<p><img src="https://s3.bmp.ovh/imgs/2023/01/13/f796dff389b50611.png" srcset="/img/loading.gif" lazyload></p>
+</li>
+<li><p>Optional Features 保持默认勾选即可，至少保证<code>pip</code>勾选上，下一步</p>
+<p><img src="https://s3.bmp.ovh/imgs/2023/01/13/5eee56687230dc49.png" srcset="/img/loading.gif" lazyload></p>
+</li>
+<li><p>Advanced Options 保持默认勾选即可，可以更改安装位置，下一步</p>
+<p><img src="https://s3.bmp.ovh/imgs/2023/01/13/c2e50667c17b9705.png" srcset="/img/loading.gif" lazyload></p>
+</li>
+<li><p>安装成功 <a target="_blank" rel="noopener" href="https://docs.python.org/3.11/index.html">官网文档</a></p>
+<p><img src="https://s3.bmp.ovh/imgs/2023/01/13/aceed629d18b1c56.png" srcset="/img/loading.gif" lazyload></p>
+</li>
+</ol>
+<h3 id="1-3-检验安装是否成功"><a href="#1-3-检验安装是否成功" class="headerlink" title="1.3 检验安装是否成功"></a>1.3 检验安装是否成功</h3><p><code>python -V</code> 命令行显示：Python 3.11.1</p>
+<p><code>pip -V</code> 命令行显示：pip 22.3.1</p>
+<h3 id="1-4-使用pipenv安装虚拟环境"><a href="#1-4-使用pipenv安装虚拟环境" class="headerlink" title="1.4 使用pipenv安装虚拟环境"></a>1.4 使用pipenv安装虚拟环境</h3><ol>
+<li><p>切换到桌面</p>
+ <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">cd Desktop<br></code></pre></td></tr></table></figure></li>
+<li><p>创建文件夹 fisher，并进入文件夹</p>
+ <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs shell">mkdir fisher<br>cd fisher<br></code></pre></td></tr></table></figure></li>
+<li><p>全局安装pipenv，任意目录</p>
+ <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">pip install pipenv<br></code></pre></td></tr></table></figure></li>
+<li><p>和项目绑定，给每一个项目创建pipenv</p>
+ <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">pipenv install<br></code></pre></td></tr></table></figure></li>
+<li><p>启动pipenv进入虚拟环境</p>
+ <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">pipenv shell<br></code></pre></td></tr></table></figure></li>
+<li><p>查看虚拟环境安装的包</p>
+ <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">pip list<br></code></pre></td></tr></table></figure></li>
+<li><p>pipenv常用命令 <a target="_blank" rel="noopener" href="https://github.com/pypa/pipenv">官方文档</a></p>
+<ul>
+<li>exit：退出虚拟环境</li>
+<li>pipenv shell：进入虚拟环境</li>
+<li>pipenv install flask：安装包</li>
+<li>pipenv uninstall flask：卸载包</li>
+<li>pipenv graph：项目依赖关系图</li>
+</ul>
+</li>
+</ol>
+<h3 id="1-5-使用pipenv安装flask包"><a href="#1-5-使用pipenv安装flask包" class="headerlink" title="1.5 使用pipenv安装flask包"></a>1.5 使用pipenv安装flask包</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">pipenv install flask<br></code></pre></td></tr></table></figure>
+
+<h3 id="1-6-IDLE与第一段Python代码"><a href="#1-6-IDLE与第一段Python代码" class="headerlink" title="1.6 IDLE与第一段Python代码"></a>1.6 IDLE与第一段Python代码</h3><p>搜索 IDLE 命令程序，打开对应版本的 IDLE</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs shell">print(&#x27;Hello,World&#x27;)<br>Hello,World<br></code></pre></td></tr></table></figure>
+<p><code>提示：</code></p>
+<ul>
+<li>python通常使用缩进来控制代码格式</li>
+<li>;{}可以不用使用</li>
+</ul>
+<h2 id="2-Python-基本类型"><a href="#2-Python-基本类型" class="headerlink" title="2. Python 基本类型"></a>2. Python 基本类型</h2><h3 id="2-1-Number-数字"><a href="#2-1-Number-数字" class="headerlink" title="2.1 Number 数字"></a>2.1 Number 数字</h3><ol>
+<li><p>分类</p>
+<ul>
+<li><p>整数：int</p>
+</li>
+<li><p>浮点数：float</p>
+<p>其它语言：单精度（float），双精度（double）<br>其它语言：short，int，long</p>
+</li>
+<li><p>bool 布尔类型：表示真假 True False，注意首字母大写<br>对于数字非0即为True<br>对于字符串非空即为True<br>列表、字典…<br><code>None</code> false</p>
+</li>
+<li><p>complex: 复数 36j</p>
+</li>
+</ul>
+</li>
+<li><p>代码示例</p>
+ <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><code class="hljs shell">// 整数<br>type(1)<br>&lt;class &#x27;int&#x27;&gt;<br>type(-1)<br>&lt;class &#x27;int&#x27;&gt;<br>      <br>// 浮点数<br>type(1.1)<br>&lt;class &#x27;float&#x27;&gt;<br>type(1.1111111)<br>&lt;class &#x27;float&#x27;&gt;<br><br>// 加法<br>type(1+1.2)<br>&lt;class &#x27;float&#x27;&gt;<br>type(1+1.0)<br>&lt;class &#x27;float&#x27;&gt;<br>type(1+1)<br>&lt;class &#x27;int&#x27;&gt;<br><br>// 乘法<br>type(1*1.0)<br>&lt;class &#x27;float&#x27;&gt;<br>type(1*1)<br>&lt;class &#x27;int&#x27;&gt;<br><br>// 除法,得到浮点数<br>type(2/2)<br>&lt;class &#x27;float&#x27;&gt;<br>// 整除,得到整数<br>type(2//2)<br>&lt;class &#x27;int&#x27;&gt;<br>      <br>type(True)<br>&lt;class &#x27;bool&#x27;&gt;<br>type(False)<br>&lt;class &#x27;bool&#x27;&gt;<br>int(True)<br>1<br>int(False)<br>0<br>bool(0)<br>False<br>bool(1)<br>True<br></code></pre></td></tr></table></figure>
+<h3 id="2-2-10、2、8、16进制"><a href="#2-2-10、2、8、16进制" class="headerlink" title="2.2 10、2、8、16进制"></a>2.2 10、2、8、16进制</h3></li>
+<li><p>10在各进中代表的数字</p>
+<ul>
+<li>2进制：0b10 10进制  2</li>
+<li>8进制：0o10 10进制  8</li>
+<li>16进制：0x10 10进制 16</li>
+<li>10进制：10</li>
+</ul>
+</li>
+<li><p>进制间数字转换</p>
+<ul>
+<li><p>其他进制 -&gt; 2进制：bin<br>bin(10)  -&gt; 0b1010<br>bin(0o7) -&gt; 0b111<br>bin(0xE) -&gt; 0b1110</p>
+</li>
+<li><p>其他进制 -&gt; 10进制：int<br>int(0b111) -&gt; 7<br>int(0o77)  -&gt; 63</p>
+</li>
+<li><p>其他进制 -&gt; 16进制：hex<br>hex(888)     -&gt; 0x378<br>hex(0o7777)  -&gt; 0xfff</p>
+</li>
+<li><p>其它进制 -&gt; 8进制:oct<br>oct(0b111)  -&gt; 0o7<br>oct(0x777)  -&gt; 0o3567</p>
+</li>
+</ul>
+</li>
+</ol>
+<h3 id="2-3-字符串-str"><a href="#2-3-字符串-str" class="headerlink" title="2.3  字符串 str"></a>2.3  字符串 str</h3><ol>
+<li><p>单引号，双引号，三引号</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs shell">type(&#x27;1&#x27;)<br>&lt;class &#x27;str&#x27;&gt;<br>&quot;let&#x27;s go&quot; = &#x27;let\&#x27;s go&#x27;<br></code></pre></td></tr></table></figure></li>
+<li><p>多行字符串（三引号）</p>
+<p>python 推荐每行宽度最大 79，超出换行,使用```包围字符串，字符串可以任意换行</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs shell">&quot;&quot;&quot;hello<br>&quot;&quot;&quot;<br>&#x27;hello\n&#x27;<br> print(&quot;&quot;&quot;hello<br>       &quot;&quot;&quot;)<br> &#x27;hello&#x27;<br></code></pre></td></tr></table></figure>
+<p>使用 print 可以去除 <code>\n</code></p>
+</li>
+<li><p>转义字符</p>
+<ul>
+<li><p>无法看见的字符<br>\n换行 \t制表 \r回车</p>
+</li>
+<li><p>与语言本身语法有冲突的字符<br>&#39; 单引号冲突</p>
+</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs shell">print(&#x27;hello \n world&#x27;)<br>hello<br>world<br></code></pre></td></tr></table></figure>
+<p>如何输出<code>\n</code>而不换行？将<code>\n</code>进行转义</p>
+<p>实际意义：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs shell">print(&#x27;c:\northwind\northwest&#x27;)<br>c:<br>orthwind<br>orthwest<br></code></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs shell">print(&#x27;c:\\northwind\\northwest&#x27;)<br>c:\\northwind\\northwest<br></code></pre></td></tr></table></figure></li>
+<li><p>原始字符串</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs shell">print(r&#x27;hello \n world&#x27;)<br>hello \n world<br></code></pre></td></tr></table></figure>
+<p>字符串前面加子母<code>r</code></p>
+</li>
+<li><p>字符串运算</p>
+<ul>
+<li>拼接 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs shell"> // 加法<br>&#x27;hello&#x27;+&#x27;world&#x27;<br>&#x27;helloworld&#x27;<br><br> // 乘法<br> &#x27;hello&#x27;*3<br> &#x27;hellohellohello&#x27;<br></code></pre></td></tr></table></figure></li>
+<li>截取 [] <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs shell">// 正数代表序号<br>&#x27;hello&#x27;[0]<br>&#x27;h&#x27;<br>// 负数代表从字符串末尾数n次得到的字符<br>&#x27;hello&#x27;[-1]<br>&#x27;o&#x27;<br>// 从第一个字符截取到第个五字符<br>&#x27;hello world&#x27;[0:5]<br>&#x27;hello&#x27;<br>// 从第一个字符截取到倒数第二个字符<br>&#x27;hello world&#x27;[0:-1]<br>&#x27;hello worl&#x27;<br>// 从第六个字符截取到最后一个字符<br>&#x27;hello world&#x27;[6:]<br>&#x27;world&#x27;<br>// 从第一个字符截取到倒数第五个字符<br>&#x27;hello world&#x27;[:-4]<br>&#x27;hello world&#x27;<br>// 从末尾往前数四个字符截取出来<br>&#x27;hello world&#x27;[-4:]<br>&#x27;orld&#x27;<br></code></pre></td></tr></table></figure></li>
+</ul>
+</li>
+</ol>
+<h3 id="2-4-列表"><a href="#2-4-列表" class="headerlink" title="2.4 列表"></a>2.4 列表</h3><ol>
+<li><p>定义</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs shell">type([1,2,3,4,5,6])<br>&lt;class &#x27;list&#x27;&gt;<br></code></pre></td></tr></table></figure></li>
+<li><p>特性</p>
+<ul>
+<li>内部元素类型不固定，字符串、数字、bool、列表…<br>[1,’hello’,True,[1,2]]</li>
+</ul>
+</li>
+<li><p>基本操作</p>
+<ul>
+<li><p>截取（参考字符串截取）</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs shell">[&#x27;新月打击&#x27;,&#x27;苍白之瀑&#x27;,&#x27;月之降临&#x27;,&#x27;月神冲刺&#x27;][0]<br>&#x27;新月打击&#x27;<br></code></pre></td></tr></table></figure></li>
+<li><p>列表相加</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs shell">[&#x27;新月打击&#x27;,&#x27;苍白之瀑&#x27;,&#x27;月之降临&#x27;,&#x27;月神冲刺&#x27;]+[&#x27;月神冲刺&#x27;]<br>[&#x27;新月打击&#x27;, &#x27;苍白之瀑&#x27;, &#x27;月之降临&#x27;, &#x27;月神冲刺&#x27;, &#x27;月神冲刺&#x27;]<br></code></pre></td></tr></table></figure></li>
+<li><p>列表乘法</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs shell">[&#x27;新月打击&#x27;, &#x27;苍白之瀑&#x27;, &#x27;月之降临&#x27;, &#x27;月神冲刺&#x27;, &#x27;月神冲刺&#x27;]*2<br>[&#x27;新月打击&#x27;, &#x27;苍白之瀑&#x27;, &#x27;月之降临&#x27;, &#x27;月神冲刺&#x27;, &#x27;月神冲刺&#x27;, &#x27;新月打击&#x27;, &#x27;苍白之瀑&#x27;, &#x27;月之降临&#x27;, &#x27;月神冲刺&#x27;, &#x27;月神冲刺&#x27;]<br></code></pre></td></tr></table></figure></li>
+</ul>
+<p>列表减不支持法！</p>
+</li>
+</ol>
+<h3 id="2-5-元组"><a href="#2-5-元组" class="headerlink" title="2.5 元组"></a>2.5 元组</h3><ol>
+<li><p>引子（以世界杯分组为例，8个组 每组4个队）</p>
+<p>使用嵌套列表</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">[[&#x27;巴西&#x27;,&#x27;克罗地亚&#x27;,&#x27;墨西哥&#x27;,&#x27;喀麦隆&#x27;],[],[],[],[],[],[],[],[]]<br></code></pre></td></tr></table></figure></li>
+<li><p>元组定义</p>
+<p>形如<code>(1,2,3)</code>、<code>(1,2,True)</code></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs shell">type((1,2,3))<br>&lt;class &#x27;tuple&#x27;&gt;<br></code></pre></td></tr></table></figure></li>
+<li><p>元组操作</p>
+<ul>
+<li>截取（参考字符串截取）</li>
+</ul>
+<p>特殊情况，一个元素的元组：原因是括号被当做了运算符，后面再加一个,即可</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs shell">type((1))<br>&lt;class &#x27;int&#x27;&gt;<br>   <br>type((&#x27;1&#x27;))<br>&lt;class &#x27;str&#x27;&gt;<br>   <br>type((1,))<br>&lt;class &#x27;tuple&#x27;&gt;<br><br></code></pre></td></tr></table></figure></li>
+</ol>
+<h3 id="2-6-序列总结-str-list-tuple"><a href="#2-6-序列总结-str-list-tuple" class="headerlink" title="2.6 序列总结 str list tuple"></a>2.6 序列总结 <code>str list tuple</code></h3><ol>
+<li><p>序号</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs shell">&#x27;hello world&#x27;[0]<br>[1,2,3][0]<br>(1,2,3)[0]<br></code></pre></td></tr></table></figure></li>
+<li><p>切片</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs shell">&#x27;hello world&#x27;[0:3]<br>[1,2,3][0:]<br>(1,2,3,4)[-1:]<br></code></pre></td></tr></table></figure></li>
+<li><p>加法、乘法</p>
+</li>
+<li><p>判断元素是否存在 <code>in</code> <code>not in</code></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs shell">3 in [1,2,3]<br><br></code></pre></td></tr></table></figure></li>
+<li><p>长度</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">len(&#x27;hello&#x27;)<br></code></pre></td></tr></table></figure></li>
+<li><p>最大值最小值 <code>max min</code></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs shell">max((1,2,3))<br>max(&#x27;hello&#x27;)<br></code></pre></td></tr></table></figure>
+<p>字母与 <code>ascll码</code></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs shell">ord(&#x27;w&#x27;)<br>119<br></code></pre></td></tr></table></figure></li>
+</ol>
+<h3 id="2-7-集合set"><a href="#2-7-集合set" class="headerlink" title="2.7 集合set"></a>2.7 集合set</h3><ol>
+<li><p>特点：<code>无序</code> <code>不重复</code></p>
+</li>
+<li><p>定义：形如 {1,2,3,4,5,6} 使用 <code>&#123;&#125;</code>包裹元素</p>
+</li>
+<li><p>长度：len({1,2,3})</p>
+</li>
+<li><p>是否存在：<code>in</code> <code>not in</code></p>
+</li>
+<li><p>差集</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs shell">&#123;1,2,3,4&#125;-&#123;1,3&#125;<br>&#123;2,4&#125;<br></code></pre></td></tr></table></figure>
+<p>交集</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs shell">&#123;1,2,3&#125;&amp;&#123;2,3&#125;<br>&#123;2, 3&#125;<br></code></pre></td></tr></table></figure>
+<p>合集</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs shell">&#123;1,2,3,4&#125;|&#123;3,4,9&#125;<br>&#123;1, 2, 3, 4, 9&#125;<br></code></pre></td></tr></table></figure></li>
+<li><p>空集合</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs shell">// 字典<br>type(&#123;&#125;)<br>&lt;class &#x27;dict&#x27;&gt;<br>// 空集合<br>type(set())<br>&lt;class &#x27;set&#x27;&gt;<br></code></pre></td></tr></table></figure></li>
+</ol>
+<h3 id="2-8-字典dict"><a href="#2-8-字典dict" class="headerlink" title="2.8 字典dict"></a>2.8 字典dict</h3><ol>
+<li><p>定义：key value 构成</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs shell">type(&#123;&#x27;name&#x27;:&#x27;jack&#x27;,&#x27;age&#x27;:18&#125;)<br>&lt;class &#x27;dict&#x27;&gt;<br></code></pre></td></tr></table></figure>
+<p>其他语言：map</p>
+</li>
+<li><p>特点：</p>
+<ul>
+<li>key 不重复</li>
+<li>key 类型可以为 str number</li>
+<li>字典中元素还可以是字典</li>
+<li>key 必须是不可变的类型 int str tuple</li>
+</ul>
+</li>
+<li><p>操作</p>
+<ul>
+<li>根据 key 获取 value<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs shell">&#123;&#x27;name&#x27;:&#x27;jack&#x27;,&#x27;age&#x27;:18&#125;[&#x27;name&#x27;]<br>&#x27;jack&#x27;<br></code></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li><p>空字典： {}</p>
+</li>
+</ol>
+<h3 id="2-9-基本数据类型总结"><a href="#2-9-基本数据类型总结" class="headerlink" title="2.9 基本数据类型总结"></a>2.9 基本数据类型总结</h3><p><img src="https://s3.bmp.ovh/imgs/2023/01/14/11ca061bfad3d87c.png" srcset="/img/loading.gif" lazyload alt="python基本数据类型"></p>
+<h2 id="3-变量与运算符"><a href="#3-变量与运算符" class="headerlink" title="3. 变量与运算符"></a>3. 变量与运算符</h2><h3 id="3-1-变量"><a href="#3-1-变量" class="headerlink" title="3.1 变量"></a>3.1 变量</h3><ol>
+<li><p>什么是变量？</p>
+<p>变量就是一个名字，代表定义的数据： A = [1,2,4]， B = ‘hello world’，C = {‘name’:’jack’}</p>
+</li>
+<li><p>变量命名规则</p>
+<ul>
+<li>首字符不能数字</li>
+<li>只可以使用字母、数字、下划线</li>
+<li>系统关键字（保留关键字）不能用于变量名：and if import …</li>
+<li>区分大小写</li>
+</ul>
+</li>
+<li><p>值类型与引用类型</p>
+<p>值类型：int str tuple（不可改变）<br>引用类型：list set dict（可变）</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs shell">a=1<br>b=a<br>a=3<br>print(b)<br>1<br>   <br>a = [1,2,3]<br>b = a<br>a[0] = &#x27;1&#x27;<br>print(b)<br>[&#x27;1&#x27;, 2, 3]<br><br></code></pre></td></tr></table></figure>
+
+<p>问题：字符串不可变，那下面 a 为何可以进行计算？<br>a = ‘hello’<br>a = a + ‘python’<br>print(a)<br>hellopython</p>
+<p>计算后的a已经不是原来的字符串了！通过 id 函数查看！<br>b = ‘hello’<br>id(b)<br>2330237640816<br>b = b + ‘python’<br>id(b)<br>2330237667696</p>
+</li>
+<li><p>列表的可变与元组的不可变</p>
+<p>a = [1,2,3]<br>id(a)<br>2330237710656<br>a[0] = ‘1’<br>id(a)<br>2330237710656</p>
+<p>a = (1,2,3)<br>id(a)<br>2330237466624<br>a[0] = ‘1’<br>Traceback (most recent call last):<br>File “&lt;pyshell#25&gt;”, line 1, in <module><br>a[0] = ‘1’<br>TypeError: ‘tuple’ object does not support item assignment</p>
+</li>
+</ol>
+<h3 id="3-2-运算符号"><a href="#3-2-运算符号" class="headerlink" title="3.2 运算符号"></a>3.2 运算符号</h3><p><img src="https://s3.bmp.ovh/imgs/2023/01/15/ae5b4ad3fd992412.png" srcset="/img/loading.gif" lazyload></p>
+<ul>
+<li><p>成员运算符<br>a = 1<br>a in [1,2,3,4,5]<br>True</p>
+<p>b = 6<br>b in [1,2,3,4,5]<br>False</p>
+<p>b = ‘h’<br>b in ‘hello’<br>True</p>
+<p>b not in (1,2,3,4,5)<br>True</p>
+<p>b not in {1,2,3,4,5}</p>
+</li>
+<li><p>比较运算符<br>1 and 2<br>2<br>2 and 1<br>1<br>1 and 0<br>0<br>1 or 2<br>1<br>1 or 0<br>1<br>0 or 1<br>1<br>b = ‘a’<br>b in {‘c’:1}</p>
+</li>
+<li><p>身份运算符<br>is 比较的是两个变量身份是否相等，内存地址<br>== 是比较两个变量取值是否相等<br>a = 1.0<br>b = 1<br>a ==b<br>True<br>a is b<br>False</p>
+<p>a = [1,2,3]<br>b = [3,2,1]<br>a == b<br>True<br>a is b<br>False</p>
+<p>a = (1,2,3)<br>b = (2,1,3)<br>a ==b<br>False<br>a is b<br>False</p>
+</li>
+<li><p>类型判断<br>a = ‘k’<br>isinstance(a,str)<br>True</p>
+<p>isinstance(a,(int,str,float))</p>
+</li>
+<li><p>对象的三个特征：id value type<br>比较方式：<br>vlaue : ==<br>id: is<br>type: isinstance</p>
+</li>
+<li><p>位运算符：把一个数字当做二进制数进行运算</p>
+<ul>
+<li><code>&amp;</code> 按位与<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs shell">a = 2<br>b = 3<br>a &amp; b = 2<br></code></pre></td></tr></table></figure></li>
+<li><code>|</code> 按位或 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs shell">a = 2<br>b = 3<br>a | b = 3<br></code></pre></td></tr></table></figure></li>
+<li><code>^</code> 按位异或</li>
+<li><code>&lt;&lt;</code> 左移动</li>
+<li><code>&gt;&gt;</code>右移动</li>
+</ul>
+</li>
+</ul>
+<h2 id="4-分支、循环、条件与枚举"><a href="#4-分支、循环、条件与枚举" class="headerlink" title="4. 分支、循环、条件与枚举"></a>4. 分支、循环、条件与枚举</h2><h3 id="4-1-表达式"><a href="#4-1-表达式" class="headerlink" title="4.1 表达式"></a>4.1 表达式</h3><ol>
+<li><p>概念<br> 表达式（Expression）是运算符（operator）和操作数（operand）所构成的序列，形如 1 + 1 、a = [1,2,3] 、a &gt; b</p>
+</li>
+<li><p>表达式的优先级</p>
+ <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs shell">a = 1<br>b = 2<br>c = 3<br><br>a + b * c <br>7<br><br>a or b and c<br>1<br></code></pre></td></tr></table></figure>
+<p> <img src="https://s3.bmp.ovh/imgs/2023/01/16/5bdb8b465a3aee61.png" srcset="/img/loading.gif" lazyload alt="python运算符优先级"></p>
+<p> <code>提示：</code> 推荐使用括号来表达你期望的优先级！</p>
+</li>
+<li><p> 在文本文件中编写 python：vscode</p>
+</li>
+</ol>
+<h3 id="4-2-条件控制-if-elif-else"><a href="#4-2-条件控制-if-elif-else" class="headerlink" title="4.2 条件控制 if elif else"></a>4.2 条件控制 if elif else</h3><ul>
+<li>snippet 片段,tab 自动切换<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs shell">if condition:<br>    pass<br>elif condition:<br>    pass<br>else:<br>    pass<br></code></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="4-3-循环-while"><a href="#4-3-循环-while" class="headerlink" title="4.3 循环 while"></a>4.3 循环 while</h3><ul>
+<li><p>while</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs shell">while condition:<br>    pass<br></code></pre></td></tr></table></figure></li>
+<li><p>while + else</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs shell">while condition:<br>  pass<br>else:<br>  pass<br></code></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="4-4-循环-for"><a href="#4-4-循环-for" class="headerlink" title="4.4 循环 for"></a>4.4 循环 for</h3><ul>
+<li>for<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs shell">for target_list in expression_list:<br>  pass<br></code></pre></td></tr></table></figure></li>
+<li>for + else<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs shell">for target_list in expression_list:<br>  pass<br>else:<br>  pass<br></code></pre></td></tr></table></figure>
+<code>提示：</code> else 表示 for 循环执行完毕后执行的语句，使用 break 终止则 else 后的语句不执行，continue 则会执行！</li>
+<li>for 与 range<br>for 类似于其它语言的 for-each<br>range 则类似于 fori，range(start,end,step)<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs shell">a = [1,2,3,4,5,6,7,8]<br>for i in range(1,len(a),2):<br>print(a[i],end=&#x27; | &#x27;)<br></code></pre></td></tr></table></figure></li>
+</ul>
+<h2 id="5-包、模块、函数与变量作用域"><a href="#5-包、模块、函数与变量作用域" class="headerlink" title="5. 包、模块、函数与变量作用域"></a>5. 包、模块、函数与变量作用域</h2><h3 id="5-1-python-工程的组织结构"><a href="#5-1-python-工程的组织结构" class="headerlink" title="5.1 python 工程的组织结构"></a>5.1 python 工程的组织结构</h3><ol>
+<li><p>包：顶级结构，简单理解为一个文件夹（物理表现）</p>
+<ul>
+<li>包在表现形式上是文件夹，文件夹 + <code>__init__.py</code> = 包</li>
+<li><code>__init__.py</code>也是一个模块，它的名字就是这个模块所在的包的包名</li>
+</ul>
+</li>
+<li><p>模块：第二层，可以理解为文件夹下的文件（物理表现）</p>
+</li>
+<li><p>类：第三层</p>
+</li>
+<li><p>函数、变量：并不归属于组织结构，属于类的特性</p>
+</li>
+</ol>
+<h3 id="5-2-import-导入模块"><a href="#5-2-import-导入模块" class="headerlink" title="5.2 import 导入模块"></a>5.2 import 导入模块</h3><ol>
+<li><p>c7.py</p>
+ <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs shell">a = 2<br><br></code></pre></td></tr></table></figure></li>
+<li><p>c8.py</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs shell">import c7<br>   <br>print(c7.a)<br></code></pre></td></tr></table></figure></li>
+<li><p>import 只能导入模块<br>解决引用路径过长问题：import t.c7 as m</p>
+</li>
+</ol>
+<h3 id="5-3-from-import-导入变量"><a href="#5-3-from-import-导入变量" class="headerlink" title="5.3 from import 导入变量"></a>5.3 from import 导入变量</h3><ol>
+<li>语法 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs shell">from t.c7 import a<br>print(a)<br></code></pre></td></tr></table></figure></li>
+<li>导入模块，等价于 import 导入模式 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs shell">from t import c7<br>print(c7.a)<br></code></pre></td></tr></table></figure></li>
+<li>导入多个变量 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs shell">from t.c7 import *<br>print(a)<br>print(b)<br>print(c)<br><br></code></pre></td></tr></table></figure>
+ <code>提示：</code>不推荐使用 * 导入，导入变量不明确直观 利用模块内置变量 <code>__all__</code> 进行 * 导入控制，定义 * 可以导入的全部变量 c7.py     <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs shell">__all__ = [&#x27;a&#x27;,&#x27;c&#x27;]<br>   <br>a = 2<br>c = 3<br>d = 4<br></code></pre></td></tr></table></figure>
+ c8.py <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs shell">from t.c7 import *<br><br>print(a)<br>print(c)<br>print(d)<br></code></pre></td></tr></table></figure></li>
+</ol>
+<h3 id="5-4-init-py-的用法"><a href="#5-4-init-py-的用法" class="headerlink" title="5.4 __init__.py 的用法"></a>5.4 <code>__init__.py</code> 的用法</h3><ol>
+<li>from import 换行<ul>
+<li>\n<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs shell">from c7 import a,b,\n<br>c<br></code></pre></td></tr></table></figure></li>
+<li>()<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs shell">from c7 import (a,b,<br> c)<br></code></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li>作用一：当一个包被导入时，<code>__init__.py</code>文件被首先执行，可以使用内置变量<code>__all__</code>限制哪些模块被导入</li>
+<li>作用二：批量导入<ul>
+<li>批量导入内置类库<br>t包下的<code>__init__.py</code>文件<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs shell">import sys<br>import datetime<br>import io<br></code></pre></td></tr></table></figure>
+<code>c9.py</code><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs shell">import t<br>print(t.sys.path)<br></code></pre></td></tr></table></figure>
+<code>提示：</code>从当前包导入变量，form . import xx</li>
+</ul>
+</li>
+</ol>
+<h3 id="5-5-包与模块的几个常见错误"><a href="#5-5-包与模块的几个常见错误" class="headerlink" title="5.5 包与模块的几个常见错误"></a>5.5 包与模块的几个常见错误</h3><ol>
+<li>包和模块是不会被重复导入的</li>
+<li>避免循环导入 t1 -&gt; t2 -&gt; t3 -&gt; t1</li>
+</ol>
+<h3 id="5-6-模块内置变量"><a href="#5-6-模块内置变量" class="headerlink" title="5.6 模块内置变量"></a>5.6 模块内置变量</h3><ol>
+<li><p>查看内置变量(当前模块所有变量)</p>
+ <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs shell">a = 1<br>b = 2<br>infos = dir()<br>print(infos)<br></code></pre></td></tr></table></figure>
+<p>输出：[‘<strong>annotations</strong>‘, ‘<strong>builtins</strong>‘, ‘<strong>cached</strong>‘, ‘<strong>doc</strong>‘, ‘<strong>file</strong>‘, ‘<strong>loader</strong>‘, ‘<strong>name</strong>‘, ‘<strong>package</strong>‘, ‘<strong>spec</strong>‘, ‘a’, ‘b’]</p>
+<p>常用内置变量：</p>
+<ul>
+<li>name：模块全路径</li>
+<li>package：包全路径</li>
+<li>doc：模块文档注释</li>
+<li>file：当前模块完整物理路径<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs shell">print(&#x27;__name__:&#x27;+__name__)<br>print(&#x27;__package__:&#x27;+__package__)<br><span class="hljs-meta">#</span><span class="bash"> <span class="hljs-built_in">print</span>(<span class="hljs-string">&#x27;__doc__&#x27;</span>+__doc__)</span><br>print(&#x27;__file__:&#x27;+__file__)<br></code></pre></td></tr></table></figure></li>
+</ul>
+</li>
+</ol>
+<h3 id="5-7-入口文件和普通模块内置变量的区别"><a href="#5-7-入口文件和普通模块内置变量的区别" class="headerlink" title="5.7 入口文件和普通模块内置变量的区别"></a>5.7 入口文件和普通模块内置变量的区别</h3><ol>
+<li>入口文件<ul>
+<li>包名：NoneType</li>
+<li>模块名：<code>__main__</code></li>
+<li>file：当前模块相对路径，与模块所在目录有关</li>
+</ul>
+</li>
+<li>普通模块<ul>
+<li>包名：包全路径</li>
+<li>模块名：模块全路径</li>
+<li>file：当前模块物理全路径</li>
+</ul>
+</li>
+</ol>
+<h3 id="5-8-name-的经典应用"><a href="#5-8-name-的经典应用" class="headerlink" title="5.8 __name__的经典应用"></a>5.8 <code>__name__</code>的经典应用</h3><ol>
+<li><p>dir 查看模块或类的变量</p>
+ <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs shell">import sys<br>infos = dir(sys)<br>print(infos)<br></code></pre></td></tr></table></figure></li>
+<li><p>make a script both importable and executable：判断一个 python 脚本是一个可以入口文件还是普通模块</p>
+ <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta">#</span><span class="bash"> 入口文件</span><br>if __name__ == &#x27;__main__&#x27;:<br>   print(This is app)<br><br>print(This is a module)<br></code></pre></td></tr></table></figure></li>
+<li><p>将入口文件当做模块运行,进入上层目录执行（模块所在包）</p>
+ <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta">#</span><span class="bash"> 无需加.py后缀</span><br>python -m t.c15<br></code></pre></td></tr></table></figure></li>
+</ol>
+<h3 id="5-9-相对导入和绝对导入"><a href="#5-9-相对导入和绝对导入" class="headerlink" title="5.9 相对导入和绝对导入"></a>5.9 相对导入和绝对导入</h3><ol>
+<li><p>顶级包</p>
+<p> 入口文件同级的包为顶级宝，入口文件本身不属于任何包</p>
+</li>
+<li><p>绝对导入：</p>
+<p>从顶级包开始到要导入模块的这个路径，入口文件可以使用绝对导入，无法使用相对导入（入口文件<code>__name__</code>为<code>__main__</code>），<br>一定要使用相对导入，使用 python -m 进行运行</p>
+</li>
+<li><p>相对导入：使用 . .. 代表当前目录，上层目录，从当前模块开始数，导入目标模块（本质根据<code>__name__</code>进行导）</p>
+</li>
+</ol>
+<h2 id="6-函数"><a href="#6-函数" class="headerlink" title="6. 函数"></a>6. 函数</h2><h3 id="6-1-认识函数"><a href="#6-1-认识函数" class="headerlink" title="6.1 认识函数"></a>6.1 认识函数</h3><ol>
+<li><p>print(12),round(3.1415,2),help(print),help(round)</p>
+</li>
+<li><p>特点</p>
+<ul>
+<li>功能性</li>
+<li>封装性，隐藏细节</li>
+<li>避免编写重复的代码</li>
+</ul>
+</li>
+</ol>
+<h3 id="6-2-函数的定义及运行特点"><a href="#6-2-函数的定义及运行特点" class="headerlink" title="6.2 函数的定义及运行特点"></a>6.2 函数的定义及运行特点</h3><ol>
+<li>定义函数<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs shell">def funcname(parameter_list):<br>    pass<br></code></pre></td></tr></table></figure>
+<ul>
+<li>参数列表可以没有</li>
+<li>返回结果使用 return value，没有 return 则返回 None</li>
+<li>函数需要先定义后调用</li>
+<li>定义一个函数：两个数字相加<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs shell">def add(x,y):<br>    result = x+y<br>    return result<br>   <br>add(1,2)<br></code></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li>如何让函数返回多个值 元组： <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs shell">def damage(skill1,skill2):<br>    <br>    damage1 = skill1 * 3<br>    damage2 = skill2 * 2<br>    return damage1,damage2<br>   <br><span class="hljs-meta">#</span><span class="bash"> 调用1，返回元组tuple</span><br>damages = damage(3,6)<br><span class="hljs-meta">#</span><span class="bash"> 调用2，序列解包</span><br>skill1_damage,skill2_damage = damage(4,8)<br><br></code></pre></td></tr></table></figure></li>
+<li>序列解包与链式赋值</li>
+</ol>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E5%90%8E%E7%AB%AF/">后端</a>
+                    
+                      <a class="hover-with-bg" href="/categories/%E5%90%8E%E7%AB%AF/python/">python</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/python/">python</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2023/05/08/%E6%B5%8B%E8%AF%95/JMeter/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">JMeter</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2023/05/08/%E5%90%8E%E7%AB%AF/python/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/">
+                        <span class="hidden-mobile">正则表达式</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <article class="comments" id="comments" lazyload>
+                
+                  
+                
+                
+  <div id="SOHUCS" sid='http://example.com/2023/05/08/%E5%90%8E%E7%AB%AF/python/python%E5%9F%BA%E7%A1%80/'></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#SOHUCS', function() {
+      Fluid.utils.createScript("https://changyan.sohu.com/upload/changyan.js", function() {
+        window.changyan.api.config({"appid":"cywjv2D9l","appkey":"2bf2f1231299e92b26393ba6fb2ad9d8"})
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+              </article>
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+    风间小栈出品
+  </div>
+  
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- 不蒜子统计PV -->
+        <span id="busuanzi_container_site_pv" style="display: none">
+            总访问量 
+            <span id="busuanzi_value_site_pv"></span>
+             次
+          </span>
+      
+      
+        <!-- 不蒜子统计UV -->
+        <span id="busuanzi_container_site_uv" style="display: none">
+            总访客数 
+            <span id="busuanzi_value_site_uv"></span>
+             人
+          </span>
+      
+    
+  </div>
+
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  
+    <script  src="https://cdn.jsdelivr.net/npm/tocbot@4/dist/tocbot.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4/anchor.min.js" ></script>
+  
+  
+    <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js" ></script>
+  
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+        typing(title);
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>
