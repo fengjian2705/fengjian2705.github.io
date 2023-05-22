@@ -39,19 +39,19 @@ categories:
 
 * java.beans.beancontext.BeanContext
 
-It is desirable to both provide a logical, traversable, hierarchyof JavaBeans, and further to provide a general mechanism whereby an object instantiating an arbitrary JavaBean can offer that JavaBean a variety of services, or interpose itself between the uniderlying system service and the JavaBean, in a conventional fashion.
+It is desirable to both provide a logical, traversable, hierarchy of JavaBeans, and further to provide a general mechanism whereby an object instantiating an arbitrary JavaBean can offer that JavaBean a variety of services, or interpose itself between the uniderlying system service and the JavaBean, in a conventional fashion.
 
-这段文字主要讲述了在Java编程中，提供一个有逻辑和可遍历的 JavaBean 层次结构的需求，同时还需要提供一种通用机制，使得实例化JavaBean对象的对象可以向其提供各种服务或者在系统服务和JavaBean之间插入自己。通俗的说，就是需要建立一个 JavaBean 的层次结构，并提供一种机制，以便在 JavaBean 使用过程中可以提供服务。
+这段文字主要讲述了在 Java 编程中，提供一个有逻辑和可遍历的 JavaBean 层次结构的需求，同时还需要提供一种通用机制，使得实例化 JavaBean 对象的对象可以向其提供各种服务或者在系统服务和JavaBean 之间插入自己。通俗的说，就是需要建立一个 JavaBean 的层次结构，并提供一种机制，以便在 JavaBean 使用过程中可以提供服务。
 
 具体来说，要实现这个需求，需要考虑以下几个方面：
 
-1. JavaBean 的层次结构：可以使用组合模式来实现JavaBean的逻辑、可遍历的层次结构，以便可以按照树形结构来查找和访问JavaBean。
+1. JavaBean 的层次结构：可以使用组合模式来实现 JavaBean 的逻辑、可遍历的层次结构，以便可以按照树形结构来查找和访问 JavaBean。
 
-2. 服务提供机制：可以使用反射机制和注入等技术来实现服务提供机制，使得可以在JavaBean实例化时向其注入服务对象，并在需要时调用服务对象的方法来为JavaBean提供服务。
+2. 服务提供机制：可以使用反射机制和注入等技术来实现服务提供机制，使得可以在JavaBean实例化时向其注入服务对象，并在需要时调用服务对象的方法来为 JavaBean 提供服务。
 
-3. 中介模式：可以使用代理或装饰器等模式来实现中介模式，使得JavaBean可以通过中介对象来访问系统服务或者其他JavaBean。通过中介对象，可以在系统服务和JavaBean之间添加额外的逻辑处理。
+3. 中介模式：可以使用代理或装饰器等模式来实现中介模式，使得 JavaBean 可以通过中介对象来访问系统服务或者其他 JavaBean。通过中介对象，可以在系统服务和 JavaBean 之间添加额外的逻辑处理。
 
-综上所述，建立一个 JavaBean 的层次结构并提供服务机制是Java编程中常见的需求，可以通过组合模式、反射机制、注入、代理或装饰器等技术来实现。
+综上所述，建立一个 JavaBean 的层次结构并提供服务机制是 Java 编程中常见的需求，可以通过组合模式、反射机制、注入、代理或装饰器等技术来实现。
 
 ![javabeans](https://s3.bmp.ovh/imgs/2023/05/19/7f7b7f4337b8091c.png)
 
@@ -93,7 +93,7 @@ It is desirable to both provide a logical, traversable, hierarchyof JavaBeans, a
 Object getBean(String name, Object... args) throws BeansException;
 ```
 
-实例可能是 shared 可能是 independent，这个 share d就是指的单例，那么 independent 主要是原生。这里就会告诉你一个不好的特点，如果当你是 shared 的话，你每调一次就会覆盖它的方法，这种方式实际上是有点不可取的。
+实例可能是 shared 可能是 independent，这个 shared 就是指的单例，那么 independent 主要是原生。这里就会告诉你一个不好的特点，如果当你是 shared 的话，你每调一次就会覆盖它的方法，这种方式实际上是有点不可取的。
 
 * Spring 5.1 Bean 延迟查找
   * getBeanProvider(Class)
@@ -184,7 +184,7 @@ public class ObjectProviderDemo {
 * 根据 Bean 名称查找
   * 基于 containsLocalBean 方法实现
 
-* 根据Bean类型查找实例列表
+* 根据 Bean 类型查找实例列表
   * 单一类型:BeanFactoryUtils#beanOfType
   * 集合类型:BeanFactoryUtils#beansOfTypelncludingAncestors
 
@@ -194,7 +194,7 @@ public class ObjectProviderDemo {
 ```java
 public static void main(String[] args) {
 
-    // 创建  容器
+    // 创建容器
     AnnotationConfigApplicationContext applicationContext = new AnnotationConfigApplicationContext();
     // 将当前类 AnnotationApplicationContextAsIoCContainerDemo 作为配置类（Configuration Class）
     applicationContext.register(AnnotationApplicationContextAsIoCContainerDemo.class);
@@ -208,10 +208,10 @@ public static void main(String[] args) {
     HierarchicalBeanFactory parentBeanFactory = crateParentBeanFactory();
     beanFactory.setParentBeanFactory(parentBeanFactory);
     System.out.println("获取 BeanFactory 的 Parent BeanFactory : " + beanFactory.getParentBeanFactory());
-
+	
     displayLocalBean(beanFactory,"user");
     displayLocalBean(parentBeanFactory,"user");
-
+	
     displayContainsBean(beanFactory,"user");
     displayContainsBean(parentBeanFactory,"user");
     // 关闭应用上下文
@@ -266,6 +266,62 @@ Bean延迟依赖查找接口
       * getIfAvailable(Supplier)
       * ifAvailable(Consumer)
     * Stream 扩展-stream()
+
+getIfAvailable:类型安全，当 Bean 不存在的时候会如何处理
+
+```java
+private static void lookupIfAvailable(AnnotationConfigApplicationContext applicationContext) {
+    ObjectProvider<User> beanProvider = applicationContext.getBeanProvider(User.class);
+    User user = beanProvider.getIfAvailable(User::new);
+}
+```
+
+stream:
+
+```java
+private static void lookupByStreamOps(AnnotationConfigApplicationContext applicationContext) {
+    ObjectProvider<String> beanProvider = applicationContext.getBeanProvider(String.class);
+    Iterable<String> stringIterable = beanProvider;
+    for(String s:stringIterable){
+        System.out.println(s);
+    }
+}
+
+private static void lookupByStreamOps(AnnotationConfigApplicationContext applicationContext) {
+    ObjectProvider<String> beanProvider = applicationContext.getBeanProvider(String.class);
+//        Iterable<String> stringIterable = beanProvider;
+//        for(String s:stringIterable){
+//            System.out.println(s);
+//        }
+    beanProvider.stream().forEach(System.out::println);
+}
+```
+
+## 7. 安全依赖查找
+
+| 依赖查找类型                       | 代表实现                             | 是否安全 |
+| ---------------------------------- | ------------------------------------ | -------- |
+| 单一类型查找                       |                                      |          |
+| BeanFactory#getBean                | 代表实例对象的工厂类                 | 否       |
+| ObjectFactory#getObject            | 简单对象实例化的工厂类               | 否       |
+| ObjectProvider#getIfAvailable      | 延迟查找和依赖注入的工厂类           | 是       |
+| 集合类型查找                       |                                      |          |
+| ListableBeanFactory#getBeansOfType | 可罗列指定类型所有实例对象的工厂类   | 是       |
+| ObjectProvider#stream              | 延迟查找和依赖注入的工厂类的流式接口 | 是       |
+
+其中，BeanFactory#getBean、ObjectFactory#getObject 和 ObjectProvider#getIfAvailable 均属于单一类型查找方法，分别代表实例对象的工厂类、简单对象实例化的工厂类以及延迟查找和依赖注入的工厂类。而在集合类型查找中，ListableBeanFactory#getBeansOfType 可罗列指定类型所有实例对象，而 ObjectProvider#stream 则为延迟查找和依赖注入的工厂类的流式接口。
+
+**tips:**层次性依赖查找的安全性取决于其扩展的单一或集合类型的 BeanFactory 接口
+
+## 8. 内建可查找的依赖
+
+哪些 Spring IoC 内建依赖可供查找？
+
+
+
+## 9.依赖查找中的经典异常
+
+
 
 ## 12. 面试题
 
