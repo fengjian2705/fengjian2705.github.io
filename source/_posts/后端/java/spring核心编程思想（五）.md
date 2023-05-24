@@ -317,11 +317,82 @@ private static void lookupByStreamOps(AnnotationConfigApplicationContext applica
 
 哪些 Spring IoC 内建依赖可供查找？
 
+* AbstractApplicationContext 内建可查找的依赖
 
+| Bean名称                    | Bean实例                         | 使用场景                                      |
+| --------------------------- | -------------------------------- | --------------------------------------------- |
+| environment                 | Environment 对象                 | 外部化配置以及 Profiles                       |
+| systemProperties            | java.util.Properties 对象        | Java系统属性                                  |
+| systemEnvironment           | java.util.Map 对象               | 操作系统环境变量                              |
+| messageSource               | MessageSource 对象               | 国际化文案                                    |
+| lifecycleProcessor          | LifecycleProcessor 对象          | Lifecycle Bean 处理器                         |
+| applicationEventMulticaster | ApplicationEventMulticaster 对象 | Spring 事件广播器，用于发送和接收 Spring 事件 |
+
+以上是常用的在 Spring 框架中使用的 Bean 名称、Bean 实例以及它们的使用场景。这些 Bean 都是 Spring 框架非常重要的组成部分，用于在应用程序中支持各种不同类型的功能。
+
+Environment 对象可以用来管理应用程序的配置信息，并根据不同的 Profiles 进行适当的配置。systemProperties 和 systemEnvironment 都是用来访问 Java 虚拟机的系统变量和操作系统的环境变
+
+量的。messageSource 则是用来支持应用程序的国际化功能。lifecycleProcessor 和 applicationEventMulticaster是用来支持Spring框架的生命周期和事件功能的。lifecycleProcessor 会处理
+
+所有实现了 Lifecycle 接口的 Bean，而 applicationEventMulticaster 则会处理所有标注了 @EventListener 注解的方法。
+
+以上这些 Bean 的使用场景非常广泛，在许多企业级应用程序中都得到了广泛的应用。如果你想深入研究 Spring 框架，了解这些 Bean 的原理和使用方法将会对你非常有帮助。
+
+* 注解驱动Spring应用上下文内建可查找的依赖(部分)
+
+| Bean名称                                                     | Bean实例                                  | 使用场景                                     |
+| ------------------------------------------------------------ | ----------------------------------------- | -------------------------------------------- |
+| org.springframework.context.annotation.internalConfigurationAnnotationProcessor | ConfigurationClassPostProcessor 对象      | 处理 Spring 配置类                           |
+| org.springframework.context.annotation.internalAutowiredAnnotationProcessor | AutowiredAnnotationBeanPostProcessor 对象 | 处理 @Autowired 以及 @Value注解              |
+| org.springframework.context.annotation.internalCommonAnnotationProcessor | CommonAnnotationBeanPostProcessor 对象    | 处理 JSR-250 注解,如 @PostConstruct等        |
+| org.springframework.context.event.internalEventListenerProcessor | EventListenerMethodProcessor 对象         | 处理标注 @EventListener 的Spring事件监听方法 |
+
+以上是四个常见的Spring框架中的Bean名称、Bean实例以及它们的使用场景。这些Bean都是Spring框架中非常重要的组成部分，用于在应用程序中处理配置信息、依赖注入、事件触发等关键功能。
+
+ConfigurationClassPostProcessor对象用于解析@Configuration注解和@Bean注解，将它们转换成Spring容器中的Bean定义。AutowiredAnnotationBeanPostProcessor对象则可以自动装配Bean之
+
+间的依赖关系。CommonAnnotationBeanPostProcessor对象主要处理JSR-250注解，如@PostConstruct和@PreDestroy等。最后，EventListenerMethodProcessor对象用于处理标注了
+
+@EventListener 注解的 Spring 事件监听方法。
+
+这些 Spring Bean 的使用场景都非常广泛，在许多企业级应用程序中都得到了广泛的应用。如果你想深入研究 Spring 框架，了解这些 Bean 的原理和使用方法将会对你非常有帮助。
+
+* 注解驱动Spring应用上下文内建可查找的依赖(续)
+
+| Bean名称                                                     | Bean实例                                   | 使用场景                                                     |
+| ------------------------------------------------------------ | ------------------------------------------ | ------------------------------------------------------------ |
+| org.springframework.context.event.internalEventListenerFactory | DefaultEventListenerFactory对象            | 将带有@EventListener注解的方法适配为ApplicationListener      |
+| org.springframework.context.annotation.internalPersistenceAnnotationProcessor | PersistenceAnnotationBeanPostProcessor对象 | 处理带有JPA注解的类和方法，例如@Entity、@MappedSuperclass、@PersistenceContext等 |
+
+以上是在Spring框架中常用的两个Bean名称、Bean实例以及它们的使用场景。这些Bean都是Spring框架中非常重要的组成部分之一。
+
+DefaultEventListenerFactory对象主要用于将标注了@EventListener注解的方法转换为合适的ApplicationListener对象。这样，当事件发生时，对应的ApplicationListener就能够接收到相应的事
+
+件，并作出相应的处理。另外，这个Bean也可以用来对事件监听器进行管理，例如添加或删除监听器等。
+
+另一个常用的Bean是PersistenceAnnotationBeanPostProcessor对象，它会处理带有JPA注解的类和方法，并自动将相关的Bean注册到Spring容器中。这个Bean主要用于简化使用JPA进行数据库操作的流
+
+程，使操作更加方便和灵活。
+
+需要注意的是，org.springframework.context.annotation.internalPersistenceAnnotationProcessor这个Bean的使用是有条件的，需要通过在类路径下存在JPA相关的Library包才能够启动。如
+
+果不满足这个条件，这个Bean则不会被初始化。
+
+以上这些Bean在Spring框架中都扮演着非常重要的角色，它们能够帮助开发者更加高效地进行开发工作，同时也能够提高程序的性能和健壮性。
 
 ## 9.依赖查找中的经典异常
 
+* BeansException 子类型
 
+| 异常类型                        | 触发条件                                        | 场景举例                                                     |
+| ------------------------------- | ----------------------------------------------- | ------------------------------------------------------------ |
+| NoSuchBeanDefinitionException   | 当查找 Bean 不存在于IoC 容器时                  | 调用 BeanFactory 的 getBean()、ObjectFactory 的 getObject() 或 BeanFactory 的 getBean(Class)方法，传入一个未在IoC容器中注册的 Bean 名称或类型，将会抛出此异常。 |
+| NoUniqueBeanDefinitionException | 类型依赖查找时，IoC 容器存在多个Bean 实例       | 调用 BeanFactory 的 getBean() 或 ApplicationContext 的 getBean() 方法，传入一个接口或抽象类类型，如果 IoC 容器中存在多个实现类，则会抛出此异常。 |
+| BeanInstantiationException      | 当 Bean 所对应的类型非具体类时                  | 调用 BeanFactory 或 ApplicationContext 的getBean() 方法，传入一个接口或抽象类类型，或者是一个无法实例化的具体类类型时，将会抛出此异常。 |
+| BeanCreationException           | 当 Bean 初始化过程中，Bean 初始化方法执行异常时 | 在 Bean 的初始化方法中抛出异常时，将会导致 BeanCreationException 异常的抛出。 |
+| BeanDefinitionStoreException    | 当 BeanDefinition 配置元信息非法时              | Bean 定义文件中存在语法错误、引用了不存在的类或属性、或者是 XML 配置资源无法打开等情况时，将会抛出此异常。 |
+
+以上是 Spring 框架中常见的 BeansException 子类型异常，每种异常都有自己特定的触发条件和场景举例。当我们在开发过程中遇到这些异常时，需要根据异常信息对代码进行调试和修复，以保证程序的正常运行。同时，也可以从这些异常中获取到一定的启示，提高代码的质量和健壮性。
 
 ## 12. 面试题
 
