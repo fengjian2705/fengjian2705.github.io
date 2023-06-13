@@ -9,20 +9,11 @@ categories:
   - spring 核心编程思想
 ---
 
-## 1. Spring Framework 总览
+## 1. 内容提要
 
-| 内容                   | 说明                                                      |
-| ---------------------- | --------------------------------------------------------- |
-| 准备工作               | 学习 Spring Framework 需要哪些前期铺垫                    |
-| 特性总览               | 了解 Spring Framework 提供了哪些功能特性                  |
-| 版本特性               | 关于版本分布与特性之间的关系                              |
-| 模块化设计             | Spring 如何从单一的模块划分成不同的模块                   |
-| 对 Java 语言特性的运用 | Spring 每个版本的语言支持                                 |
-| 对 JDK API 实践        | Spring 对 Java API 的整合和实践                           |
-| 对 Java EE API 的整合  | Spring 对 Java EE 的整合，比如 Servlet 规范、JPA 规范等等 |
-| 编程模型               | Spring 是如何实践和实现 Java 编程模型的一个示范           |
-| 核心价值               | Spring 对我们日常开发和一些架构学习中带来哪些重要特性     |
-| 面试题精选             | -                                                         |
+## ![](https://s3.bmp.ovh/imgs/2023/06/13/5e426061fe2c133f.png)
+
+
 
 ## 2. 准备工作
 
