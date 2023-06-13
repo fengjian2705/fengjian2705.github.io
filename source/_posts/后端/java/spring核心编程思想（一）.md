@@ -78,20 +78,16 @@ categories:
 ### 3.3 Web技术(Web)
 
 * Web Servlet 技术栈
+  * Spring MVC
+  * WebSocket
+  * SockJS
 
-​	Spring MVC
-
-​	WebSocket
-
-​	SockJS
 
 * Web Reactive 技术栈
+  * Spring WebFlux
+  * WebClient
+  * WebSocket
 
-​	Spring WebFlux
-
-​	WebClient
-
-​	WebSocket
 
 ### 3.4 技术整合(Integration)
 
@@ -142,11 +138,11 @@ Java 版本依赖与支持
 
 1. 为什么从 1.3 开始？
 
-   因为Spring Framework的早期的版本叫什么，interface21，那么这个版本其实就依赖于 Java1.3，Java1.3 引入了一个非常重要的特性是什么，就是动态代理。
+   因为 Spring Framework 的早期的版本叫什么，interface21，那么这个版本其实就依赖于 Java1.3，Java1.3 引入了一个非常重要的特性是什么，就是动态代理。
 
    从 Java1.3 开始就会针对接口的方式来进行动态代理，那么这是实现 AOP 的一个很重要的环节，因此 Spring 的第 1 个版本就必须依赖 Java1.3。
 
-2. 那么与此同时它支持的 JavaEE 版本是 1.3，这个版本一个简单特性就是 Servlet 的 API 对应的 JavaEE 的版本是 1.3，Servlet 的版本是 2.3 这个版本，2.3 这个版本它在里面会支持 Servlet 事件，那么因此它可以和我们的 Spring的事件来进行一个呼应，他们都是 Java 标准事件的实现。
+2. 那么与此同时它支持的 JavaEE 版本是 1.3，这个版本一个简单特性就是 Servlet 的 API 对应的 JavaEE 的版本是 1.3，Servlet 的版本是 2.3 这个版本，2.3 这个版本它在里面会支持 Servlet 事件，那么因此它可以和我们的 Spring 的事件来进行一个呼应，他们都是 Java 标准事件的实现。
 
 ### 2.x 版本
 
