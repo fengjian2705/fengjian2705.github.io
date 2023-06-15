@@ -9,21 +9,9 @@ categories:
   - spring 核心编程思想
 ---
 
-## 1. Spring Bean 基础
+## 1. 内容提要
 
-| 内容                   |
-| ---------------------- |
-| 定义 Spring Bean       |
-| BeanDefinition 元信息  |
-| 命名 Spring Bean       |
-| Spring Bean 的别名     |
-| 注册 Spring Bean       |
-| 实例化 Spring Bean     |
-| 初始化 Spring Bean     |
-| 延迟初始化 Spring Bean |
-| 销毁 Spring Bean       |
-| 垃圾回收 Spring Bean   |
-| 面试题精选             |
+![](https://s3.bmp.ovh/imgs/2023/06/15/57545356a25571a3.png)
 
 ## 2. 定义 Spring Bean
 
@@ -100,7 +88,6 @@ public class BeanDefinitionCreationDemo {
         propertyValues.addPropertyValue("name", "jack");
         propertyValues.addPropertyValue("age", 18);
         genericBeanDefinition.setPropertyValues(propertyValues);
-
     }
 }
 ```
@@ -111,7 +98,9 @@ public class BeanDefinitionCreationDemo {
 
   每个 Bean 拥有一个或多个标识符(identifiers),这些标识符在 Bean 所在的容器必须是唯一的。通常一个 Bean 仅有一个标识符,如果需要额外的,可考虑使用别名(Alias)来扩充。
 
-  在基于 XML 的配置元信息中,开发人员可用 id 或者 name 属性来规定 Bean 的标识符。通常 Bean 的标识符由字母组成,允许出现特殊字符。如果要想引入 Bean 的别名的话,可在 name 属性使用半角逗号(",")或分号(";")来间隔。Bean 的 id 或 name 属性并非必须指定,如果留空的话,容器会为 Bean 自动生成一个唯一的名称。Bean 的命名尽管没有限制,不过官方建议采用驼峰的方式,更符合 Java 的命名约定。
+  在基于 XML 的配置元信息中,开发人员可用 id 或者 name 属性来规定 Bean 的标识符。通常 Bean 的标识符由字母组成,允许出现特殊字符。如果要想引入 Bean 的别名的话,可在 name 属性使用半角
+  
+  逗号(",")或分号(";")来间隔。Bean 的 id 或 name 属性并非必须指定,如果留空的话,容器会为 Bean 自动生成一个唯一的名称。Bean 的命名尽管没有限制,不过官方建议采用驼峰的方式,更符合 Java 的命名约定。
 
 ​	**tips：**每个 Bean 它的识别符是在它所在的容器，也就说它所在的 BeanDefinition 里面或者说 BeanFactory 里面是唯一的并非是整个应用是唯一的这个地方是要加以区别的。
 
@@ -131,7 +120,9 @@ public class BeanDefinitionCreationDemo {
 
   java.beans.Introspector.decapitalize (which Spring uses here).
 
-   当在 classpath 中使用组件扫描时，Spring 会根据之前描述的规则为未命名的组件生成 bean 名称，即将**类名开头字母转换为小写**。但是，在一个罕见的特殊情况下，如果**类名超过一个字符且前两个字        	符都是大写字母，则保留原始大小写**。这些规则与 java.beans.Introspector.decapitalize 所定义的规则相同（Spring 在此处使用它）。
+  当在 classpath 中使用组件扫描时，Spring 会根据之前描述的规则为未命名的组件生成 bean 名称，即将**类名开头字母转换为小写**。但是，在一个罕见的特殊情况下，如果**类名超过一个字符且前两个字        **
+  
+  **符都是大写字母，则保留原始大小写**。这些规则与 java.beans.Introspector.decapitalize 所定义的规则相同（Spring 在此处使用它）。
 
 ### BeanNameGenerator
 

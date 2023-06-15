@@ -9,25 +9,15 @@ categories:
   - spring 核心编程思想
 ---
 
-## 1. 重新认识 IoC
+## 1. 内容提要
 
-| 内容                     | 说明                                                         |
-| ------------------------ | ------------------------------------------------------------ |
-| IoC 发展简介             | 包括 IoC 的定义以及它的一个简史                              |
-| IoC 主要实现策略         | 其实 IoC 不只是我们所看到的包括 Martin Fowler 或者是像 Spring 官方的它的一个讨论 |
-| IoC 容器的职责           | 有多方解读来进行说明                                         |
-| IoC 容器的实现           | 包括了我们的开源实现和传统实现                               |
-| 传统 IoC 容器实现        | 着重介绍就是一种关于Java Beans 对 IoC 的容器的一个实现       |
-| 轻量级 IoC 容器          | 如何定义以及它给我们带来的好处，有什么值得我们学习的地方     |
-| 依赖查找 VS 依赖注入     | 为什么我们说Spring框架里面会偏好于依赖注入而非依赖查找       |
-| 构造器注入 VS Setter注入 | 关于构造器注入和 Setter 方法注入的一个区别和优势             |
-| 面试题精选               | -                                                            |
+![](https://s3.bmp.ovh/imgs/2023/06/15/475bc718cab0b96f.png)
 
 ## 2. IoC 发展简介
 
 ### 2.1 什么是 IoC?
 
-In software engineering, inversion of control (IoC) is a programmiing principle. IoC inverts the flow of control as compared to traditional control flow. In IoC, custom-wvritten portions of a computer program receive the flow of control from a generic framework. Asoftware architecture with this design inverts
+In software engineering, inversion of control (IoC) is a programming principle. IoC inverts the flow of control as compared to traditional control flow. In IoC, custom-written portions of a computer program receive the flow of control from a generic framework. Asoftware architecture with this design inverts
 
 control as compared to traditional procedural programming: in traaditional programming, the custom code that expresses the purpose of the program calls into 
 
@@ -47,7 +37,7 @@ reusable libraries to take care of generic tasks, but with inversion of control,
 
 1988 年,Ralph E.Johnson&Brian Foote在《Designing ReusableClasses》中提出"Inversion of control"(控制反转)
 
-1996 年,Michael Mattson 在《Object-Oriented Frameworks, Asurvey of methodological issues》中将 "Inversion of control" 命名为 "Hollywood principle"
+1996 年,Michael Matson 在《Object-Oriented Frameworks, A survey of methodological issues》中将 "Inversion of control" 命名为 "Hollywood principle"
 
 <font color="red">2004 年,Martin Fowler 在《Inversion of Control Containers andthe Dependency Injectionpattern》中提出了自己对 IoC 以及 DI 的理解</font>
 
@@ -57,19 +47,19 @@ reusable libraries to take care of generic tasks, but with inversion of control,
 
 * 维基百科(https://en.wikipedia.org/wiki/Inversion_of_control)
 
-  Implementation techniques小节的定义:
+  Implementation techniques 小节的定义: "In object-oriented programming, there are several basic techniques to implement inversion of control.
 
-  "In object-oriented programming, there are several basic techniquees to implement inversion of control. These are:
+  These are:
 
-  * Using a service IoCator pattern：服务定位模式，这种模式是 JavaEE 里面所定义的一种模式，通常通过 JNDI 这种技术获取 JavaEE 的组件，比如说获取 EJB 组件或者 DataSource 这样的东西
+  * Using a service locator pattern：服务定位模式，这种模式是 JavaEE 里面所定义的一种模式，通常通过 JNDI 这种技术获取 JavaEE 的组件，比如说获取 EJB 组件或者 DataSource 这样的东西
   * Using dependency injection, for example：依赖注入
     * Constructor injection：构造器注入
     * Parameter injection：参数注入
     * Setter injection：set 方法注入
     * Interface injection：接口注入
-  * Using a contextualized lookup：上下文依赖查询，由另外一种技术来进行实现，比如说在 Java 里面有 Java Beans 这样的技术，Java Beans 里面有一个通用的上下文叫做 bean context，这种里面既可以传输我的 Bean 也可以来管理我的Bean的层次性
-  * Using template method design pattern：关于模板方法的一个设计模式，这种设计模式在Spring里面大量地会用到，比如说是SpringJDBC里面会用到，JDBC Template这样的实现会给我们一种类似于比如说Statement这样的Callback这种Callback能够帮助我们实现地更为抽象，当我们去实现这样的接口的时候我们不需要关心Callback从哪来，那么也实现了一种反转控制的方式
-  * Using strategy design pattern:策略模式"
+  * Using a contextualized lookup：上下文依赖查询，由另外一种技术来进行实现，比如说在 Java 里面有 Java Beans 这样的技术，Java Beans 里面有一个通用的上下文叫做 bean context，这种里面既可以传输我的 Bean 也可以来管理我的 Bean 的层次性
+  * Using template method design pattern：关于模板方法的一个设计模式，这种设计模式在 Spring 里面大量地会用到，比如说是 Spring JDBC 里面会用到，JDBC Template 这样的实现会给我们一种类似于比如说Statement这样的 Callback 这种 Callback 能够帮助我们实现地更为抽象，当我们去实现这样的接口的时候我们不需要关心 Callback 从哪来，那么也实现了一种反转控制的方式
+  * Using strategy design pattern: 策略模式
 
 * 《Expert One-on-One<sup>TM</sup> J2EE<sup>TM</sup> Development without EJB<sup>TM</sup>》提到的主要实现策略:
 
@@ -95,7 +85,7 @@ reusable libraries to take care of generic tasks, but with inversion of control,
 
 1. 维基百科(https://en.wikipedia.org/wiki/Inversion_of_control)
 
-在Overview小节中提到:
+在 Overview 小节中提到:
 
 "Inversion of control serves the following design purposes:
 
@@ -286,7 +276,9 @@ call you'."
 
   A container that doesn't require any special deployment steps to deploy objects within it.它不需要一些特殊的配置
 
-  A container that has such a light footprint and minimal API dependencies that it can be run in a variety of environments.容器它能够达到一些比较轻量级的内存占用,以及最小化的 API 的一个依赖
+  A container that has such a light footprint and minimal API dependencies that it can be run in a variety of environments.容器它能够达到一些比较轻量级的内存占用,
+
+  以及最小化的 API 的一个依赖。
 
   A container that sets the bar for adding a managed object so low in terms of deployment effort and performance. overhead that it's possible to deploy and
 
@@ -296,15 +288,15 @@ call you'."
 
 * 《Expert One-on-One<sup>TM</sup> J2EE<sup>TM</sup> Development without EJB<sup>TM</sup>》认为轻量级容器的好处：
 
-  Escaping the monolithic container 释放掉一些容器，就所谓的聚式或者是单体这样的容器，monolithic 这种单词就是聚式或者说我们的单体应用
+  Escaping the monolithic container 释放掉一些容器，就所谓的聚式或者是单体这样的容器，monolithic 这种单词就是聚式或者说我们的单体应用。
 
-  Maximizing codereusability 要实现最大化的一个代码的复用
+  Maximizing codereusability 要实现最大化的一个代码的复用。
 
-  Greater object orientation 更大程度上面的面向对象
+  Greater object orientation 更大程度上面的面向对象。
 
-  Greater productivity 更大化的一个产品化
+  Greater productivity 更大化的一个产品化。
 
-  Better testability 更好的可测试性
+  Better testability 更好的可测试性。
 
 
 
@@ -323,21 +315,25 @@ call you'."
 
   "The Spring team generally <font color="red">advocates constructor injection</font>, as it lets you implement application components as immutable objects and ensures that required 
 
-  dependencies are not null. Furthermore, constructor-injected components are always returned to the client (calling) code in a fully initialized state. As a side note, a large number of constructor arguments a bad code smell, implying that the class likely has too many responsibilities and should be refactored
+  dependencies are not null. Furthermore, constructor-injected components are always returned to the client (calling) code in a fully initialized state. As a 
+
+  side note, a large number of constructor arguments a bad code smell, implying that the class likely has too many responsibilities and should be refactored
 
   to better address proper separation of concerns.
 
-  Spring 团队通常倡导使用构造函数注入（constructor injection），因为它可以让你把应用组件实现为不可变对象，并确保必需的依赖项不为空。此外，构造函数注入的组件总是以完全初始化的状态返回给客户端代码（调用方）。一个额外的说明是，大量的构造函数参数是一种不好的代码气味，意味着这个类可能有太多的职责，应该进行重构，以更好地实现关注点分离。
+  Spring 团队通常倡导使用构造函数注入（constructor injection），因为它可以让你把应用组件实现为不可变对象，并确保必需的依赖项不为空。此外，构造函数注入的组件总是以完全初始化的状态返回
 
-  <font color="red"> Setter injection should primarily only be used for optional dependencies</font> that can be assigned reasonable default values within 
+  给客户端代码（调用方）。一个额外的说明是，大量的构造函数参数是一种不好的代码气味，意味着这个类可能有太多的职责，应该进行重构，以更好地实现关注点分离。
 
-  the class. Otherwise, not-null checks must be performed everywhere the code uses the dependency. One benefit of setter injection is that setter methods
+  <font color="red"> Setter injection should primarily only be used for optional dependencies</font> that can be assigned reasonable default values within the class. Otherwise, not-
 
-  make objects of that class amenable to reconfiguration or re-injection later Management through JMX MBeans is therefore a compelling use case for setter
+  null checks must be performed everywhere the code uses the dependency. One benefit of setter injection is that setter methods make objects of that class 
 
-  injection."
+  amenable to reconfiguration or re-injection later Management through JMX MBeans is therefore a compelling use case for setter injection."
 
-  Setter 注入应主要仅用于可以在类内分配合理默认值的可选依赖项。否则，在代码使用该依赖项的所有地方都必须执行非空检查。 Setter 注入的一个好处是，setter 方法使得那个类的对象容易在以后进行重新配置或重新注入。因此，通过JMX MBeans进行管理是 Setter 注入的一个很好的用例。
+  Setter 注入应主要仅用于可以在类内分配合理默认值的可选依赖项。否则，在代码使用该依赖项的所有地方都必须执行非空检查。 Setter 注入的一个好处是，setter 方法使得那个类的对象容易在以后进
+
+  行重新配置或重新注入。因此，通过 JMX MBeans 进行管理是 Setter 注入的一个很好的用例。
 
 * 《Expert One-on-One<sup>TM</sup> J2EE<sup>TM</sup> Development without EJB<sup>TM</sup>)认为 Setter 注入的优点:
 
@@ -383,32 +379,72 @@ call you'."
 
   "<font color="red">Disadvantages</font> include:
 
-  The order in which setters are called is not expressed in any contract. Thus, we sometimes need to invoke a method after the last setter has been called to initialize the component. Spring provides the `org.springframework.beans.factory.InitializingBean` interface for this; it also provides the ability to invoke an arbitrary init method. However, this contract must be documented to ensure correct use outside a container. Not all the necessary setters may have been called before use. The object can thus be left partially configured."
+  The order in which setters are called is not expressed in any contract. Thus, we sometimes need to invoke a method after the last setter has been called to 
 
-  缺点包括：
+  initialize the component. Spring provides the `org.springframework.beans.factory.InitializingBean` interface for this; it also provides the ability to 
 
-  在任何契约中都没有表达调用 setter 的顺序。因此，我们有时需要在最后一个 setter 被调用之后调用方法来初始化组件。Spring 提供了`org.springframework.beans.factory.InitializingBean` 接口和调用任意初始化方法的能力。然而，这个契约必须被记录以确保在容器之外正确使用。在使用之前可能没有调用所有必要的setter，因此对象可能会部分配置不完整。
+  invoke an arbitrary init method. However, this contract must be documented to ensure correct use outside a container. Not all the necessary setters may 
+
+  have been called before use. The object can thus be left partially configured."
+
+  缺点包括：在任何契约中都没有表达调用 setter 的顺序。因此，我们有时需要在最后一个 setter 被调用之后调用方法来初始化组件。Spring 提供了
+
+  `org.springframework.beans.factory.InitializingBean` 接口和调用任意初始化方法的能力。然而，这个契约必须被记录以确保在容器之外正确使用。在使用之前可能没有调用所有必要的
+
+  setter，因此对象可能会部分配置不完整。
 
 * 《Expert One-on-One<sup>TM</sup> J2EE<sup>TM</sup> Development without EJB<sup>TM</sup>》认为构造器注入的优点:
   "<font color="red">Advantages of Constructor Injection</font> include:
-  * Each managed object is guaranteed to be in a consistent state-fully configured-before it can be invoked in any
-    business methods. This is the primary motivation of Constructtor Injection. (However, it is possible to achieve the
-    same result with JavaBeans via dependency checking, as Spring can optionally perform.) There's no need for
-    initialization methods.
-  * There may be slightly less code than results from the useof multiple JavaBean methods, although will be no
-    difference in complexity."
+  
+  * Each managed object is guaranteed to be in a consistent state-fully configured-before it can be invoked in any business methods. This is the primary 
+  
+    motivation of Constructor Injection. (However, it is possible to achieve the same result with JavaBeans via dependency checking, as Spring can 
+  
+    optionally perform.) There's no need for initialization methods.
+  
+    每个被管理的对象都必须在调用任何业务方法之前处于一致的状态，并且已经完全配置好。这是构造函数注入(Constructor Injection)的主要动机。(然而，JavaBean 也可以通过依赖项检查实现相同
+  
+    的结果，Spring 可以选择性地执行。) 不需要初始化方法。
+  
+  * There may be slightly less code than results from the use of multiple JavaBean methods, although will be no difference in complexity."
+  
+    使用多个 JavaBean 方法可能会产生的代码量略微减少，但在复杂性上并没有区别。
+  
 * 《Expert One-on-One<sup>TM</sup> J2EE<sup>TM</sup> Development without EJB<sup>TM</sup>)认为构造器注入的缺点:
+  
   "<font color="red">Disadvantages</font> include:
-  * Although also a Java-language feature, multi-argument coonstructors are probably less common in existing code thause
-    of JavaBean properties.
+  
+  * Although also a Java-language feature, multi-argument constructors are probably less common in existing code thause of JavaBean properties.
+  
+    虽然多参数构造函数也是 Java 语言的一项特性，但由于 JavaBean 属性的存在，这种构造函数在现有代码中可能不太常见。
+  
   * Java constructor arguments don't have names visible by introspection
+  
+    Java构造函数的参数名称在内省中不可见。
+  
   * Constructor argument lists are less well supported by IDEs tharJavaBean setter methods.
+  
+    构造函数参数列表在 IDE 中的支持比 JavaBean 的 setter 方法要差一些。
+  
   * Long constructor argument lists and large constructor bodies can become unwieldy
+  
+    长的构造函数参数列表和庞大的构造函数体可能会变得笨重难用。
+  
   * Concrete inheritance can become problematic.
-  * Poor support for optional properties, compared to JavaBeaans
-  * Unittesting can be slightly more difficult
-  * When collaborators are passed in on object construction, it becomes impossible to change the reference held in the
-    object."
+  
+    具体继承(Concrete inheritance)有可能变得棘手。
+  
+  * Poor support for optional properties, compared to JavaBeans
+  
+    与JavaBean相比，对可选属性的支持不佳。
+  
+  * Unit testing can be slightly more difficult
+  
+    单元测试可能会稍微有些困难。
+  
+  * When collaborators are passed in on object construction, it becomes impossible to change the reference held in the object."
+  
+    当协作者在对象构造时传入时，就无法更改对象中保存的引用。
 
 ## 10. 面试题
 
@@ -416,9 +452,17 @@ call you'."
 
 答:
 
-简单地说,IoC 是反转控制,类似于好莱坞原则,主要有依赖查找和依赖注入实现，
+简单地说,IoC 是反转控制,类似于好莱坞原则,主要有依赖查找和依赖注入两种实现方式，
 
-进一步说的话：按照IoC的定义很多方面都是IoC,我们常说的比如说 JavaBeans 是 IoC 的一个容器实现、Servlet 的容器也是 IoC 的实现，因为 Servlet 可以去依赖或者反向地通过 JNDI 的方式进行得到一些外部的一些资源包括 DataSource 或者相关的 EJB 的组件，与此同时像是 Spring Framework 或者 PicoContainer 的依赖注入的框架也能够帮助我们去实现我们的IoC。同时除此之外这些东西是我们比较常见的一个 IoC 的实现策略。按照它这个定义如果是反转控制那东西就多了去了，包括我们说消息其实也算，因为消息其实是被动的我们如果说我们传统的调用链路是一个主动拉的模式那么 IoC 其实是一种推的模式，那么推的模式在消息事件以及各种这样类似于这种反向的观察者模式的扩展都属于 IoC 那么这东西就无穷无尽了，那么它如果仅仅关注于依赖注入比如说通过构造器注入或 Setter 注入，那么它其中有什么好处。
+进一步说的话：按照 IoC 的定义很多方面都是 IoC,我们常说的比如说 JavaBeans 是 IoC 的一个容器实现、Servlet 的容器也是 IoC 的实现，因为 Servlet 可以去依赖或者反向地通过 JNDI 的方式进
+
+行得到一些外部的一些资源包括 DataSource 或者相关的 EJB 的组件，与此同时像是 Spring Framework 或者 PicoContainer 的依赖注入的框架也能够帮助我们去实现我们的 IoC。同时除此之外这些东
+
+西是我们比较常见的一个 IoC 的实现策略。按照它这个定义如果是反转控制那东西就多了去了，包括我们说消息其实也算，因为消息其实是被动的我们如果说我们传统的调用链路是一个主动拉的模式那么 IoC 其实
+
+是一种推的模式，那么推的模式在消息事件以及各种这样类似于这种反向的观察者模式的扩展都属于 IoC 那么这东西就无穷无尽了，那么它如果仅仅关注于依赖注入比如说通过构造器注入或 Setter 注入，那么它
+
+其中有什么好处。
 
 **<font color="orange" size="2">996面试题</font>**-依赖查找和依赖注入的区别？
 

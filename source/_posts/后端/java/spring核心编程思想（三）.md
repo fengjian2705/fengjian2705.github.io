@@ -9,21 +9,11 @@ categories:
   - spring 核心编程思想
 ---
 
-## 1. Spring IoC 容器概述
+## 1. 内容提要
 
-| 内容                    |
-| ----------------------- |
-| Spring IoC 依赖查找     |
-| Spring IoC 依赖注入     |
-| Spring IoC 依赖来源     |
-| Spring IoC 配置元信息   |
-| Spring IoC 容器         |
-| Spring 应用上下文       |
-| 使用 Spring IoC 容器    |
-| Spring IoC 容器生命周期 |
-| 面试题精选              |
+![](https://s3.bmp.ovh/imgs/2023/06/15/73fbb50989846f59.png)
 
-## 2. Spring IoC 依赖查找
+## 2. 依赖查找
 
 1. 根据 Bean 名称查找
 
@@ -49,12 +39,6 @@ categories:
    ```java
    package tech.fengjian.thinking.in.spring.ioc.overview.domain;
    
-   /**
-    * 用户类
-    *
-    * @author 风间
-    * @since 2023/5/7 12:58
-    */
    public class User {
    
        private Long id;
@@ -85,7 +69,7 @@ categories:
        }
    }
    ```
-
+   
 2. 新建 dependency-lookup-context 文件，配置实体类
 
    ```xml
@@ -112,12 +96,6 @@ categories:
    import org.springframework.context.support.ClassPathXmlApplicationContext;
    import tech.fengjian.thinking.in.spring.ioc.overview.domain.User;
    
-   /**
-    * 依赖查找示例
-    *
-    * @author 风间
-    * @since 2023/5/7 12:51
-    */
    public class DependencyLookupDemo {
        public static void main(String[] args) {
            // 配置 XML 文件
@@ -192,13 +170,6 @@ categories:
    import org.springframework.context.support.ClassPathXmlApplicationContext;
    import tech.fengjian.thinking.in.spring.ioc.overview.domain.User;
    
-   /**
-    * 依赖查找示例
-    * 1. 通过名称的方式来查找
-    *
-    * @author 风间
-    * @since 2023/5/7 12:51
-    */
    public class DependencyLookupDemo {
        public static void main(String[] args) {
            // 配置 XML 文件
@@ -226,13 +197,6 @@ import org.springframework.beans.factory.ObjectFactory;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import tech.fengjian.thinking.in.spring.ioc.overview.domain.User;
 
-/**
- * 依赖查找示例
- * 1. 通过名称的方式来查找
- *
- * @author 风间
- * @since 2023/5/7 12:51
- */
 public class DependencyLookupDemo {
     public static void main(String[] args) {
         // 配置 XML 文件
@@ -266,14 +230,6 @@ import tech.fengjian.thinking.in.spring.ioc.overview.domain.User;
 
 import java.util.Map;
 
-/**
- * 依赖查找示例
- * 1. 通过名称的方式来查找
- * 2. 通过类型的方式来查找
- *
- * @author 风间
- * @since 2023/5/7 12:51
- */
 public class DependencyLookupDemo {
     public static void main(String[] args) {
         // 配置 XML 文件
@@ -281,7 +237,6 @@ public class DependencyLookupDemo {
         BeanFactory beanFactory = new ClassPathXmlApplicationContext("classpath:META-INF/dependency-lookup-context.xml");
         // 按照类型查找集合对象
         lookupCollectionByType(beanFactory);
-       
     }
 
     private static void lookupCollectionByType(BeanFactory beanFactory) {
@@ -391,14 +346,6 @@ import tech.fengjian.thinking.in.spring.ioc.overview.domain.User;
 
 import java.util.Map;
 
-/**
- * 依赖查找示例
- * 1. 通过名称的方式来查找
- * 2. 通过类型的方式来查找
- *
- * @author 风间
- * @since 2023/5/7 12:51
- */
 public class DependencyLookupDemo {
     public static void main(String[] args) {
         // 配置 XML 文件
@@ -500,11 +447,6 @@ import org.springframework.beans.factory.BeanFactory;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import tech.fengjian.ioc.container.overview.repository.UserRepository;
 
-/**
-* <h1>依赖注入示例</h1>
-* @author 风间
-* @since 2023/5/8
-*/
 public class DependencyInjectionDemo {
 
     public static void main(String[] args) {
@@ -563,11 +505,6 @@ import org.springframework.beans.factory.BeanFactory;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import tech.fengjian.ioc.container.overview.repository.UserRepository;
 
-/**
-* <h1>依赖注入示例</h1>
-* @author 风间
-* @since 2023/5/8
-*/
 public class DependencyInjectionDemo {
 
     public static void main(String[] args) {
@@ -783,9 +720,9 @@ public class DependencyInjectionDemo {
 
 * Bean 定义配置
   * 基于 XML 文件
-    基于 Properties 文件
-    基于 Java 注解
-    基于 JavaAPI (专题讨论)
+  * 基于 Properties 文件
+  * 基于 Java 注解
+  * 基于 JavaAPI (专题讨论)
 * IoC 容器配置
   * 基于 XML 文件
   * 基于 Java 注解
@@ -858,24 +795,33 @@ public class DependencyInjectionDemo {
 
 The [`BeanFactory`](https://docs.spring.io/spring-framework/docs/5.3.28-SNAPSHOT/javadoc-api/org/springframework/beans/factory/BeanFactory.html) interface provides an advanced configuration mechanism capable of managing any type of object. [`ApplicationContext`](https://docs.spring.io/spring-framework/docs/5.3.28-SNAPSHOT/javadoc-api/org/springframework/context/ApplicationContext.html) is a sub-interface of `BeanFactory`.It adds:
 
+`BeanFactory` 接口提供了一个高级配置机制，能够管理任何类型的对象。`ApplicationContext` 是 `BeanFactory` 的子接口。`ApplicationContext` 增加了：
+
 - Easier integration with Spring’s AOP features
+
+  更易于集成 Spring 的 AOP 特性
+
 - Message resource handling (for use in internationalization)
+
+  消息资源处理（用于国际化）
+
 - Event publication
-- Application-layer specific contexts such as the `WebApplicationContext` for use in web applications.
 
-In short, the `BeanFactory` provides the configuration framework and basic functionality, and the `ApplicationContext` adds more enterprise-specific functionality. The `ApplicationContext` is a complete superset of the `BeanFactory` and is used exclusively in this chapter in descriptions of Spring’s IoC container. For more information on using the `BeanFactory` instead of the `ApplicationContext,` see the section covering the [`BeanFactory` API](https://docs.spring.io/spring-framework/docs/5.3.28-SNAPSHOT/reference/html/core.html#beans-beanfactory)
+  事件发布
 
-译：`BeanFactory` 接口提供了一个高级配置机制，能够管理任何类型的对象。`ApplicationContext` 是 `BeanFactory` 的子接口。`ApplicationContext` 增加了：
+- Application-layer specific contexts such as the `WebApplicationContext` for use in web applications
 
-* 更易于集成 Spring 的 AOP 特性
+  应用程序层特定的上下文，例如 WebApplicationContext 用于 Web 应用程序
 
-* 消息资源处理（用于国际化）
+In short, the `BeanFactory` provides the configuration framework and basic functionality, and the `ApplicationContext` adds more enterprise-specific 
 
-* 事件发布
+functionality. The `ApplicationContext` is a complete superset of the `BeanFactory` and is used exclusively in this chapter in descriptions of Spring’s IoC 
 
-* 应用程序层特定的上下文，例如 WebApplicationContext 用于 Web 应用程序。
+container. For more information on using the `BeanFactory` instead of the `ApplicationContext,` see the section covering the [`BeanFactory` API](https://docs.spring.io/spring-framework/docs/5.3.28-SNAPSHOT/reference/html/core.html#beans-beanfactory)
 
-简而言之，BeanFactory 提供配置框架和基本功能，ApplicationContext 添加了更多企业特定功能。ApplicationContext 是 BeanFactory 的完整超集，在 Spring 的 IoC 容器描述中专门使用。有关使用 BeanFactory 而不是 ApplicationContext 的详细信息，请参阅涵盖 BeanFactory API 的部分。
+简而言之，BeanFactory 提供配置框架和基本功能，ApplicationContext 添加了更多企业特定功能。ApplicationContext 是 BeanFactory 的完整超集，在 Spring 的 IoC 容器描述中专门使用。有
+
+关使用 BeanFactory 而不是 ApplicationContext 的详细信息，请参阅涵盖 BeanFactory API 的部分。
 
 他说是管理是对象，他说并没有说管理是 Bean，依赖来源并不只是限于 Bean，所以他对象是描述得非常精确的。
 
@@ -963,7 +909,7 @@ ApplicationContext 除了 IoC 容器角色,还有提供:
 ### 9.1 XML 场景下底层 IoC 容器：BeanFactory
 
 ```java
-	package tech.fengjian.ioc.container.overview.container;
+package tech.fengjian.ioc.container.overview.container;
 
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
@@ -981,9 +927,9 @@ public class BeanFactoryAsIoCContainerDemo {
         DefaultListableBeanFactory beanFactory = new DefaultListableBeanFactory();
         XmlBeanDefinitionReader reader = new XmlBeanDefinitionReader(beanFactory);
         // XML 配置文件 classpath 路径
-        String IoCation = "META-INF/dependency-injection-context.xml";
+        String configuration = "META-INF/dependency-injection-context.xml";
         // 加载配置，返回加载到的 Bean 个数
-        int loadBeanDefinitions = reader.loadBeanDefinitions(IoCation);
+        int loadBeanDefinitions = reader.loadBeanDefinitions(configuration);
         System.out.println(loadBeanDefinitions);
 
     }
@@ -994,12 +940,12 @@ public class BeanFactoryAsIoCContainerDemo {
 
 的参数，DefaultListableBeanFactory 这个类呢又实现了 BeanDefinitionRegistry 接口，所以可以利用 XmlBeanDefinitionReader 和 DefaultListableBeanFactory 来加载 Bean 的配置。
 
-一句话可以总结为：从 IoCation 的位置把配置好的 Bean 加载到 DefaultListableBeanFactory 定义的 IoC 容器中去。
+一句话可以总结为：从 configuration 的位置把配置好的 Bean 加载到 DefaultListableBeanFactory 定义的 IoC 容器中去。
 
 ```java
 public XmlBeanDefinitionReader(BeanDefinitionRegistry registry) {
 		super(registry);
-	}
+}
 ```
 
 ### 9.2 注解场景下 ApplicationContext 作为 IoC 容器
