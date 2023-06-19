@@ -9,19 +9,9 @@ categories:
   - spring 核心编程思想
 ---
 
-## 1. Spring IoC 依赖查找
+## 1. 内容提要
 
-| 内容                 |
-| -------------------- |
-| 依赖查找的今世前生   |
-| 单一类型依赖查找     |
-| 集合类型依赖查找     |
-| 层次性依赖查找       |
-| 延迟依赖查找         |
-| 安全依赖查找         |
-| 内建可查找的依赖     |
-| 依赖查找中的经典异常 |
-| 面试题精选           |
+![](https://s3.bmp.ovh/imgs/2023/06/15/cb467eb7b389a491.png)
 
 ## 2. 依赖查找的前世今生
 
@@ -39,15 +29,21 @@ categories:
 
 * java.beans.beancontext.BeanContext
 
-It is desirable to both provide a logical, traversable, hierarchy of JavaBeans, and further to provide a general mechanism whereby an object instantiating an arbitrary JavaBean can offer that JavaBean a variety of services, or interpose itself between the uniderlying system service and the JavaBean, in a conventional fashion.
+It is desirable to both provide a logical, traversable, hierarchy of JavaBeans, and further to provide a general mechanism whereby an object instantiating an 
 
-这段文字主要讲述了在 Java 编程中，提供一个有逻辑和可遍历的 JavaBean 层次结构的需求，同时还需要提供一种通用机制，使得实例化 JavaBean 对象的对象可以向其提供各种服务或者在系统服务和JavaBean 之间插入自己。通俗的说，就是需要建立一个 JavaBean 的层次结构，并提供一种机制，以便在 JavaBean 使用过程中可以提供服务。
+arbitrary JavaBean can offer that JavaBean a variety of services, or interpose itself between the uniderlying system service and the JavaBean, in a 
+
+conventional fashion.
+
+这段文字主要讲述了在 Java 编程中，提供一个有逻辑和可遍历的 JavaBean 层次结构的需求，同时还需要提供一种通用机制，使得实例化 JavaBean 对象的对象可以向其提供各种服务或者在系统服务和
+
+JavaBean 之间插入自己。通俗的说，就是需要建立一个 JavaBean 的层次结构，并提供一种机制，以便在 JavaBean 使用过程中可以提供服务。
 
 具体来说，要实现这个需求，需要考虑以下几个方面：
 
 1. JavaBean 的层次结构：可以使用组合模式来实现 JavaBean 的逻辑、可遍历的层次结构，以便可以按照树形结构来查找和访问 JavaBean。
 
-2. 服务提供机制：可以使用反射机制和注入等技术来实现服务提供机制，使得可以在JavaBean实例化时向其注入服务对象，并在需要时调用服务对象的方法来为 JavaBean 提供服务。
+2. 服务提供机制：可以使用反射机制和注入等技术来实现服务提供机制，使得可以在 JavaBean 实例化时向其注入服务对象，并在需要时调用服务对象的方法来为 JavaBean 提供服务。
 
 3. 中介模式：可以使用代理或装饰器等模式来实现中介模式，使得 JavaBean 可以通过中介对象来访问系统服务或者其他 JavaBean。通过中介对象，可以在系统服务和 JavaBean 之间添加额外的逻辑处理。
 
@@ -93,7 +89,7 @@ It is desirable to both provide a logical, traversable, hierarchy of JavaBeans, 
 Object getBean(String name, Object... args) throws BeansException;
 ```
 
-实例可能是 shared 可能是 independent，这个 shared 就是指的单例，那么 independent 主要是原生。这里就会告诉你一个不好的特点，如果当你是 shared 的话，你每调一次就会覆盖它的方法，这种方式实际上是有点不可取的。
+实例可能是 shared 也可能是 independent，这个 shared 就是指的单例，那么 independent 主要是原生。这里就会告诉你一个不好的特点，如果当你是 shared 的话，你每调用一次就会覆盖它的方法，这种方式实际上是有点不可取的。
 
 * Spring 5.1 Bean 延迟查找
   * getBeanProvider(Class)

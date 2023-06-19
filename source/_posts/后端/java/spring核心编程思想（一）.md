@@ -11,7 +11,7 @@ categories:
 
 ## 1. 内容提要
 
-## ![](https://s3.bmp.ovh/imgs/2023/06/14/7655f964b2d9027a.png)
+## ![](https://s3.bmp.ovh/imgs/2023/06/16/b128e1bbc882390c.png)
 
 ## 2. 准备工作
 
@@ -99,13 +99,13 @@ categories:
 
 * Spring 测试(Testing)
 
-  模拟对象(Mock Objects)
+* 模拟对象(Mock Objects)
 
-  TestContext 框架(TestContext Framework)
+* TestContext 框架(TestContext Framework)
 
-  SpringMVC 测试(SpringMVCTest)
+* SpringMVC 测试(SpringMVCTest)
 
-  Web 测试客户端(WebTestClient)
+* Web 测试客户端(WebTestClient)
 
 ## 4. 版本特性
 
@@ -128,9 +128,7 @@ Java 版本依赖与支持：
 
 1. 为什么从 1.3 开始？
 
-   因为 Spring Framework 的早期的版本叫什么，interface21，那么这个版本其实就依赖于 Java 1.3，Java 1.3 引入了一个非常重要的特性是什么，就是动态代理。
-
-   从 Java1.3 开始就会针对接口的方式来进行动态代理，那么这是实现 AOP 的一个很重要的环节，因此 Spring 的第 1 个版本就必须依赖 Java 1.3。
+   因为 Spring Framework 的早期的版本叫什么，interface21，那么这个版本其实就依赖于 Java 1.3，Java 1.3 引入了一个非常重要的特性是什么，就是动态代理。从 Java1.3 开始就会针对接口的方式来进行动态代理，那么这是实现 AOP 的一个很重要的环节，因此 Spring 的第 1 个版本就必须依赖 Java 1.3。
 
 2. 那么与此同时它支持的 JavaEE 版本是 1.3，这个版本一个简单特性就是 Servlet 的 API 对应的 JavaEE 的版本是 1.3，Servlet 的版本是 2.3 这个版本，2.3 这个版本它在里面会支持 Servlet 事件，那么因此它可以和我们的 Spring 的事件来进行一个呼应，他们都是 Java 标准事件的实现。
 
@@ -140,27 +138,11 @@ Java 版本依赖与支持：
 
 ### 3.x 版本
 
-3.x 其实是比较重大的版本，Spring 从 3 这个版本开始引入到大量的注解，所以它需要的支持的版本是 Java 5，因为我们知道 Java 5 里面会提升到一些注解，包括注解、枚举这样的东西，所以在 3 里面
-
-会引入它大量的注解和枚举。所以这个时候版本的要求最低的Java标准版的要求是 Java 5。
-
-那么对应的 JavaEE 的版本，这里是指的是支持的版本，从 J2EE 1.4 到 Java EE 5，那么这个版本就这么一个过渡过程。
-
-那么 3 为什么非常重要，因为3基本上确定了 Spring Framework 的一个内核，这个内核是比较多的，包括比如说注解驱动、事件驱动，包括一些AOP的支持，它都是这个版本做的比较完善。
+3.x 其实是比较重大的版本，Spring 从 3 这个版本开始引入到大量的注解，所以它需要的支持的版本是 Java 5，因为我们知道 Java 5 里面会提升到一些注解，包括注解、枚举这样的东西，所以在 3 里面会引入它大量的注解和枚举。所以这个时候版本的要求最低的Java标准版的要求是 Java 5。那么对应的 JavaEE 的版本，这里是指的是支持的版本，从 J2EE 1.4 到 Java EE 5，那么这个版本就这么一个过渡过程。那么 3 为什么非常重要，因为 3 基本上确定了 Spring Framework 的一个内核，这个内核是比较多的，包括比如说注解驱动、事件驱动，包括一些 AOP 的支持，它都是这个版本做的比较完善。
 
 ### 4.x 版本和 5.x 版本	
 
-4.x 这个版本基本上在 3 的版本上面增加了一些新的东西，那么主要是一些细节性的东西，包括注解上面的提升，包括利用 Java 8 里面的 API 来进行提升，那么当然它这个 4 版本并不要求一定是 
-
-Java 8，那么它最低要求是 Java 6 就可以了。那么这是为了照顾到更多的人去使用到 Spring Framework 4这个版本。
-
-那么与此同时从 SpringFramework 4 开始也是对于 SpringBoot 1.x 的一个支持，那么 1.x 就是说 SpringBoot 的 1 版本，也就说 Spring Boot 的 1.x 版本它是基于 Spring4 来进行开发的，
-
-那么 SpringBoot2 是基于 Spring Framework 5 来开发的。所以你会看到它的一个区别点，那么从5开始对应的是Java EE 7。
-
-其实这个时候从 Spring 4 开始，其实 Spring 的翅膀就非常硬了，它对 JavaEE 的支持其实是一种若即若离的那种感觉，所以因此基本上从 4 开始形成了自己的体系，尤其 Spring Boot 起来之后，包括
-
-Spring Cloud 出现之后，基本上它的完整的体系就已经生成了。
+4.x 这个版本基本上在 3 的版本上面增加了一些新的东西，那么主要是一些细节性的东西，包括注解上面的提升，包括利用 Java 8 里面的 API 来进行提升，那么当然它这个 4 版本并不要求一定是 Java 8，那么它最低要求是 Java 6 就可以了。那么这是为了照顾到更多的人去使用到 Spring Framework 4这个版本。那么与此同时从 Spring Framework 4 开始也是对于 SpringBoot 1.x 的一个支持，那么 1.x 就是说 SpringBoot 的 1 版本，也就说 Spring Boot 的 1.x 版本它是基于 Spring 4 来进行开发的，那么 SpringBoot2 是基于 Spring Framework 5 来开发的。所以你会看到它的一个区别点，那么从 5 开始对应的是JavaEE 7。其实这个时候从 Spring 4 开始，其实 Spring 的翅膀就非常硬了，它对 JavaEE 的支持其实是一种若即若离的那种感觉，所以因此基本上从 4 开始形成了自己的体系，尤其 Spring Boot 起来之后，包括 Spring Cloud 出现之后，基本上它的完整的体系就已经生成了。
 
 ## 5. 模块化设计
 
@@ -170,9 +152,7 @@ spring-aop：面向接口编程
 
 spring-aspects：Spring 对 aspects 的支持
 
-spring-jms：JMS 其实是 Java Message Service 的一个缩写，比如说Java的一个消息服务，那么这里可以对应的比如说 Apache 的 ActiveMQ 或者其他传统的 JavaEE 的消息中间件，那么这部分内容
-
-只针对于说我们的 JMS 规范来进行实施的，那么因此它会利用到大量的 JMS 的 API 来进行实现	
+spring-jms：JMS 其实是 Java Message Service 的一个缩写，比如说Java的一个消息服务，那么这里可以对应的比如说 Apache 的 ActiveMQ 或者其他传统的 JavaEE 的消息中间件，那么这部分内容只针对于说我们的 JMS 规范来进行实施的，那么因此它会利用到大量的 JMS 的 API 来进行实现	
 
 spring-context-indexer
 
@@ -180,25 +160,19 @@ spring-context-support
 
 spring-context:
 
-spring-beans：spring-beans和spring-context合成起来就是Spring IoC的一个重要的核心的实现，无论是 spring-beans 还是 spring-context，都是通过 spring-core 来进行支持的
+spring-beans：spring-beans和spring-context合成起来就是 Spring IoC 的一个重要的核心的实现，无论是 spring-beans 还是 spring-context，都是通过 spring-core 来进行支持的
 
-spring-core：spring-core就包含了一些关于 Java 语法的特性的支持以及林林总总
+spring-core：spring-core 就包含了一些关于 Java 语法的特性的支持以及林林总总
 
-spring-messaging：Spring想统一一下消息服务的一个实现，那么包括了我们说的JMS包括了Kafka，包括 RocketMQ 或者是 RabbitMQ，它都会有一个统一的实现的一个标准，那么这个东西也和JMS也是一
-
-样的，JMS 过去是希望通过一套标准的 API 来统一比如说 MQ 或者是比如说 WebLogicMQ 或者是 WebSphereMQ 的一个实现，那么 Spring 它的野心更大，它希望通过它自己 API 来帮助大家实现最简单或
-
-者是最好用的一个API的体验
+spring-messaging：Spring 想统一一下消息服务的一个实现，那么包括了我们说的 JMS 包括了 Kafka，包括 RocketMQ 或者是 RabbitMQ，它都会有一个统一的实现的一个标准，那么这个东西也和 JMS 也是一样的，JMS 过去是希望通过一套标准的 API 来统一比如说 MQ 或者是比如说 WebLogicMQ 或者是 WebSphereMQ 的一个实现，那么 Spring 它的野心更大，它希望通过它自己 API 来帮助大家实现最简单或者是最好用的一个 API 的体验
 
 spring-orm：就是我们比如说 Hibernate、JPA 这种东西的一个进行整合
 
-spring-oxm：就是我们前面讲的XML编列，就是 marshal 和 unmarshal 这么一个东西，也就说这是XML里面的序列化和反序列化，这个东西是一个新的模块，Spring进行单独的一个维护
+spring-oxm：就是我们前面讲的XML编列，就是 marshal 和 unmarshal 这么一个东西，也就说这是XML里面的序列化和反序列化，这个东西是一个新的模块，Spring 进行单独的一个维护
 
-spring-test：这个测试包含了我们前面讲的 Mock 对象，包括我们说的 TestContext，比如说测试上下文，还包括 Spring 的 MVC 的测试，以及WebClient的测试，Web客户端的测试
+spring-test：这个测试包含了我们前面讲的 Mock 对象，包括我们说的 TestContext，比如说测试上下文，还包括 Spring 的 MVC 的测试，以及 WebClient 的测试，Web 客户端的测试
 
-spring-tx：tx其实是transaction的缩写，就是我们常讲的就是我们说Spring的事务抽象，这部分其实对于大家来说是非常重点，它是基本上借鉴了 JDBC 的一部分一个事务实现以及 Java EE 尤其是 EJB
-
-的一个事务实现，做一个统一的封装
+spring-tx：tx其实是 transaction 的缩写，就是我们常讲的就是我们说 Spring 的事务抽象，这部分其实对于大家来说是非常重点，它是基本上借鉴了 JDBC 的一部分一个事务实现以及 Java EE 尤其是 EJB 的一个事务实现，做一个统一的封装
 
 spring-web：
 
@@ -208,17 +182,13 @@ spring-webmvc：
 
 spring-websocket：
 
-spring-expression：Spring的表达式语言，从 Spring 3 开始进行引入的，那么它类似于像 JSP 里面的 EL 语言
+spring-expression：Spring 的表达式语言，从 Spring 3 开始进行引入的，那么它类似于像 JSP 里面的 EL 语言
 
 spring-instrument：这是 Spring 2开始之时对我们的Java的装配，简单讲就是 Java 的 agent 的一个支持
 
-spring-jcl：那么这个模块是从 Spring 5开始支持的，因为我们知道我们过去运用过另外一个模块，就是关于 commons-logging，commons-logging 是统一了 Java 的 logging，就是 Java 的日志和
+spring-jcl：那么这个模块是从 Spring 5 开始支持的，因为我们知道我们过去运用过另外一个模块，就是关于 commons-logging，commons-logging 是统一了 Java 的 logging，就是 Java 的日志和 Log4j 这个日志，那么 Java logging 之后又出现了一个 Loqback，Logback 它是个新型的一个日志框架，那么又用到了 SLF4J，SLF4j 就相当于说又把 Java logging、我们的Log4j和我们的 Logback 来进行统一，那么 Spring 为了解决这个情况,它自己用一套新型的日志框架,那么就是我们说的 JCL 这个框架,那么这个框架会帮助 Spring 来统一它的日志管理。
 
-Log4j 这个日志，那么 Java logging 之后又出现了一个 Loqback，Logback它是个新型的一个日志框架，那么又用到了 SLF4J，SLF4j 就相当于说又把 Java logging、我们的Log4j和我们的 Logback 
-
-来进行统一，那么Spring为了解决这个情况,它自己用一套新型的日志框架,那么就是我们说的JCL这个框架,那么这个框架会帮助Spring来统一它的日志管理。
-
-spring-jdbc：是Spring对JDBC的一个整合
+spring-jdbc：是 Spring 对 JDBC 的一个整合
 
 ## 6. 对 Java 语言特性的运用
 
@@ -226,42 +196,23 @@ spring-jdbc：是Spring对JDBC的一个整合
 
 ![](https://s3.bmp.ovh/imgs/2023/06/14/96506f5904a958ab.png)
 
-* 2004 是 Spring Framework 发布的年份，所以 Spring 在支持的时候，他在支持第一个版本的时候，他只要支持到 Java 的 1.3，不需要到 1.5，但他要考虑到 1.5 的支持，比如后面我们讲的 
-
-  Spring 1.2 的版本的时候就开始支持了，比如我们常说的 Java 管理扩展，就是 Java Management Extensions，那么这个版本里面的分布就包括这么一些特性，包括枚举、泛型、注解、封箱或拆箱这
+* 2004 是 Spring Framework 发布的年份，所以 Spring 在支持的时候，他在支持第一个版本的时候，他只要支持到 Java 的 1.3，不需要到 1.5，但他要考虑到 1.5 的支持，比如后面我们讲的 Spring 1.2 的版本的时候就开始支持了，比如我们常说的 Java 管理扩展，就是 Java Management Extensions，那么这个版本里面的分布就包括这么一些特性，包括枚举、泛型、注解、封箱或拆箱这
 
   么一些特性。
 
-* 那么 Java 6 其实没有在 Java 5 的基础上面做很多支持，只允许在接口上面增加 @Override，这个注解其实是强制要求子类或者子接口要覆盖父类或者父接口里面那个方法，那么过去在类里面是可以打
+* 那么 Java 6 其实没有在 Java 5 的基础上面做很多支持，只允许在接口上面增加 @Override，这个注解其实是强制要求子类或者子接口要覆盖父类或者父接口里面那个方法，那么过去在类里面是可以打的，那么 @Override 我们也知道它是新的一个注解的方式，在Java 5里面被引用到了，但是在接口上面是从 Java 6 开始支持的。这部分特性其实在 Spring 里面体现的并不是非常的多，同时我们用的时候基本上也感知不到。
 
-  的，那么 @Override 我们也知道它是新的一个注解的方式，在Java 5里面被引用到了，但是在接口上面是从 Java 6 开始支持的。这部分特性其实在 Spring 里面体现的并不是非常的多，同时我们用的时
+* Java 7 主要有两大特点，第1个是 Diamond 语法，Diamond 语法简单是这么个意思，就是在我们用集合的时候我们要用到泛型类型，比如说一个 List，它的集合的元素类型的是 String，那么在newArrayList 的时候。就 new 数组的实现的时候，String 括号里面的东西可写可不写。不写的时候就是 Diamond 语法，写的时候就非 Diamond 语法。还有一个就是多 Catch，多 Catch 新语法特性就是当你的一个 Exception 就是一个代码在执行的时候可能会遇到多个异常，那么这时候可以用一句话把多个异常来重新捕获那么这个东西在 Spring 的实现里面也有体现。再来就是关于 Try resource，那么我们前面提到的东西一个专业术语叫 ARM（Automatic Resource Management），比如说我们在关闭 IO 的时候我们要调用一个 close 方法，那么通过 try-with-resources 语法之后，可以不用强制去调 IO，其实这只是个语法层面的一个变化，底层还是会动态字节码生成一个close方法来调用。
 
-  候基本上也感知不到。
+* Java 8 一个非常显著的特点是支持在 Lambda 语法以及可重复注解，我们通常来说一个注解只能在一个类或一个方法上面标注一次，那么从 Java 8 开始可以一个类或一个方法上面可以标注多个注解，那么这就是所谓的可重复注解。还有一个就是类型注解，类型注解是个新的一个注解的方式，那么在Spring里面体现的并不是太多，从Java 9 和 Java 10 开始，Spring Framework 5 里面并没有提供Java 9 和 Java 10 之后的语法的或者 API 的支持，因为他考虑到 Java 9 由于模块化的实现之后，其实 Java 社区产生了一定的分裂，就是说还是保留在 Java 8 版本的可能是一个常态，那么或许 Java 9 或者 Java 10 它这种短期支持版本不太会长存，那么可能会寻找更长支持的版本。
 
-* 对 Java7 主要有两大特点，第1个是 Diamond 语法，Diamond 语法简单是这么个意思，就是在我们用集合的时候我们要用到泛型类型，比如说一个 List，它的集合的元素类型的是 String，那么在
-
-  newArrayList 的时候。就 new 数组的实现的时候，String 括号里面的东西可写可不写。不写的时候就是 Diamond 语法，写的时候就非 Diamond 语法。
-
-  还有一个就是多 Catch，多 Catch 新语法特性就是当你的一个 Exception 就是一个代码在执行的时候可能会遇到多个异常，那么这时候可以用一句话把多个异常来重新捕获那么这个东西在 Spring 的实
-
-  现里面也有体现。再来就是关于 Try resource，那么我们前面提到的东西一个专业术语叫 ARM（Automatic Resource Management），比如说我们在关闭 IO 的时候我们要调用一个 close 方法，那
-
-  么通过 try-with-resources 语法之后，可以不用强制去调 IO，其实这只是个语法层面的一个变化，底层还是会动态字节码生成一个close方法来调用。
-
-* Java 8 一个非常显著的特点是支持在 Lambda 语法以及可重复注解，我们通常来说一个注解只能在一个类或一个方法上面标注一次，那么从 Java 8 开始可以一个类或一个方法上面可以标注多个注解，那么
-
-  这就是所谓的可重复注解。还有一个就是类型注解，类型注解是个新的一个注解的方式，那么在Spring里面体现的并不是太多，从Java 9和Java 10开始，Spring Framework 5里面并没有提供Java 9和
-  
-  Java10之后的语法的或者 API 的支持，因为他考虑到 Java 9 由于模块化的实现之后，其实 Java 社区产生了一定的分裂，就是说还是保留在 Java8 版本的可能是一个常态，那么或许 Java9 或者
-  
-  ava10 它这种短期支持版本不太会长存，那么可能会寻找更长支持的版本。
 
 ### Java 5 语法特性
 
 | 语法特性             | Spring支持版本 | 代表实现                   |
 | -------------------- | -------------- | -------------------------- |
-| 注解(Annotation)     | 1.2 +          | @Transactional             |
-| 枚举(Enumeration)    | 1.2 +          | Propagation                |
+| 注解(Annotation)     | 1.2+           | @Transactional             |
+| 枚举(Enumeration)    | 1.2+           | Propagation                |
 | for-each语法         | 3.0+           | AbstractApplicationContext |
 | 自动装箱(AutoBoxing) | 3.0+           |                            |
 | 泛型(Generic)        | 3.0+           | ApplicationListener        |
@@ -272,14 +223,14 @@ spring-jdbc：是Spring对JDBC的一个整合
 
 | 语法特性       | Spring支持版本 | 代表实现 |
 | -------------- | -------------- | -------- |
-| 接口 @Override | 4.0 +          |          |
+| 接口 @Override | 4.0+           |          |
 
 ### Java 7 语法特性
 
 | 语法特性                | Spring支持版本 | 代表实现                    |
 | ----------------------- | -------------- | --------------------------- |
-| Diamond 语法            | 5.0 +          | DefaultListableBeanFactory  |
-| try-with-resources 语法 | 5.0 +          | ResourceBundleMessageSource |
+| Diamond 语法            | 5.0+           | DefaultListableBeanFactory  |
+| try-with-resources 语法 | 5.0+           | ResourceBundleMessageSource |
 
 ### Java 8 语法特性
 
@@ -294,10 +245,10 @@ spring-jdbc：是Spring对JDBC的一个整合
 | JDK 版本 | 核心 API                                                     |
 | -------- | ------------------------------------------------------------ |
 | < Java 5 | 反射(Reflection)<br/>Java Beans<br/>动态代理(Dynamic Proxy)  |
-| Java 5   | 并发框架(J.U.C)<br/>格式化(Formatter)<br/>Java管理扩展(JMX)<br/>Instrumentation<br/>XML处理(DOM、SAX、XPath、<br/>XSTL) |
-| Java 6   | JDBC 4.0 (JSR 221)<br/>JAXB 2.0 (JSR 222)<br/>可插拔注解处理API(JSR269)<br/>Common Annotations (JSR 250)<br/>Java Compiler API (JSR 199)<br/>Scripting in JVM (JSR 223) |
-| Java 7   | NIO 2 (JSR 203)<br/>Fork/Join框架(JSR 166)<br/>invokedynamic字节码(JSR 292) |
-| Java 8   | Stream API (JSR 335)<br/>CompletableFuture (J.U.C)<br/>Annotation on Java Types (JSR 308)<br/>Date and Time API (JSR 310)<br/>可重复Annotations(JSR 337)<br/>JavaScript运行时(JSR 223) |
+| Java 5   | 并发框架(J.U.C)<br/>格式化(Formatter)<br/>Java 管理扩展(JMX)<br/>Instrumentation<br/>XML 处理(DOM、SAX、XPath、<br/>XSTL) |
+| Java 6   | JDBC 4.0 (JSR 221)<br/>JAXB 2.0 (JSR 222)<br/>可插拔注解处理 API(JSR269)<br/>Common Annotations (JSR 250)<br/>Java Compiler API (JSR 199)<br/>Scripting in JVM (JSR 223) |
+| Java 7   | NIO 2 (JSR 203)<br/>Fork/Join 框架(JSR 166)<br/>invokedynamic 字节码(JSR 292) |
+| Java 8   | Stream API (JSR 335)<br/>CompletableFuture (J.U.C)<br/>Annotation on Java Types (JSR 308)<br/>Date and Time API (JSR 310)<br/>可重复 Annotations(JSR 337)<br/>JavaScript 运行时(JSR 223) |
 | Java 9   | Reactive Streams Flow API (J.U.C)<br/>Process API Updates (JEP 102)<br/>Variable Handles (JEP 193)<br/>Method Handles (JEP 277)<br/>Spin-Wait Hints (JEP 285)<br/>Stack-Walking API (JEP 259) |
 
 **tips:** JSR 是 Java Specification Request 的缩写，是 Java 规范请求
@@ -308,12 +259,12 @@ spring-jdbc：是Spring对JDBC的一个整合
 
 | API类型                 | Spring支持版本 | 代表实现                    |
 | ----------------------- | -------------- | --------------------------- |
-| 反射(Reflection)        | 1.0 +          | MethodMatcher               |
-| Java Beans              | 1.0 +          | Cachedlntrospection Results |
-| 动态代理(Dynamic Proxy) | 1.0 +          | JdkDynamicAopProxy          |
-| XML 处理(DOM,SAX...)    | 1.0 +          | XmlBeanDefinition Reader    |
-| Java管理扩展(JMX)       | 1.2 +          | @ManagedResource            |
-| Instrumentation         | 2.0 +          | InstrumentationSavingAgent  |
+| 反射(Reflection)        | 1.0+           | MethodMatcher               |
+| Java Beans              | 1.0+           | Cachedlntrospection Results |
+| 动态代理(Dynamic Proxy) | 1.0+           | JdkDynamicAopProxy          |
+| XML 处理(DOM,SAX...)    | 1.0+           | XmlBeanDefinition Reader    |
+| Java管理扩展(JMX)       | 1.2+           | @ManagedResource            |
+| Instrumentation         | 2.0+           | InstrumentationSavingAgent  |
 | 并发框架(J.U.C)         | 3.0+           | ThreadPoolTaskScheduler     |
 | 格式化(Formatter)       | 3.0+           | DateFormatter               |
 
@@ -327,20 +278,13 @@ spring-jdbc：是Spring对JDBC的一个整合
 | Common Annotations (JSR 250) | 2.5+           | CommonAnnotationBeanPostProcessor |
 | JAXB 2.0 (JSR 222)           | 3.0+           | Jaxb2Marshaller                   |
 | Scripting in JVM (JSR 223)   | 4.2+           | StandardScriptFactory             |
-| 可插拔注解处理API(JSR 269)   | 5.0+           | @Indexed                          |
+| 可插拔注解处理 API(JSR 269)  | 5.0+           | @Indexed                          |
 | Java Compiler API (JSR 199)  | 5.0+           | TestCompiler(单元测试)            |
 
 * JAXB 是 Java API for XML Binding 的缩写，就是说 Java API 去绑定 XML 的实现，里面就会有个 marshal、unmarshal 的操作。
 
-* 由于Spring Boot 大量的支持之后，注解的使用需求出现了急剧性的膨胀，这个事情出现一个问题，注解的实现就来自于两个方面，一个是 ASM，一个是属于标准的 Java 反射，那么无论哪种方式都是在运
+* 由于 Spring Boot 大量的支持之后，注解的使用需求出现了急剧性的膨胀，这个事情出现一个问题，注解的实现就来自于两个方面，一个是 ASM，一个是属于标准的 Java 反射，那么无论哪种方式都是在运行时的时候来进行实现的，那么有没有一种方法通过编译时来进行实现，那么方法是有的，那么我们说的 @Indexed 就是在我们传统的 Component 的基础上面，编译时把我的 API 去做一个相当于说建立索引能够帮助我快速的定位到到底哪个类建了 Component 索引，那么这时候我就可以定位到类而不需要逐一的将所有类进行逐一扫描。我们知道比如说我们说 Spring Framework 里面有个标准的注解@ComponentScan，那么 scan 里面会指定一个 basePackages，那么你可以指定一个或多个这样的一个标准路径来进行扫描。那么这个注解打完之后，在编译时的时候它不需要扫描只要读取一个归位的路径得到了一个索引文件然后得到相应的类那么相当于说就减少了一个 scanning，一个运行时时间上操作
 
-  行时的时候来进行实现的，那么有没有一种方法通过编译时来进行实现，那么方法是有的，那么我们说的 @Indexed 就是在我们传统的 Component 的基础上面，编译时把我的 API 去做一个相当于说建立索
-
-  引能够帮助我快速的定位到到底哪个类建了 Component 索引，那么这时候我就可以定位到类而不需要逐一的将所有类进行逐一扫描。我们知道比如说我们说 Spring Framework 里面有个标准的注解
-
-  @ComponentScan，那么 scan 里面会指定一个 basePackages，那么你可以指定一个或多个这样的一个标准路径来进行扫描。那么这个注解打完之后，在编译时的时候它不需要扫描只要读取一个归位的路径
-
-  得到了一个索引文件然后得到相应的类那么相当于说就减少了一个 scanning，一个运行时时间上操作
 
 ### Java 7 API
 
@@ -376,9 +320,7 @@ spring-jdbc：是Spring对JDBC的一个整合
 | WebServices(JSR 109)      | 2.5+           | CommonAnnotationBeanPostProcessor |
 | WebSocket(JSR 356)        | 4.0+           | WebSocketHandler                  |
 
-* Servlet + JSP(JSR 035)：是 Spring MVC 的一个核心实现标准，那么 Servlet 有 API，JSP 也有 API,这就会涉及两部分内容，通常来说我们最熟悉的就是 DispatcherServlet，他最核心的还
-
-  是 Servlet API 的一个运用，包括他有很多 FrameworkServlet 的一个知识的扩展。除此之外 DispatcherSerlet 还负责一个事情，就是视图的渲染，包括 JSP 的视图
+* Servlet + JSP(JSR 035)：是 Spring MVC 的一个核心实现标准，那么 Servlet 有 API，JSP 也有 API,这就会涉及两部分内容，通常来说我们最熟悉的就是 DispatcherServlet，他最核心的还是 Servlet API 的一个运用，包括他有很多 FrameworkServlet 的一个知识的扩展。除此之外 DispatcherSerlet 还负责一个事情，就是视图的渲染，包括 JSP 的视图
 
 * JSTL(JSR 052)：在 JSP 基础上做一些标签的扩展，比如说我们熟悉的 Struts 标签也是个方面
 
@@ -397,23 +339,14 @@ spring-jdbc：是Spring对JDBC的一个整合
 | JPA(EJB 3.0 JSR 220的成员) | 2.0+           | JpaTransactionManager |
 | Java Caching API(JSR 107)  | 3.2+           | JCacheCache           |
 
-* JDO(JSR 12)：JDO 其实是 JPA 早期的一个或者说一个半成品，它在 Spring 框架里面从 1.0 到 4.2 予以支持，那么对应的代表作就是 JdoTemplate，它和 JdbcTemplate 是类似的，都是那种模
+* JDO(JSR 12)：JDO 其实是 JPA 早期的一个或者说一个半成品，它在 Spring 框架里面从 1.0 到 4.2 予以支持，那么对应的代表作就是 JdoTemplate，它和 JdbcTemplate 是类似的，都是那种模板的方式来进行回调，那么这个东西在 5.0 之后不支持了，这里我们看出来这里从 1.0 到 4.2，4.2 其实就 4.X 最后一个版本
 
-  板的方式来进行回调，那么这个东西在 5.0 之后不支持了，这里我们看出来这里从 1.0 到 4.2，4.2 其实就 4.X 最后一个版本
+* JTA(JSR 907)：JTA的全称是Java Transaction API，就是 Java 的一个事务 API 那么它也是个标准，那么这个标准其实早在 1.0 就已经支持了，其实 Spring 的我们说的事务的抽象其实并不是它自己发明的，而是在前人基础上面来做了一些封装，那么第二个就是我们的 JTA 这个情况
 
-* JTA(JSR 907)：JTA的全称是Java Transaction API，就是 Java 的一个事务 API 那么它也是个标准，那么这个标准其实早在 1.0 就已经支持了，其实 Spring 的我们说的事务的抽象其实并不是它
+* JPA(EJB 3.0 JSR 220的成员)：它是作为 EJB3.0 的一个子成员，比如说 EJB JSR220 的一个子成员，那么它最新的版本已经到了 2.1 这个版本，那么JPA我们这里最开始支持的是 JPA1.0 版本，1.0 版本其实是注解驱动的方式进行存储，我们的一个 POJO 就是相当于类似于 Hibernate 的方式进行存储,对应的代表作就是 JpaTransactionManager,一个比较有意思的是在 JTA 里面也是叫 Transaction Manager，在 JPA 里面也有 Transaction Manager，那么就说明什么，它们在事务上面 Spring 做了统一的封装
 
-  自己发明的，而是在前人基础上面来做了一些封装，那么第二个就是我们的 JTA 这个情况
+* Java Caching API(JSR 107)：那么就是 JSR 107 这个API其实是一个 NoSQL 的一个实现，就说它就是 Key-Value 存储，那么这个版本也是较晚支持的，也就是说在 Spring3.2 开始支持的，那么这里有一个实现，就是说 Spring 自己有个 Cache 的一个实现，那么结合它的实现来进行统一的实现
 
-* JPA(EJB 3.0 JSR 220的成员)：它是作为 EJB3.0 的一个子成员，比如说 EJB JSR220 的一个子成员，那么它最新的版本已经到了2.1这个版本，那么JPA我们这里最开始支持的是 JPA1.0 版本，1.0 
-
-  版本其实是注解驱动的方式进行存储，我们的一个 POJO 就是相当于类似于 Hibernate 的方式进行存储,对应的代表作就是 JpaTransactionManager,一个比较有意思的是在 JTA 里面也是叫 
-
-  Transaction Manager，在 JPA 里面也有 Transaction Manager，那么就说明什么，它们在事务上面 Spring 做了统一的封装
-
-* Java Caching API(JSR 107)：那么就是 JSR 107 这个API其实是一个 NoSQL 的一个实现，就说它就是 Key-Value 存储，那么这个版本也是较晚支持的，也就是说在 Spring3.2 开始支持的，那么
-
-  这里有一个实现，就是说 Spring 自己有个 Cache 的一个实现，那么结合它的实现来进行统一的实现
 
 ### 8.3 Java EE Bean 技术相关
 
@@ -424,27 +357,14 @@ spring-jdbc：是Spring对JDBC的一个整合
 | Dependency Injection for Java(JSR 330) | 2.5+           | AutowiredAnnotationBeanPostProcessor |
 | Bean Validation(JSR 303)               | 3.0+           | LocalValidatorFactoryBean            |
 
-* JMS(JSR 914)：看起来和我们的 Java Bean 没有太大关系，JMS 其实在 EJB 里面有另外一个类似的称呼，叫做消息驱动 Bean，就是 Message Driven 然后 Bean 的一个方式。
+* JMS(JSR 914)：看起来和我们的 Java Bean 没有太大关系，JMS 其实在 EJB 里面有另外一个类似的称呼，叫做消息驱动 Bean，就是 Message Driven 然后 Bean 的一个方式。那么 JMS 它的 JSR 规范是 914，同时它在 1.1 的时候就开始予以支持了，那么 Spring 它也支持到 JMS 的一个 1.2 的规范。那么我们可以看出来它也是这种 Template 的方式来进行操作，就是Jms Template。那么和我们 Jdbc 它们俩也是类似的。
 
-  那么 JMS 它的 JSR 规范是 914，同时它在 1.1 的时候就开始予以支持了，那么 Spring 它也支持到 JMS 的一个 1.2 的规范。那么我们可以看出来它也是这种 Template 的方式来进行操作，就是Jms 
+* EJB 2.0 (JSR 19)：我们说JMS早期是用到 EJB 里面的，所以 EJB2.0 的时候就已经开始支持了，那么也包括了 EJB 里面主要的有三种，有代表性的一个 Bean，一种是有状态 Bean，就是我们后面看到一个代表实现，这里是 AbstractStatefulSession，那么就是有状态 Bean。有一种是无状态 Bean 就是 Stateless，就是说它这种无状态的 Bean。第三种 Bean 就是我们说的消息驱动 Bean，还有第四种，就是说我们把无状态 Bean和有状态 Bean 都分为会话 Bean 就是 SessionBean，那么第三种就是我们的JPA里面的存储的 Bean，就是我们持久化那个 Bean，这是我们前面所提到的事情。
 
-  Template。那么和我们 Jdbc 它们俩也是类似的。
+* Dependency Injection for Java(JSR 330)：依赖注入 for API，那么依赖注入for API 其实这个东西也要感谢 Spring，这个地方是 Rod Johnson 来 Leader 这个 JSR 来进行支持的，也就是说他把以往的 Spring 里面的 Autowired 注解变成了 Injected 的注解提交给了 JSR 官方也是提交给Java的官方，然后他们来进行讨论。那么就成功地引用去了，那么这个实现就说在Spring里面的Autowired 实现和 Injected 实现都放在了 AutowiredAnnotationBeanPostProcessor 代码里来实现。
 
-* EJB 2.0 (JSR 19)：我们说JMS早期是用到 EJB 里面的，所以 EJB2.0 的时候就已经开始支持了，那么也包括了 EJB 里面主要的有三种，有代表性的一个 Bean，一种是有状态 Bean，就是我们后面看
+* Bean Validation(JSR 303)：它其实也是由 Hibernate 团队里面的人来进行维护和进行引导的，那么在 Spring 3.0 版本开始就已经开始支持了，那么这个版本里面就会有一个非常有意思情况，就是说其实它是一个适配情况，就是说它把 Spring 校验和 Bean 的校验的规范做了融合，就形成了 LocalValidatorFactoryBean。
 
-  到一个代表实现，这里是AbstractStatefulSession，那么就是有状态 Bean。有一种是无状态 Bean 就是 Stateless，就是说它这种无状态的 Bean。第三种 Bean 就是我们说的消息驱动 Bean，还有
-
-  第四种，就是说我们把无状态 Bean和有状态 Bean 都分为会话 Bean 就是 SessionBean，那么第三种就是我们的JPA里面的存储的 Bean，就是我们持久化那个 Bean，这是我们前面所提到的事情。
-
-* Dependency Injection for Java(JSR 330)：依赖注入 for API，那么依赖注入for API 其实这个东西也要感谢 Spring，这个地方是 Rod Johnson 来 Leader 这个 JSR 来进行支持的，也就
-
-  是说他把以往的 Spring 里面的 Autowired 注解变成了 Injected 的注解提交给了JSR官方也是提交给Java的官方，然后他们来进行讨论。那么就成功地引用去了，那么这个实现就说在Spring里面的
-
-  Autowired实现和Injected实现都放在了AutowiredAnnotationBeanPostProcessor代码里来实现。
-
-* Bean Validation(JSR 303)：它其实也是由 Hibernate 团队里面的人来进行维护和进行引导的，那么在 Spring 3.0 版本开始就已经开始支持了，那么这个版本里面就会有一个非常有意思情况，就是
-
-  说其实它是一个适配情况，就是说它把 Spring 校验和 Bean 的校验的规范做了融合，就形成了 LocalValidatorFactoryBean。
 
 **tips：**
 
@@ -601,7 +521,7 @@ Spring 官方文档根路径:https://docs.spring.io/spring/docs/
 
 * 模板模式
 
-​	JdbcTemplate
+  JdbcTemplate
 
 * 对象继承
 
@@ -609,21 +529,21 @@ Spring 官方文档根路径:https://docs.spring.io/spring/docs/
 
 ### 9.2 面向切面编程
 
-动态代理:JdkDynamicAopProxy
+动态代理: JdkDynamicAopProxy
 
-字节码提升:ASM、CGLib、AspectJ...
+字节码提升: ASM、CGLib、AspectJ...
 
 ### 9.3 面向元编程
 
 注解:模式注解(@Component、@Service、@Respository...)
 
-配置:Environment抽象、PropertySources、BeanDefinition...
+配置: Environment抽象、PropertySources、BeanDefinition...
 
-泛型:GenericTypeResolver、ResolvableType...
+泛型: GenericTypeResolver、ResolvableType...
 
 ### 9.4 函数驱动
 
-函数接口:ApplicationEventPublisher
+函数接口: ApplicationEventPublisher
 Reactive: Spring WebFlux
 
 ### 9.5 模块驱动
@@ -653,13 +573,10 @@ Spring @Enable*
 
 * **官方文档描述**
 
-  Spring makes it easy to create Java enterprise applications.It provides everything you need to embrace the Java language in an enterprise environment, with support for Groovy and Kotlin as alternative languages on the JVM, and with the flexibility to create many kinds of architectures depending on an
+  Spring makes it easy to create Java enterprise applications.It provides everything you need to embrace the Java language in an enterprise environment, with support for Groovy and Kotlin as alternative languages on the JVM, and with the flexibility to create many kinds of architectures depending on anapplication's needs.
 
-  application's needs.
+  Spring 使创建 Java 企业应用程序变得简单。它提供了您在企业环境中使用 Java 语言所需的一切支持，同时还支持在 JVM 上使用 Groovy 和 Kotlin 等备选语言，并具有根据应用程序需求创建多种架构的灵活性。
 
-  Spring 使创建 Java 企业应用程序变得简单。它提供了您在企业环境中使用 Java 语言所需的一切支持，同时还支持在 JVM 上使用 Groovy 和 Kotlin 等备选语言，并具有根据应用程序需求创建多种架
-
-  构的灵活性。
 
 **<font color="orange" size="2">996面试题</font>**-Spring Framework有哪些核心模块？
 

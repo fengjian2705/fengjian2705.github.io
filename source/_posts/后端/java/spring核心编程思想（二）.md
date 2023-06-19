@@ -17,31 +17,25 @@ categories:
 
 ### 2.1 什么是 IoC?
 
-In software engineering, inversion of control (IoC) is a programming principle. IoC inverts the flow of control as compared to traditional control flow. In IoC, custom-written portions of a computer program receive the flow of control from a generic framework. Asoftware architecture with this design inverts
+In software engineering, inversion of control (IoC) is a programming principle. IoC inverts the flow of control as compared to traditional control flow. In IoC, custom-written portions of a computer program receive the flow of control from a generic framework. Asoftware architecture with this design inverts control as compared to traditional procedural programming: in traaditional programming, the custom code that expresses the purpose of the program calls into reusable libraries to take care of generic tasks, but with inversion of control, it is the framework that calls into the custom,or task-specific,code.
 
-control as compared to traditional procedural programming: in traaditional programming, the custom code that expresses the purpose of the program calls into 
-
-reusable libraries to take care of generic tasks, but with inversion of control, it is the framework that calls into the custom,or task-specific,code.
-
-在软件工程中，控制反转（IoC）是一种编程原则。与传统的控制流相比，IoC 反转了控制流。在 IoC 中，计算机程序的自定义部分从通用框架接收控制流。具有这种设计的软件架构与传统的过程式编程相比，控
-
-制被反转了：在传统的编程中，表达程序目的的自定义代码调用可重用库来处理通用任务，但是在控制反转中，是框架调用自定义或特定任务的代码。
+在软件工程中，控制反转（IoC）是一种编程原则。与传统的控制流相比，IoC 反转了控制流。在 IoC 中，计算机程序的自定义部分从通用框架接收控制流。具有这种设计的软件架构与传统的过程式编程相比，控制被反转了：在传统的编程中，表达程序目的的自定义代码调用可重用库来处理通用任务，但是在控制反转中，是框架调用自定义或特定任务的代码。
 
 
 
-​                                                                                                       来源:https://en.wikipedia.org/wiki/Inversion_of_control
+ 来源:https://en.wikipedia.org/wiki/Inversion_of_control
 
 ### 2.2 发展简介
 
-1983 年,Richard E. Sweet 在《The Mesa Programming Environment》中提出"Hollywood Principle"(好莱坞原则)
+1983 年,Richard E. Sweet 在《The Mesa Programming Environment》中提出"Hollywood Principle"(好莱坞原则)。
 
-1988 年,Ralph E.Johnson&Brian Foote在《Designing ReusableClasses》中提出"Inversion of control"(控制反转)
+1988 年,Ralph E.Johnson&Brian Foote在《Designing ReusableClasses》中提出"Inversion of control"(控制反转)。
 
-1996 年,Michael Matson 在《Object-Oriented Frameworks, A survey of methodological issues》中将 "Inversion of control" 命名为 "Hollywood principle"
+1996 年,Michael Matson 在《Object-Oriented Frameworks, A survey of methodological issues》中将 "Inversion of control" 命名为 "Hollywood principle"。
 
-<font color="red">2004 年,Martin Fowler 在《Inversion of Control Containers andthe Dependency Injectionpattern》中提出了自己对 IoC 以及 DI 的理解</font>
+<font color="red">2004 年,Martin Fowler 在《Inversion of Control Containers andthe Dependency Injectionpattern》中提出了自己对 IoC 以及 DI 的理解</font>。
 
-2005 年,Martin Fowler 在《Inversion of Control》对 IoC 做出进一步的说明
+2005 年,Martin Fowler 在《Inversion of Control》对 IoC 做出进一步的说明。
 
 ## 3. IoC 主要实现策略
 
@@ -52,7 +46,7 @@ reusable libraries to take care of generic tasks, but with inversion of control,
   These are:
 
   * Using a service locator pattern：服务定位模式，这种模式是 JavaEE 里面所定义的一种模式，通常通过 JNDI 这种技术获取 JavaEE 的组件，比如说获取 EJB 组件或者 DataSource 这样的东西
-  * Using dependency injection, for example：依赖注入
+  * Using dependency injection, for example：依赖注入，例如：
     * Constructor injection：构造器注入
     * Parameter injection：参数注入
     * Setter injection：set 方法注入
@@ -65,21 +59,9 @@ reusable libraries to take care of generic tasks, but with inversion of control,
 
   "IoC is a broad concept that can be implemented in different ways. There are two main types:
 
-  **Dependency Lookup（依赖查找）**: The container provides callbacks to components, and a lookup context. This is
+  **Dependency Lookup（依赖查找）**: The container provides callbacks to components, and a lookup context. This is the EJB and Apache Avalon approach. It leaves the onus each component to use container APIs look up resources and collaborators. The Inversion of Control is limited to the container invoking callback methods that application code can use to obtain resources.
 
-  the EJB and Apache Avalon approach. It leaves the onus each component to use container APls
-
-  look up resources and collaborators. The Inversion of Control is limited to the container invoking
-
-  callback methods that application code can use to obtain resources.
-
-  **Dependency Injection（依赖注入）**: Components do no look up; they provide plain Java methods enabling the
-
-  container to resolve dependencies. The container is wholly responsible for wiring up components,
-
-  passing resolved objects in to JavaBean properties or constructors. Use of JavaBean properties is
-
-  called Setter Injection; use of constructor arguments is called Constructor Injection."
+  **Dependency Injection（依赖注入）**: Components do no look up; they provide plain Java methods enabling the container to resolve dependencies. The container is wholly responsible for wiring up components,passing resolved objects in to JavaBean properties or constructors. Use of JavaBean properties is called Setter Injection; use of constructor arguments is called Constructor Injection."
 
 ## 4. IoC 容器的职责
 
@@ -91,12 +73,10 @@ reusable libraries to take care of generic tasks, but with inversion of control,
 
 * To decouple（解耦） the execution of a task from implementation.
 * To focus a module on the task it is designed for.
-* To free modules from assumptions about how other systems do what they do and instead rely on
-  contracts.
+* To free modules from assumptions about how other systems do what they do and instead rely on contracts.
 * To prevent side effects when replacing a module.
 
-Inversion of control is sometimes facetiously referred to as the 'Hollywood Principle: Don't call us, we'll
-call you'."
+Inversion of control is sometimes facetiously refered to as the 'Hollywood Principle: Don't call us, we'll call you'."
 
 * 通用职责
 * 依赖处理
@@ -115,7 +95,7 @@ call you'."
 * 主要实现
   * Java SE
     * Java Beans
-    * Java ServiceLoader SPl
+    * Java ServiceLoader SPL
     * JNDI (Java Naming and Directory Interface)
   * Java EE
     * EJB (Enterprise Java Beans)
@@ -146,7 +126,7 @@ call you'."
 
   * 新建 maven 项目 java-beans-demo
 
-  * 新建 Person 类 
+  * 新建 Person 类
 
     ```java
     package tech.fengjian.ioc.java.beans;
@@ -331,9 +311,7 @@ call you'."
 
   amenable to reconfiguration or re-injection later Management through JMX MBeans is therefore a compelling use case for setter injection."
 
-  Setter 注入应主要仅用于可以在类内分配合理默认值的可选依赖项。否则，在代码使用该依赖项的所有地方都必须执行非空检查。 Setter 注入的一个好处是，setter 方法使得那个类的对象容易在以后进
-
-  行重新配置或重新注入。因此，通过 JMX MBeans 进行管理是 Setter 注入的一个很好的用例。
+  Setter 注入应主要仅用于可以在类内分配合理默认值的可选依赖项。否则，在代码使用该依赖项的所有地方都必须执行非空检查。 Setter 注入的一个好处是，setter 方法使得那个类的对象容易在以后进行重新配置或重新注入。因此，通过 JMX MBeans 进行管理是 Setter 注入的一个很好的用例。
 
 * 《Expert One-on-One<sup>TM</sup> J2EE<sup>TM</sup> Development without EJB<sup>TM</sup>)认为 Setter 注入的优点:
 
@@ -389,9 +367,7 @@ call you'."
 
   缺点包括：在任何契约中都没有表达调用 setter 的顺序。因此，我们有时需要在最后一个 setter 被调用之后调用方法来初始化组件。Spring 提供了
 
-  `org.springframework.beans.factory.InitializingBean` 接口和调用任意初始化方法的能力。然而，这个契约必须被记录以确保在容器之外正确使用。在使用之前可能没有调用所有必要的
-
-  setter，因此对象可能会部分配置不完整。
+  `org.springframework.beans.factory.InitializingBean` 接口和调用任意初始化方法的能力。然而，这个契约必须被记录以确保在容器之外正确使用。在使用之前可能没有调用所有必要的setter，因此对象可能会部分配置不完整。
 
 * 《Expert One-on-One<sup>TM</sup> J2EE<sup>TM</sup> Development without EJB<sup>TM</sup>》认为构造器注入的优点:
   "<font color="red">Advantages of Constructor Injection</font> include:
@@ -402,9 +378,7 @@ call you'."
   
     optionally perform.) There's no need for initialization methods.
   
-    每个被管理的对象都必须在调用任何业务方法之前处于一致的状态，并且已经完全配置好。这是构造函数注入(Constructor Injection)的主要动机。(然而，JavaBean 也可以通过依赖项检查实现相同
-  
-    的结果，Spring 可以选择性地执行。) 不需要初始化方法。
+    每个被管理的对象都必须在调用任何业务方法之前处于一致的状态，并且已经完全配置好。这是构造函数注入(Constructor Injection)的主要动机。(然而，JavaBean 也可以通过依赖项检查实现相同的结果，Spring 可以选择性地执行。) 不需要初始化方法。
   
   * There may be slightly less code than results from the use of multiple JavaBean methods, although will be no difference in complexity."
   
@@ -454,15 +428,7 @@ call you'."
 
 简单地说,IoC 是反转控制,类似于好莱坞原则,主要有依赖查找和依赖注入两种实现方式，
 
-进一步说的话：按照 IoC 的定义很多方面都是 IoC,我们常说的比如说 JavaBeans 是 IoC 的一个容器实现、Servlet 的容器也是 IoC 的实现，因为 Servlet 可以去依赖或者反向地通过 JNDI 的方式进
-
-行得到一些外部的一些资源包括 DataSource 或者相关的 EJB 的组件，与此同时像是 Spring Framework 或者 PicoContainer 的依赖注入的框架也能够帮助我们去实现我们的 IoC。同时除此之外这些东
-
-西是我们比较常见的一个 IoC 的实现策略。按照它这个定义如果是反转控制那东西就多了去了，包括我们说消息其实也算，因为消息其实是被动的我们如果说我们传统的调用链路是一个主动拉的模式那么 IoC 其实
-
-是一种推的模式，那么推的模式在消息事件以及各种这样类似于这种反向的观察者模式的扩展都属于 IoC 那么这东西就无穷无尽了，那么它如果仅仅关注于依赖注入比如说通过构造器注入或 Setter 注入，那么它
-
-其中有什么好处。
+进一步说的话：按照 IoC 的定义很多方面都是 IoC,我们常说的比如说 JavaBeans 是 IoC 的一个容器实现、Servlet 的容器也是 IoC 的实现，因为 Servlet 可以去依赖或者反向地通过 JNDI 的方式进行得到一些外部的一些资源包括 DataSource 或者相关的 EJB 的组件，与此同时像是 Spring Framework 或者 PicoContainer 的依赖注入的框架也能够帮助我们去实现我们的 IoC。同时除此之外这些东西是我们比较常见的一个 IoC 的实现策略。按照它这个定义如果是反转控制那东西就多了去了，包括我们说消息其实也算，因为消息其实是被动的我们如果说我们传统的调用链路是一个主动拉的模式那么 IoC 其实是一种推的模式，那么推的模式在消息事件以及各种这样类似于这种反向的观察者模式的扩展都属于 IoC 那么这东西就无穷无尽了，那么它如果仅仅关注于依赖注入比如说通过构造器注入或 Setter 注入，那么它其中有什么好处。
 
 **<font color="orange" size="2">996面试题</font>**-依赖查找和依赖注入的区别？
 

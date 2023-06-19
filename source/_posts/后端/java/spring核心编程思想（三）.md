@@ -116,27 +116,12 @@ categories:
 
    * `ObjectFactory` 是一个简单的对象创建工厂，用于实现对象的延迟加载，只有在调用 `getObject()` 方法时才会创建目标对象。
 
-   * `BeanFactory` 是 Spring IoC 容器的根接口，提供了管理 bean 的机制并支持依赖注入等功能。它可以读取配置文件，并创建和管理 bean 实例。`BeanFactory` 是最基本的容器，其他的容
+   * `BeanFactory` 是 Spring IoC 容器的根接口，提供了管理 bean 的机制并支持依赖注入等功能。它可以读取配置文件，并创建和管理 bean 实例。`BeanFactory` 是最基本的容器，其他的容器都是对它的扩展。
 
-   器都是对它的扩展。
-
-   * `FactoryBean` 是一个特殊的 bean，它实现了 `FactoryBean` 接口，并通过 `getObject()` 方法创建和管理其他 bean 实例。它可以用来实现一些复杂的 bean 构建逻辑，也可以用来添加一
-
-   些 AOP 切面处理或提供一些自定义的对象包装等功能。需要注意的是，虽然这三个工厂类都与对象的创建和管理有关，但它们的作用与用法略有不同，不能直接混淆使用。总体来说，`ObjectFactory` 
-
-   主要用于实现延迟加载，`BeanFactory` 是 Spring IoC 容器的基础，用于管理和创建 bean，而 `FactoryBean` 则是一个特殊的 bean，用于实现一些特殊的创建逻辑。
-
-2. 延迟查找就利用到了`ObjectFactory`，它有一个 FactoryBean 的实现 `ObjectFactoryCreatingFactoryBean`,`ObjectFactoryCreatingFactoryBean` 与 `ObjectFactory` 之间存
-
-   在一定关系，它们都是在实现 Spring 中的延迟初始化时可以使用的工具类。具体来说，`ObjectFactoryCreatingFactoryBean` 是 Spring 中的一个工厂 bean 实例，它实现了 `FactoryBean` 
-
-   接口，可以用于创建 `ObjectFactory` 对象。`ObjectFactory` 本身是 Spring 中的一个接口，可以用于实现对象的延迟初始化。当 `ObjectFactoryCreatingFactoryBean` 被注入到其他 bean 
-
-   中时，Spring IoC 容器会先创建 `ObjectFactoryCreatingFactoryBean` 实例，并调用其 `getObject()` 方法，该方法会创建一个 `ObjectFactory` 对象，并返回该对象实例。当我们需要使
-
-   用被延迟初始化的 bean 时，我们可以从该 `ObjectFactory` 实例中获取目标 bean 的实例进行使用。因此，可以使用 `ObjectFactoryCreatingFactoryBean` 和 `ObjectFactory` 来实现在 
-
-   Spring 中的延迟初始化。其中，`ObjectFactoryCreatingFactoryBean` 用于创建 `ObjectFactory` 实例，而 `ObjectFactory` 则用于实现对象的延迟初始化。
+   * `FactoryBean` 是一个特殊的 bean，它实现了 `FactoryBean` 接口，并通过 `getObject()` 方法创建和管理其他 bean 实例。它可以用来实现一些复杂的 bean 构建逻辑，也可以用来添加一些 AOP 切面处理或提供一些自定义的对象包装等功能。需要注意的是，虽然这三个工厂类都与对象的创建和管理有关，但它们的作用与用法略有不同，不能直接混淆使用。
+   * 总体来说，`ObjectFactory` 主要用于实现延迟加载，`BeanFactory` 是 Spring IoC 容器的基础，用于管理和创建 bean，而 `FactoryBean` 则是一个特殊的 bean，用于实现一些特殊的创建逻辑。
+   
+2. 延迟查找就利用到了`ObjectFactory`，它有一个 FactoryBean 的实现 `ObjectFactoryCreatingFactoryBean`,`ObjectFactoryCreatingFactoryBean` 与 `ObjectFactory` 之间存在一定关系，它们都是在实现 Spring 中的延迟初始化时可以使用的工具类。具体来说，`ObjectFactoryCreatingFactoryBean` 是 Spring 中的一个工厂 bean 实例，它实现了 `FactoryBean` 接口，可以用于创建 `ObjectFactory` 对象。`ObjectFactory` 本身是 Spring 中的一个接口，可以用于实现对象的延迟初始化。当 `ObjectFactoryCreatingFactoryBean` 被注入到其他 bean 中时，Spring IoC 容器会先创建 `ObjectFactoryCreatingFactoryBean` 实例，并调用其 `getObject()` 方法，该方法会创建一个 `ObjectFactory` 对象，并返回该对象实例。当我们需要使用被延迟初始化的 bean 时，我们可以从该 `ObjectFactory` 实例中获取目标 bean 的实例进行使用。因此，可以使用 `ObjectFactoryCreatingFactoryBean` 和 `ObjectFactory` 来实现在 Spring 中的延迟初始化。其中，`ObjectFactoryCreatingFactoryBean` 用于创建 `ObjectFactory` 实例，而 `ObjectFactory` 则用于实现对象的延迟初始化。
 
 3. dependency-lookup-context.xml
 
