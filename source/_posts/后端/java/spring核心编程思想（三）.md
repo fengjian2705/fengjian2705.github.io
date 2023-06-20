@@ -794,21 +794,12 @@ The [`BeanFactory`](https://docs.spring.io/spring-framework/docs/5.3.28-SNAPSHOT
 
   事件发布
 
-- Application-layer specific contexts such as the `WebApplicationContext` for use in web applications
+- Application-layer specific contexts such as the `WebApplicationContext` for use in web applications应用程序层特定的上下文，例如 WebApplicationContext 用于 Web 应用程序
 
-  应用程序层特定的上下文，例如 WebApplicationContext 用于 Web 应用程序
 
-In short, the `BeanFactory` provides the configuration framework and basic functionality, and the `ApplicationContext` adds more enterprise-specific 
+In short, the `BeanFactory` provides the configuration framework and basic functionality, and the `ApplicationContext` adds more enterprise-specific functionality. The `ApplicationContext` is a complete superset of the `BeanFactory` and is used exclusively in this chapter in descriptions of Spring’s IoC container. For more information on using the `BeanFactory` instead of the `ApplicationContext,` see the section covering the [`BeanFactory` API](https://docs.spring.io/spring-framework/docs/5.3.28-SNAPSHOT/reference/html/core.html#beans-beanfactory)
 
-functionality. The `ApplicationContext` is a complete superset of the `BeanFactory` and is used exclusively in this chapter in descriptions of Spring’s IoC 
-
-container. For more information on using the `BeanFactory` instead of the `ApplicationContext,` see the section covering the [`BeanFactory` API](https://docs.spring.io/spring-framework/docs/5.3.28-SNAPSHOT/reference/html/core.html#beans-beanfactory)
-
-简而言之，BeanFactory 提供配置框架和基本功能，ApplicationContext 添加了更多企业特定功能。ApplicationContext 是 BeanFactory 的完整超集，在 Spring 的 IoC 容器描述中专门使用。有
-
-关使用 BeanFactory 而不是 ApplicationContext 的详细信息，请参阅涵盖 BeanFactory API 的部分。
-
-他说是管理是对象，他说并没有说管理是 Bean，依赖来源并不只是限于 Bean，所以他对象是描述得非常精确的。
+简而言之，BeanFactory 提供配置框架和基本功能，ApplicationContext 添加了更多企业特定功能。ApplicationContext 是 BeanFactory 的完整超集，在 Spring 的 IoC 容器描述中专门使用。有关使用 BeanFactory 而不是 ApplicationContext 的详细信息，请参阅涵盖 BeanFactory API 的部分。他说是管理是对象，他说并没有说管理是 Bean，依赖来源并不只是限于 Bean，所以他对象是描述得非常精确的。
 
 再来看看我们编写的测试代码：
 
@@ -822,11 +813,7 @@ BeanFactory beanFactory = new ClassPathXmlApplicationContext("classpath:META-INF
 ApplicationContext applicationContext = new ClassPathXmlApplicationContext("classpath:META-INF/dependency-injection-context.xml");
 ```
 
-那也就是说其实比较的是 userRepository.getBeanFactory() 和 ApplicationContext对象，为什么不等于呢，这里的 ApplicationContext 他是一种设计模式：
-
-ClassPathXmlApplicationContext <- AbstractXmlApplicationContext <- AbstractRefreshableConfigApplicationContext <- AbstractRefreshableApplicationContext <-
-
-AbstractApplicationContext <- `ConfigurableApplicationContext`
+那也就是说其实比较的是 userRepository.getBeanFactory() 和 ApplicationContext对象，为什么不等于呢，这里的 ApplicationContext 他是一种设计模式：ClassPathXmlApplicationContext <- AbstractXmlApplicationContext <- AbstractRefreshableConfigApplicationContext <- AbstractRefreshableApplicationContext <-AbstractApplicationContext <- `ConfigurableApplicationContext`
 
 **tips：**<- 代表继承
 
@@ -836,9 +823,7 @@ ConfigurableXxx 是一种可写的方式，他有 getBeanFactory 方法：
 ConfigurableListableBeanFactory getBeanFactory() throws IllegalStateException;
 ```
 
-`ConfigurableApplicationContext` <- `ApplicationContext` <- `BeanFactory`，也就是 ConfigurableApplicationContext 就是 BeanFactory 了，为什么还多此一举的提供一个
-
-getBeanFactory()方法来返回一个 BeanFactory 呢？
+`ConfigurableApplicationContext` <- `ApplicationContext` <- `BeanFactory`，也就是 ConfigurableApplicationContext 就是 BeanFactory 了，为什么还多此一举的提供一个getBeanFactory()方法来返回一个 BeanFactory 呢？
 
 我们来进一步看一下 getBeanFactory() 方法的内部实现，AbstractRefreshableApplicationContext 类中：
 
@@ -859,9 +844,7 @@ public final ConfigurableListableBeanFactory getBeanFactory() {
 }
 ```
 
-这个 BeanFactory 其实是一个组合的，就相当于说我这个代码其实是把这个 BeanFactory 的实现 DefaultListableBeanFactory 组合进来了，并不是完全的抽象继承了父类。
-
-也就是在上下文里面的实现它是组合了一个方式，同时在接口上又是继承的关系，这种方式有点像代理，再看一下 getBean() 方法的实现，在 AbstractApplicationContext 类中：
+这个 BeanFactory 其实是一个组合的，就相当于说我这个代码其实是把这个 BeanFactory 的实现 DefaultListableBeanFactory 组合进来了，并不是完全的抽象继承了父类。也就是在上下文里面的实现它是组合了一个方式，同时在接口上又是继承的关系，这种方式有点像代理，再看一下 getBean() 方法的实现，在 AbstractApplicationContext 类中：
 
 ```java
 @Override
@@ -921,11 +904,7 @@ public class BeanFactoryAsIoCContainerDemo {
 }
 ```
 
-解析：DefaultListableBeanFactory 是 IoC 的底层容器，XmlBeanDefinitionReader 是 XML 方式的 Bean 定义的一个读取器，观察他的构造方法：需要一个 BeanDefinitionRegistry 接口类型
-
-的参数，DefaultListableBeanFactory 这个类呢又实现了 BeanDefinitionRegistry 接口，所以可以利用 XmlBeanDefinitionReader 和 DefaultListableBeanFactory 来加载 Bean 的配置。
-
-一句话可以总结为：从 configuration 的位置把配置好的 Bean 加载到 DefaultListableBeanFactory 定义的 IoC 容器中去。
+解析：DefaultListableBeanFactory 是 IoC 的底层容器，XmlBeanDefinitionReader 是 XML 方式的 Bean 定义的一个读取器，观察他的构造方法：需要一个 BeanDefinitionRegistry 接口类型的参数，DefaultListableBeanFactory 这个类呢又实现了 BeanDefinitionRegistry 接口，所以可以利用 XmlBeanDefinitionReader 和 DefaultListableBeanFactory 来加载 Bean 的配置。一句话可以总结为：从 configuration 的位置把配置好的 Bean 加载到 DefaultListableBeanFactory 定义的 IoC 容器中去。
 
 ```java
 public XmlBeanDefinitionReader(BeanDefinitionRegistry registry) {
@@ -1108,7 +1087,7 @@ protected void prepareRefresh() {
 	}
 ```
 
-* obtainFreshBeanFactory：用于创建一个新的、空的 `BeanFactory`，要使用此方法必须先调用 `refresh()` 方法刷新应用程序上下文。该方法将创建一个基本的 `DefaultListableBeanFactory` 实例，如果需要可以自定义实现
+* obtainFreshBeanFactory：用于创建一个新的、空的 `BeanFactory`，要使用此方法必须先调用 `refresh()` 方法刷新应用程序上下文。该方法将创建一个基本的`DefaultListableBeanFactory` 实例，如果需要可以自定义实现
 
 ```java
 protected ConfigurableListableBeanFactory obtainFreshBeanFactory() {
@@ -1178,7 +1157,7 @@ protected void prepareBeanFactory(ConfigurableListableBeanFactory beanFactory) {
 		}
 
 		// Register default environment beans.
-		if (!beanFactory.containsIoCalBean(ENVIRONMENT_BEAN_NAME)) {
+		if (!beanFactory.containsLocalBean(ENVIRONMENT_BEAN_NAME)) {
 			beanFactory.registerSingleton(ENVIRONMENT_BEAN_NAME, getEnvironment());
 		}
 		if (!beanFactory.containsIoCalBean(SYSTEM_PROPERTIES_BEAN_NAME)) {
@@ -1290,39 +1269,19 @@ protected void doClose() {
 
 **<font color="green" size="2">沙雕面试题</font>**-什么是 Spring IoC 容器？
 
-答：Spring Framework implementation of the Inversion of Control (IoC) principle. IoCis also known as dependency injection (DI). It is a process whereby 
+答：Spring Framework implementation of the Inversion of Control (IoC) principle. IoCis also known as dependency injection (DI). It is a process whereby objects define their dependencies (that is, the other objects they work with) only through constructor arguments, arguments to a factory imethod,or properties that are set on the object instance after it is constructed or returned from a factory method. The containerthen injects those dependencies when it creates the bean.
 
-objects define their dependencies (that is, the other objects they work with) only through constructor arguments, arguments to a factory imethod,or properties 
-
-that are set on the object instance after it is constructed or returned from a factory method. The containerthen injects those dependencies when it creates 
-
-the bean.
-
-Spring Framework 是一种实现控制反转（IoC）原则的框架，IoC 也被称为依赖注入（DI）。它是一种过程，其中对象通过构造函数参数、工厂方法的参数或在构造对象后或从工厂方法返回后设置在对象实例上
-
-的属性来定义其依赖项（即其与其他对象的配合工作）。容器然后在创建 Bean 时注入这些依赖项。
+Spring Framework 是一种实现控制反转（IoC）原则的框架，IoC 也被称为依赖注入（DI）。它是一种过程，其中对象通过构造函数参数、工厂方法的参数或在构造对象后或从工厂方法返回后设置在对象实例上的属性来定义其依赖项（即其与其他对象的配合工作）。容器然后在创建 Bean 时注入这些依赖项。
 
 **<font color="orange" size="2">996面试题</font>**-BeanFactory 和 FactoryBean 的区别？
 
 答：BeanFactory是IoC底层容器 FactoryBean 是创建 Bean 的一种方式,帮助实现复杂的初始化逻辑，看下代码说明：
 
-Interface to be implemented by objects used within a BeanFactory which are themselves factories for individual objects. If a bean implements this interface,it
+Interface to be implemented by objects used within a BeanFactory which are themselves factories for individual objects. If a bean implements this interface,it is used as a factory for an object to expose, not directly as a bean instance that will be exposed itself.
 
- is used as a factory for an object to expose, not directly as a bean instance that will be exposed itself.
+这是一个接口去实现一个 Object，然后这个 Object 中有几个特性，这个特性其实就是为了帮助你去暴露一个 Bean，他这个 Bean 呢通常来说不是一个正常的 Bean，或者说不是一个能够简单处理的 Bean。我们看下之前的 User 对象，他是非常简单的 POJO,他就是一个默认的构造器参数通过反射的方式进行调用。但是现实情况可能没这么简单，假设 User 这个对象是第三方来进行创建的，这个时候咋办呢，没办法通过反射的方式直接去获取这个对象进行初始化，因此你可以通过 BeanFactory 的方式来进行操作：
 
-这是一个接口去实现一个 Object，然后这个 Object 中有几个特性，这个特性其实就是为了帮助你去暴露一个 Bean，他这个 Bean 呢通常来说不是一个正常的 Bean，或者说不是一个能够简单处理的 Bean。
-
-我们看下之前的 User 对象，他是非常简单的 POJO,他就是一个默认的构造器参数通过反射的方式进行调用。但是现实情况可能没这么简单，假设 User 这个对象是第三方来进行创建的，这个时候咋办呢，没办法
-
-通过反射的方式直接去获取这个对象进行初始化，因此你可以通过 BeanFactory 的方式来进行操作：
-
-getObject 是主要逻辑，这个方法会被容器调用，这个容器怎么知道这个方法要被调用呢，这个前提就是 getObjectType，这个 getObjectType 去决定哪个对象要去做，如果对象的类型相同怎么办，就通过
-
-是不是单例（isSingleton）的方式来进行区分，如果每次去获取的时候都是同一个对象的话，如果 isSingleton 是 true（默认），他返回的是同一个对象，否则的话呢就不是同一个对象。
-
-那 getObject 是不是每次都会被调用，答案是否定的。
-
-也就是说 FactoryBean 是解决复杂场景下 Bean 的初始化或者构造问题，那么创建的 Bean 是不是还会经过 Bean 的生命周期呢？后续揭秘
+getObject 是主要逻辑，这个方法会被容器调用，这个容器怎么知道这个方法要被调用呢，这个前提就是 getObjectType，这个 getObjectType 去决定哪个对象要去做，如果对象的类型相同怎么办，就通过是不是单例（isSingleton）的方式来进行区分，如果每次去获取的时候都是同一个对象的话，如果 isSingleton 是 true（默认），他返回的是同一个对象，否则的话呢就不是同一个对象。那 getObject 是不是每次都会被调用，答案是否定的。也就是说 FactoryBean 是解决复杂场景下 Bean 的初始化或者构造问题，那么创建的 Bean 是不是还会经过 Bean 的生命周期呢？后续揭秘
 
 **<font color="red" size="2">劝退面试题</font>**-Spring IoC 容器启动时做了哪些准备?？
 

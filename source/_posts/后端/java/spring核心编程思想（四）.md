@@ -65,7 +65,7 @@ public class BeanDefinitionCreationDemo {
 
         // 1. 通过 BeanDefinitionBuilder 构建
         BeanDefinitionBuilder beanDefinitionBuilder = BeanDefinitionBuilder.genericBeanDefinition(User.class);
-        // 通过属性删除
+        // 设置属性
         // beanDefinitionBuilder.addPropertyValue("id", 1l);
         // beanDefinitionBuilder.addPropertyValue("name", "rose");
         // beanDefinitionBuilder.addPropertyValue("age", 16);
@@ -96,35 +96,19 @@ public class BeanDefinitionCreationDemo {
 
 * Bean 的名称
 
-  每个 Bean 拥有一个或多个标识符(identifiers),这些标识符在 Bean 所在的容器必须是唯一的。通常一个 Bean 仅有一个标识符,如果需要额外的,可考虑使用别名(Alias)来扩充。
+  每个 Bean 拥有一个或多个标识符(identifiers),这些标识符在 Bean 所在的容器必须是唯一的。通常一个 Bean 仅有一个标识符,如果需要额外的,可考虑使用别名(Alias)来扩充。在基于 XML 的配置元信息中,开发人员可用 id 或者 name 属性来规定 Bean 的标识符。通常 Bean 的标识符由字母组成,允许出现特殊字符。如果要想引入 Bean 的别名的话,可在 name 属性使用半角逗号(",")或分号(";")来间隔。Bean 的 id 或 name 属性并非必须指定,如果留空的话,容器会为 Bean 自动生成一个唯一的名称。Bean 的命名尽管没有限制,不过官方建议采用驼峰的方式,更符合 Java 的命名约定。
 
-  在基于 XML 的配置元信息中,开发人员可用 id 或者 name 属性来规定 Bean 的标识符。通常 Bean 的标识符由字母组成,允许出现特殊字符。如果要想引入 Bean 的别名的话,可在 name 属性使用半角
-  
-  逗号(",")或分号(";")来间隔。Bean 的 id 或 name 属性并非必须指定,如果留空的话,容器会为 Bean 自动生成一个唯一的名称。Bean 的命名尽管没有限制,不过官方建议采用驼峰的方式,更符合 Java 的命名约定。
 
 ​	**tips：**每个 Bean 它的识别符是在它所在的容器，也就说它所在的 BeanDefinition 里面或者说 BeanFactory 里面是唯一的并非是整个应用是唯一的这个地方是要加以区别的。
 
 * Bean 名称生成器(BeanNameGenerator)
-
 * 由 Spring Framework 2.0.3 引入,框架內建两种实现:
+  * DefaultBeanNameGenerator：默认通用 BeanNameGenerator 实现
 
-  DefaultBeanNameGenerator：默认通用 BeanNameGenerator 实现
+  * AnnotationBeanNameGenerator: 基于注解扫描的 BeanNameGenerator 实现,起始于 Spring Framework 2.5,关联的官方文档:With component scanning in the classpath, Spring generates bean names for unnamed components,following the rules described earlier: essentially,taking the simple class name and turning its initial character to lower-case. However, in the (unusual) special case when there is more than one character and both the first and second characters are upper case, the original casing gets preserved. These are the same rules as defined by java.beans.Introspector.decapitalize (which Spring uses here).当在 classpath 中使用组件扫描时，Spring 会根据之前描述的规则为未命名的组件生成 bean 名称，即将**类名开头字母转换为小写**。但是，在一个罕见的特殊情况下，如果**类名超过一个字符且前两个字符都是大写字母，则保留原始大小写**。这些规则与 java.beans.Introspector.decapitalize 所定义的规则相同（Spring 在此处使用它）。
 
-* AnnotationBeanNameGenerator: 基于注解扫描的 BeanNameGenerator 实现,起始于 Spring Framework 2.5,关联的官方文档:
 
-  With component scanning in the classpath, Spring generates bean names for unnamed components,following the rules described earlier: essentially,taking 
-
-  the simple class name and turning its initial character to lower-case. However, in the (unusual) special case when there is more than one character and 
-
-  both the first and second characters are upper case, the original casing gets preserved. These are the same rules as defined by 
-
-  java.beans.Introspector.decapitalize (which Spring uses here).
-
-  当在 classpath 中使用组件扫描时，Spring 会根据之前描述的规则为未命名的组件生成 bean 名称，即将**类名开头字母转换为小写**。但是，在一个罕见的特殊情况下，如果**类名超过一个字符且前两个字        **
-  
-  **符都是大写字母，则保留原始大小写**。这些规则与 java.beans.Introspector.decapitalize 所定义的规则相同（Spring 在此处使用它）。
-
-### BeanNameGenerator
+### 4.1 BeanNameGenerator
 
 ```java
 
@@ -235,7 +219,7 @@ public static String generateBeanName(
 
 * 如果它是唯一的话，,它会变成一个等于 uniqueBean，这种方式其实比较简单
 
-### AnnotationBeanNameGenerator
+### 4.2 AnnotationBeanNameGenerator
 
 ```java
 
@@ -1287,9 +1271,7 @@ public class DefaultUserFactory implements UserFactory {
 
 **<font color="green" size="2">沙雕面试题</font>**-如何注册一个 SpringBean?？
 
-答：通过 BeanDefinition 和外部单体对象来注册，BeanDefinition 参照 <a href="#6">注册 Spring Bean</a> 了解，
-
-这里说一下外部单体对象注册，就是相当于说这个对象的生命周期并不由 Spring 容器来进行管理，但是也可以被它托管，写一段代码体会一下：
+答：通过 BeanDefinition 和外部单体对象来注册，BeanDefinition 参照 <a href="#6">注册 Spring Bean</a> 了解，这里说一下外部单体对象注册，就是相当于说这个对象的生命周期并不由 Spring 容器来进行管理，但是也可以被它托管，写一段代码体会一下：
 
 ```java
 public class ExternalSingleTonRegistDemo {

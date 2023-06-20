@@ -29,17 +29,9 @@ categories:
 
 * java.beans.beancontext.BeanContext
 
-It is desirable to both provide a logical, traversable, hierarchy of JavaBeans, and further to provide a general mechanism whereby an object instantiating an 
+It is desirable to both provide a logical, traversable, hierarchy of JavaBeans, and further to provide a general mechanism whereby an object instantiating an arbitrary JavaBean can offer that JavaBean a variety of services, or interpose itself between the uniderlying system service and the JavaBean, in a conventional fashion.
 
-arbitrary JavaBean can offer that JavaBean a variety of services, or interpose itself between the uniderlying system service and the JavaBean, in a 
-
-conventional fashion.
-
-这段文字主要讲述了在 Java 编程中，提供一个有逻辑和可遍历的 JavaBean 层次结构的需求，同时还需要提供一种通用机制，使得实例化 JavaBean 对象的对象可以向其提供各种服务或者在系统服务和
-
-JavaBean 之间插入自己。通俗的说，就是需要建立一个 JavaBean 的层次结构，并提供一种机制，以便在 JavaBean 使用过程中可以提供服务。
-
-具体来说，要实现这个需求，需要考虑以下几个方面：
+这段文字主要讲述了在 Java 编程中，提供一个有逻辑和可遍历的 JavaBean 层次结构的需求，同时还需要提供一种通用机制，使得实例化 JavaBean 对象的对象可以向其提供各种服务或者在系统服务和JavaBean 之间插入自己。通俗的说，就是需要建立一个 JavaBean 的层次结构，并提供一种机制，以便在 JavaBean 使用过程中可以提供服务。具体来说，要实现这个需求，需要考虑以下几个方面：
 
 1. JavaBean 的层次结构：可以使用组合模式来实现 JavaBean 的逻辑、可遍历的层次结构，以便可以按照树形结构来查找和访问 JavaBean。
 
